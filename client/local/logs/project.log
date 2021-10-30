@@ -1,0 +1,72 @@
+2021-10-30 14:51:55-log: [Package] Profile Migrate: program@Cocos Creator...
+2021-10-30 14:51:55-log: [Package] Profile Migrate: program@Cocos Creator...
+2021-10-30 14:51:55-log: [Package] Profile Migrate: device@Cocos Creator...
+2021-10-30 14:51:55-log: [Package] Profile Migrate: device@Cocos Creator...
+2021-10-30 14:51:55-log: [Package] Profile Migrate: engine@Cocos Creator...
+2021-10-30 14:51:55-log: [Package] menu@1.0.0 enable
+2021-10-30 14:51:55-log: [Package] profile@1.0.0 enable
+2021-10-30 14:51:55-log: [Package] messages@1.0.0 enable
+2021-10-30 14:51:55-log: [Package] program@1.0.0 enable
+2021-10-30 14:51:55-log: [Package] device@1.0.1 enable
+2021-10-30 14:51:55-log: [Package] ui-kit@1.0.1 enable
+2021-10-30 14:51:55-log: [Package] tester@1.0.0 enable
+2021-10-30 14:51:55-log: [Package] preferences@1.0.0 enable
+2021-10-30 14:51:55-log: Setup mods mgr.: 241.589ms
+2021-10-30 14:51:55-log: [Package] engine@1.0.5 enable
+2021-10-30 14:51:58-log: [Package] programming@1.0.0 enable
+2021-10-30 14:51:58-log: [Package] asset-db@1.0.0 enable
+2021-10-30 14:51:58-log: [Package] console@1.0.0 enable
+2021-10-30 14:51:58-log: [Package] scene@1.0.0 enable
+2021-10-30 14:51:58-log: [Package] project@1.0.1 enable
+2021-10-30 14:51:58-log: [Package] about@1.0.0 enable
+2021-10-30 14:51:58-log: [Package] server@1.0.0 enable
+2021-10-30 14:51:58-log: [Package] utils@1.0.0 enable
+2021-10-30 14:51:58-log: [Package] assets@1.0.0 enable
+2021-10-30 14:51:58-log: [Package] inspector@1.0.0 enable
+2021-10-30 14:51:58-log: [Package] hierarchy@1.0.0 enable
+2021-10-30 14:51:59-log: [Package] preview@1.0.1 enable
+2021-10-30 14:51:59-log: [Package] animator@1.0.0 enable
+2021-10-30 14:52:00-log: [Package] builder@1.2.9 enable
+2021-10-30 14:52:00-log: [Package] node-library@1.0.0 enable
+2021-10-30 14:52:00-log: [Package] shortcuts@1.0.1 enable
+2021-10-30 14:52:00-log: [Package] package-asset@1.0.0 enable
+2021-10-30 14:52:00-log: [Package] reference-image@1.0.0 enable
+2021-10-30 14:52:00-log: [Package] channel-upload-tools@1.0.0 enable
+2021-10-30 14:52:00-log: [Package] runtime-dev-tools@1.0.0 enable
+2021-10-30 14:52:00-log: [Package] alipay-mini-game@1.0.0 enable
+2021-10-30 14:52:00-log: [Package] android@1.0.0 enable
+2021-10-30 14:52:00-log: [Package] baidu-mini-game@1.0.0 enable
+2021-10-30 14:52:00-log: [Package] bytedance-mini-game@1.0.1 enable
+2021-10-30 14:52:00-log: [Package] huawei-agc@1.0.0 enable
+2021-10-30 14:52:00-log: [Package] ios@1.0.0 enable
+2021-10-30 14:52:00-log: [Package] ios-app-clip@1.0.0 enable
+2021-10-30 14:52:00-log: [Package] mac@1.0.0 enable
+2021-10-30 14:52:00-log: [Package] native@1.0.0 enable
+2021-10-30 14:52:00-log: [Package] ohos@1.0.0 enable
+2021-10-30 14:52:01-log: [Package] web-desktop@1.0.0 enable
+2021-10-30 14:52:01-log: [Package] web-mobile@1.0.0 enable
+2021-10-30 14:52:01-log: [Package] wechatgame@1.0.1 enable
+2021-10-30 14:52:01-log: [Package] windows@1.0.0 enable
+2021-10-30 14:52:01-log: [Package] xiaomi-quick-game@1.0.0 enable
+2021-10-30 14:52:01-log: [Package] cocos-play@1.0.0 enable
+2021-10-30 14:52:01-log: [Package] huawei-quick-game@1.0.0 enable
+2021-10-30 14:52:01-log: [Package] link-sure@1.0.0 enable
+2021-10-30 14:52:01-log: [Package] oppo-mini-game@1.0.0 enable
+2021-10-30 14:52:01-log: [Package] qtt@1.0.0 enable
+2021-10-30 14:52:01-log: [Package] vivo-mini-game@1.0.0 enable
+2021-10-30 14:52:01-log: [Package] cocos-service@3.0.1 enable
+2021-10-30 14:52:01-log: [Package] importer@1.0.0 enable
+2021-10-30 14:52:01-log: [Package] extension@3.0.10 enable
+2021-10-30 14:52:02-log: [Im-plugin] Check im-plugin version.
+2021-10-30 14:52:02-log: [Package] im-plugin@3.0.7 enable
+2021-10-30 14:52:02-log: [Package] lightmap@1.0.3 enable
+2021-10-30 14:52:02-log: [Im-plugin] No online info of im-plugin.
+2021-10-30 14:52:07-log: [Scene] begin init
+2021-10-30 14:52:07-log: [Scene] require engine end
+2021-10-30 14:52:07-log: [Scene] Serialize end
+2021-10-30 14:52:07-log: [Scene] configureStartup end
+2021-10-30 14:52:07-info: [Scene] WebGL2 device initialized.
+2021-10-30 14:52:07-log: [Scene] Cocos Creator v3.3.2
+2021-10-30 14:52:07-info: [Scene] Forward render pipeline initialized.
+2021-10-30 14:52:07-log: [Scene] openEngine end
+2021-10-30 14:52:07-log: [Scene] configureEngine end
