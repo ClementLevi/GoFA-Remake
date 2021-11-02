@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "node.js Launch Program",
+            "program": "${file}",
+            "args": [],
+            // console执行方式 1、integratedTerminal 编辑器内部终端执行 2、externalTerminal 外部终端执行
+            "console": "integratedTerminal"
+        }
+    ]
+}

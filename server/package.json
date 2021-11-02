@@ -1,5 +1,30 @@
 {
-  "dependencies": {
-    "nodejs-websocket": "^1.7.2"
-  }
+    "dependencies": {
+        "nodejs-websocket": "^1.7.2"
+    },
+    "name": "gofa-remaster-server",
+    "version": "1.0.0",
+    "description": "Famous MMORPG(RTS) game Galaxy on Fire™ Alliances fan-remake edition",
+    "main": "index.js",
+    "devDependencies": {},
+    "private": true,
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ClementLevi/GoFA-Remake.git"
+    },
+    "keywords": [
+        "MMO;",
+        "game;",
+        "engine;",
+        "server"
+    ],
+    "author": "Clement_Levi; Jiajiu;",
+    "license": "GNU",
+    "bugs": {
+        "url": "https://github.com/ClementLevi/GoFA-Remake/issues"
+    },
+    "homepage": "https://github.com/ClementLevi/GoFA-Remake#readme"
 }
