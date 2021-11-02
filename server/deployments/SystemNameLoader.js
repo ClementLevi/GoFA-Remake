@@ -21,3 +21,4 @@ for (i = 0; i < rule_keys.length; i++) {
 
 name_rule.MAX = MAX;
 exports.name_rule = name_rule;
+console.log(">> Module `SystemNameLoader` loaded.");

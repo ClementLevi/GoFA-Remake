@@ -5,15 +5,14 @@
  * @returns {*|Null} an element randomly chosen from given array or string
  */
 exports.ranchoice = function ranchoice(list) {
-    if (!((list instanceof Array) | (list instanceof String))) {
-        throw TypeError;
-        return null;
+    if ((!(list instanceof Array)) && !(typeof(list) == "string")) {
+        throw new TypeError("argument `list` must be an instance of array or string");
     }
     switch (list instanceof Array) {
         case true:
-            return list[Math.random() * list.length];
+            return list[Math.floor(Math.random() * list.length)];
         case false:
-            return list[Math.random() * list.length];
+            return list[Math.floor(Math.random() * list.length)];
     }
 };
 
@@ -27,4 +26,7 @@ exports.titleCase = function titleCase(str) {
     return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
 };
 
-console.log(exports.titleCase("what the hell. are you-doing this?"))
+// console.log(this.ranchoice("What the fuck"));
+// console.log(this.titleCase("What the fuck"));
+// console.log(this.ranchoice(this.titleCase("What the fuck")));
+console.log(">> Module `common-functions-GoFA` loaded.");
