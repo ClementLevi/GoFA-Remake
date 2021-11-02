@@ -1,1 +1,1 @@
-console.log("The main entrance has not been prepared...")
+console.log("The main entrance has not been prepared...");
