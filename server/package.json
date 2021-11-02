@@ -1,12 +1,12 @@
 {
     "dependencies": {
-        "nodejs-websocket": "^1.7.2"
+        "nodejs-websocket": "^1.7.2",
+        "readline-sync": "^1.4.10"
     },
     "name": "gofa-remaster-server",
     "version": "1.0.0",
     "description": "Famous MMORPG(RTS) game Galaxy on Fire™ Alliances fan-remake edition",
     "main": "index.js",
-    "devDependencies": {},
     "private": true,
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
