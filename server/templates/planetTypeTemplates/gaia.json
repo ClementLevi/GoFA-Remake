@@ -1,0 +1,8 @@
+{
+    "spieciesBoost": {
+        "terran": 0.2,
+        "vossk": 0.2,
+        "nivelian": 0.2,
+        "void": 0.2
+    }
+}

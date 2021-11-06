@@ -2,7 +2,7 @@ const fs = require("fs");
 
 // Open word-root rule JSON from templates into an Object
 // 加载模板里的JSON命名规则
-var raw_rule = fs.readFileSync(".//server//templates//system_name_root.json");
+var raw_rule = fs.readFileSync(".\\server\\templates\\systemNameRule.json");
 
 var name_rule = JSON.parse(raw_rule);
 var rule_keys = Object.keys(name_rule);
@@ -21,4 +21,5 @@ for (i = 0; i < rule_keys.length; i++) {
 
 name_rule.MAX = MAX;
 exports.name_rule = name_rule;
+// console.log(name_rule)
 console.log(">> Module `SystemNameLoader` loaded.");
