@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.1.5",
   "createdTime": "2022-9-9 13:19:30",
-  "updatedTime": "2022-10-8 00:34:01",
+  "updatedTime": "2022-10-8 00:44:48",
   "profile": {
     "default": {
       "db": "6B68AFA0-C6B9-43FE-8B7E-66A7C570D95B",
@@ -468,7 +468,7 @@
       "id": "C224A918-2912-47D4-B720-D8D85726B7C2",
       "defKey": "player_account",
       "defName": "玩家账户",
-      "comment": "",
+      "comment": "这张表考虑单独放一个身份校验服务器里，而各个角色的数据则用没有服务器标识号字段的子服务器存储\n（合并服务器可能性微存）",
       "properties": {},
       "nameTemplate": "{defKey}[{defName}]",
       "headers": [
