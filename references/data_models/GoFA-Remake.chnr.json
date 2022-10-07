@@ -2,9 +2,9 @@
   "name": "GoFA-Remake",
   "describe": "GoFA-Remake",
   "avatar": "",
-  "version": "4.1.4",
+  "version": "4.1.5",
   "createdTime": "2022-9-9 13:19:30",
-  "updatedTime": "2022-9-23 00:45:26",
+  "updatedTime": "2022-10-8 00:34:01",
   "profile": {
     "default": {
       "db": "6B68AFA0-C6B9-43FE-8B7E-66A7C570D95B",
@@ -679,8 +679,8 @@
           "id": "ECE29677-2E1B-436E-8B83-B0A972937A70"
         },
         {
-          "defKey": "player_PwB64",
-          "defName": "登陆密码B64",
+          "defKey": "player_PwMD5",
+          "defName": "登陆密码MD5",
           "comment": "",
           "type": "",
           "len": "",
@@ -859,7 +859,7 @@
           "relationNoShow": true
         },
         {
-          "freeze": true,
+          "freeze": false,
           "refKey": "defaultValue",
           "hideInGraph": true,
           "code": "defaultValue",
@@ -869,7 +869,7 @@
           "relationNoShow": true
         },
         {
-          "freeze": true,
+          "freeze": false,
           "refKey": "isStandard",
           "hideInGraph": false,
           "code": "isStandard",
@@ -879,7 +879,7 @@
           "relationNoShow": false
         },
         {
-          "freeze": true,
+          "freeze": false,
           "refKey": "uiHint",
           "hideInGraph": true,
           "code": "uiHint",
@@ -891,7 +891,7 @@
         {
           "refKey": "extProps",
           "hideInGraph": true,
-          "freeze": true,
+          "freeze": false,
           "code": "extProps",
           "value": "拓展属性",
           "newCode": "extProps",
@@ -951,6 +951,23 @@
           "extProps": {},
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
           "id": "D480CF03-7ACE-41CA-910E-1D2E95FD0488"
+        },
+        {
+          "defKey": "role_NAME",
+          "defName": "角色名",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "id": "0ED31FBB-860E-453F-9567-ADA7DA806BC3"
         },
         {
           "defKey": "role_exp",
