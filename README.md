@@ -1,6 +1,6 @@
 # README
 
-中文版 README.md
+[中文版 README.md](./README-CHN.md)
 
 **English README.md**
 

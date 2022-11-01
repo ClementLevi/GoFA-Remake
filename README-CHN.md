@@ -1,73 +1,73 @@
 # README
 
-中文版 README.md
+**中文版 README.md**
 
-**English README.md**
+[English README.md](./README.md)
 
-# About This Project
+# 项目简介
 
-This is a remake version of famous MMORPG game [Galaxy on Fire: Alliances](https://galaxyonfire.fandom.com/wiki/Galaxy_on_Fire:_Alliances "Fandom Page"), which the servers have been shut down officially on June 28th, 2019.
+本项目重做了知名在线多人网游 [浴火银河: 联盟](https://galaxyonfire.fandom.com/wiki/Galaxy_on_Fire:_Alliances "Fandom 页面")。该网游于2019年6月28日正式停止运营。
 
-The project aims not to recover or reuse the art resources made by its original producer Fishlabs ([Deepsilver ](https://www.dsfishlabs.com/)for now), so the remake would **not** involve any decompiling or models digging as well.
+本项目并不打算重用原版权方Fishlabs ([Deepsilver ](https://www.dsfishlabs.com/)现名)的美术资源, 因此本项目内不包含逆向工程成果或模型提取等内容。
 
-Basically this would be a new game, only the settings (Eg. game play structure, overall story background, specific terms) would be inherited. But base on further discussion with the copyrights holder, these might also change in the future.
+也就是说，基本上这就是一款全新的游戏，只是一些设定 (如游戏玩法结构、总体故事背景、特定术语) 将继承自原作。依照将来与版权方协商结果，这些内容仍可能做出变更。
 
-# Maintainers
+# 项目维护者
 
-We are several former GoFA players who have a common wish to revive the game with our own hands.
+我们是几位GoFA的前玩家，希望能亲自让这款游戏重生。
 
-If you have interest in helping us pushing the project ahead, you may contact project initiator Clement_Levi.
+如果您愿意帮助我们推进该项目，请联系项目发起人Clement_Levi.
 
-Currently we work irregularly (in the timezone GMT+8), as we are merely doing this project in part-time. But maybe with enough motivation we could divert some more attention to it ;>
+目前我们并无定时计划开展工作（基本上都在GMT+8时区），我们只是在用业余时间推进该项目。有了足够的支持，我们或许会投入更多精力到这项无偿的工作当中 ;>
 
-**Working languages:** Chinese, English
+**工作语言:** 汉语, 英语
 
-# Development Progress
+# 开发进度
 
-Unfortunately due to the lack of manpower and project developing experiences, this project is making little progress... But we are still slowly crawling forward.
+很遗憾，由于缺乏人手和大型项目开发经验，本项目仍然进展缓慢，但我们仍然在缓步向前爬行。
 
-For detailed information, please refer to repository Project section.
+更多详情请查看本仓库的Project页面。
 
-## Stages:
+## 开发阶段:
 
-*|	o: on-going	| 	x: finished	|	: planning	|*
+*|	o: 进行中	| 	x: 已完成	|	: 筹划中	|*
 
-[   ] Copyrights permission negotiation
+[   ] 版权授权协商
 
-[ o ] **Requirement design**
+[ o ] **需求设计**
 
-├─ [ o ] Game environment requirement design
+├─ [ o ] 游戏环境需求设计
 
-├─ [   ] Gameplay design
+├─ [   ] 游戏内容设计
 
-│     ├─ [ o ] Data models
+│     ├─ [ o ] 数据模型
 
-│     └─ [   ] Interaction models
+│     └─ [   ] 交互模型
 
-├─ [   ] Storyline
+├─ [   ] 故事大纲
 
-└─ [ o ] Front- Backend API protocols
+└─ [ o ] 前后端通信API
 
-[ o ] **Backend development**
+[ o ] **后端开发**
 
-├─ [ o ] Database constrcution
+├─ [ o ] 数据库设计
 
-├─ [   ] Modules development
+├─ [   ] 模块编码
 
-└─ [   ] Test units development
+└─ [   ] 测试单元开发
 
-[   ] **Art Resources development**
+[   ] **美术资源开发**
 
-├─ [   ] 3D models development
+├─ [   ] 3D 模型
 
-├─ [   ] BGM and sound FX
+├─ [   ] 音乐与音效
 
-├─ [   ] Textures
+├─ [   ] 材质贴图
 
-├─ [   ] UI design
+├─ [   ] UI 设计
 
-[   ] **Client development (With Unity Engine)**
+[   ] **客户端开发 （拟采用Unity引擎）**
 
-[   ] **Co-op tests**
+[   ] **前后联调测试**
 
-[   ] **Release for public test**
+[   ] **公测预发布**
