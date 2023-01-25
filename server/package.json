@@ -1,5 +1,8 @@
 {
     "dependencies": {
+        "chai": "^4.3.7",
+        "express": "^4.18.2",
+        "mocha": "^10.2.0",
         "nodejs-websocket": "^1.7.2",
         "readline-sync": "^1.4.10"
     },
@@ -9,7 +12,9 @@
     "main": "index.js",
     "private": true,
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "mocha",
+        "server-install": "node ./deployments/install.js",
+        "start": "node index.js"
     },
     "repository": {
         "type": "git",

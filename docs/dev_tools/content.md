@@ -14,9 +14,15 @@ version: 3.5.7+
 
 [【gitee代码仓库】](https://gitee.com/robergroup/chiner)
 
+### PlantUML
+
+感觉Visio不如这玩意儿。代码生成图片不香吗？想看图请自行编译。
+[【官网】](https://plantuml.com/zh/)
+[【使用例】](https://gitee.com/lastinglate007/PlantUML-Samples)
+
 #### Microsoft Visio 2021
 
-画结构图流程图UML用例图各种矢量图的，淘宝买个激活码50元，比乱七八糟的在线编辑器省心一些，除了云协作不方便都还好
+画结构图流程图UML用例图各种矢量图的还是用PlantUML好一些，别的倒是可以用这货补充。淘宝买个激活码50元，比乱七八糟的在线编辑器省心一些，除了云协作不方便都还好。
 
 [【淘宝搜索】](https://s.taobao.com/search?q=Visio+2021)
 
@@ -26,9 +32,6 @@ version: 3.5.7+
 
 [【官网】](https://sqlitestudio.pl/)
 
-### 后端接口设计
-
-有没有好用的软件推荐一下
 
 ### 数值模型
 
@@ -56,7 +59,7 @@ Apifox = Postman + Swagger + Mock + JMeter，他们说的
 
 version: 0.8.0
 
-用于搭建前后端交互API，较为廉价地产生文档
+用于搭建前后端交互API，较为廉价地产生文档。感觉不如ApiFox。
 
 [【GitHub代码仓库】](https://github.com/trueleaf/moyu)
 
