@@ -1,0 +1,28 @@
+@startuml server overall structure
+actor Player
+component Client
+component "Lobby Server" as LBS
+package "Server Cluster"  {
+component "Server 3" as s3
+component "Server 2" as s2
+component "Server 1" as s1
+}
+
+database "Database Cluster" {
+    database "Database Server 3" as db3
+    database "Database Server 2" as db2
+    database "Database Server 1" as db1
+}
+
+Player -> Client
+Client --> LBS
+
+LBS --> s3
+LBS --> s2
+LBS --> s1
+
+s3 --> db3
+s2 --> db2
+s1 --> db1
+
+@enduml

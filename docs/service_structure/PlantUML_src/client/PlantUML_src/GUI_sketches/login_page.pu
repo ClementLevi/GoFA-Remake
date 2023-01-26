@@ -1,0 +1,11 @@
+@startuml login page
+salt
+{
+    Saved Accounts: | ^Albert Zerstoerer^
+    Username: | "Albert Zerstoerer"
+    Password: | "·········        "
+    .
+    [Login] | [register]
+    "Forgot password?"
+}
+@enduml
