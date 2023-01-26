@@ -1,0 +1,13 @@
+@startuml register page
+salt
+{
+    <b> Register Page
+    ---|---
+    E-mail: | "12345678@gmail.com" | .
+    Password: | "·········        " | .
+    PW Confirm: | "·········        " | .
+    ---|---
+    [Register] | [Contact us]
+    "Already have account?"
+}
+@enduml
