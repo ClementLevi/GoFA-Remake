@@ -1,0 +1,38 @@
+@startuml overall participants & use cases
+
+package "Server controlled players" {
+    actor NPC
+    actor Admin as adm
+}
+
+actor Player as pl
+actor "Server \nConsole" as console
+
+package "Lobby" {
+    (Login)
+    (Register)
+}
+
+package "Server (gameplay)" {
+    (Territory Management)
+    (Fleet Management)
+    (Players Interaction)
+    (Client Management)
+    (what else)
+}
+adm -right-|> pl
+NPC -right-|> pl
+
+pl --> (Territory Management)
+pl --> (Fleet Management)
+pl --> (Players Interaction)
+pl --> (Client Management)
+pl --> (what else)
+
+newpage
+
+actor Player as pl
+pl -> (Territory Management)
+(Territory Management) --> (Show Galaxy Altas)
+(Territory Management) --> (Show System Map)
+@enduml

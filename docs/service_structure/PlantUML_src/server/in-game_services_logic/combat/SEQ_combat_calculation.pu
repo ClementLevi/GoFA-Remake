@@ -1,0 +1,45 @@
+' @ClementLevi
+' Initial commit:2023.1.27
+@startuml Combat Calculation Logic
+title Combat Calculation Logic
+' Entities definition
+actor Player as PL
+participant Client as CL
+box Server
+    queue "Combat Events\nQueue" as Q
+    participant "Combat \nCalculator" as CAL
+    database "Combat Result \nCache" as CACHE
+end box
+database "DB" as DB
+hnote over DB: DB io is very exhaustive, so avoid them!
+
+' Procedure of combat calculation
+PL -> CL : Send fleets for battle
+activate CL
+CL --> PL: UI tells the player that \nfleet has been sent
+note over CL : Fleet is occupied
+CL -> Q : Create one combat event
+activate Q
+Q -> CAL : Send all factors as \narguments for calculation
+CAL -> CACHE : Cache combat results
+
+alt "Some factors of combat \naffects cached combat result"
+    loop Wait for any possible changes
+        Q --> Q
+    end
+    PL -> CL: Make further actions
+
+    CL -> Q : Additional factors
+    Q -> CAL : Append factors to recalculate
+    CAL -> CACHE : Cache new combat results
+
+else "No more changes\nto the results"
+    ... <b>Time is * : 00/15/30/45 ...
+    CACHE -> CL : Battle report
+    deactivate Q
+    CACHE -> DB : Store the final results
+    CL --> PL : "Battle is finished \nwith result of ..."
+    deactivate CL
+    note over CL : Fleet is released for other actions
+end
+@enduml

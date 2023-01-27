@@ -14,14 +14,22 @@ Basically this would be a new game, only the settings (Eg. game play structure, 
 
 # Maintainers
 
-We are several former GoFA players who have a common wish to revive the game with our own hands. 
+We are several former GoFA players who have a common wish to revive the game with our own hands.
 
-If you have interest in helping us pushing the project ahead, you may contact project initiator Clement_Levi.
+If you have interest in helping us pushing the project ahead, you may contact project initiator [Clement_Levi](https://github.com/ClementLevi).
 
-Currently we work irregularly (in the timezone GMT+8), as we are merely doing this project in part-time. But maybe with enough motivation we could divert some more attention to it ;>
+Currently we work irregularly (mainly based on GMT+8), as we are merely doing this project in part-time. But maybe with enough *motivation* we could divert some more attention to this pay-less project ;>
 
 
 **Working languages:** Chinese, English
+
+# Documents Reading
+
+Our documents are located at ```./docs/...``` . Within a few more commits, our docs will be readable for new collaborators or users who want to understand this project.
+
+Please note that some of our images are not published with binary picture files (by which we are referring to those with ".pu" appendix name), as we are saving some disk space for you. If you want check the images out, please install [*PlantUML*](https://plantuml.com/) locally and compile the images by yourself, or check [*the online version of compiler*](http://www.plantuml.com/plantuml/uml/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000) here.
+
+Project APIs will be released once the project is finished, and we are right now working on it (special thanks to [ApiFox](https://www.apifox.cn/) for the tool). The APIs right now is only for our team, and if you wish to join and read, please contact us.
 
 
 # Development Progress
