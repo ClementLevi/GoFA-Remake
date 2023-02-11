@@ -1,4 +1,5 @@
-@startuml server overall structure
+@startuml Server Overall Structure
+title Server Overall Structure
 actor Player
 component Client
 component "Lobby Server" as LBS
@@ -13,16 +14,25 @@ database "Database Cluster" {
     database "Database Server 2" as db2
     database "Database Server 1" as db1
 }
+' note top of db1
+' Databases are separated from the
+' servers but still logically collaborating
+' and corelated.
+' end note
 
-Player -> Client
-Client --> LBS
+Player - Client
+Client <--> LBS: Requests
+note left of LBS
+Lobby does authentication
+and afterwards redirects requests
+to specific server selected by user.
+end note
+LBS <--> s3
+LBS <--> s2 : Forwards\nrequests
+LBS <--> s1
 
-LBS --> s3
-LBS --> s2
-LBS --> s1
-
-s3 --> db3
-s2 --> db2
-s1 --> db1
+s3 -- db3
+s2 -- db2
+s1 -- db1
 
 @enduml

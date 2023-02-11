@@ -3,3 +3,4 @@ client/node_modules/
 admin_tools/node_modules/
 .vscode/
 playground/
+server/docs/JsDoc/out

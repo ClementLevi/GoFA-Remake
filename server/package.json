@@ -12,9 +12,10 @@
     "main": "index.js",
     "private": true,
     "scripts": {
-        "test": "mocha",
+        "test": "mocha --recursive",
         "server-install": "node ./deployments/install.js",
-        "start": "node index.js"
+        "start": "node index.js",
+        "doc": "jsdoc -r -c jsdoc.json -d ./docs/JsDoc/out/"
     },
     "repository": {
         "type": "git",
@@ -31,5 +32,8 @@
     "bugs": {
         "url": "https://github.com/ClementLevi/GoFA-Remake/issues"
     },
-    "homepage": "https://github.com/ClementLevi/GoFA-Remake#readme"
+    "homepage": "https://github.com/ClementLevi/GoFA-Remake#readme",
+    "devDependencies": {
+        "jsdoc": "^4.0.0"
+    }
 }

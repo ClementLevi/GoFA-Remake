@@ -1,0 +1,16 @@
+{
+    "source": {
+        "include": ["controllers", "services", "deployments", "models"],
+        "includePattern": ".js$",
+        "excludePattern": "(node_modules/|docs)"
+    },
+    "plugins": ["./docs/JsDoc/plugins/markdown"],
+    "templates": {
+        "cleverLinks": true,
+        "monospaceLinks": true
+    },
+    "opts": {
+        "recurse": true,
+        "destination": "./docs/JsDoc/out/"
+    }
+}
