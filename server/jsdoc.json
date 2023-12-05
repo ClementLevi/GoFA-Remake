@@ -4,7 +4,6 @@
         "includePattern": ".js$",
         "excludePattern": "(node_modules/|docs)"
     },
-    "plugins": ["./docs/JsDoc/plugins/markdown"],
     "templates": {
         "cleverLinks": true,
         "monospaceLinks": true

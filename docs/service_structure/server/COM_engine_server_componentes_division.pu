@@ -1,0 +1,27 @@
+@startuml Engine Server Components Division
+skinparam componentStyle uml1
+
+node "Client" {
+    [Graphic Renderer]
+    [Net Com]
+    [Controller]
+    database "Remote Local Cache"
+}
+
+database "Statues Cache"{
+    [Storage Manager]
+    [Connection Manager]
+}
+
+frame "Gamerule Judge"{
+    [Game Rules Linker]
+    [Judgment Maker]
+    [Command Line Interface]
+    [Web-extented Controll Center]
+}
+
+frame "Core Business" {
+    [Event Scheduler]
+    [What else]
+}
+@enduml

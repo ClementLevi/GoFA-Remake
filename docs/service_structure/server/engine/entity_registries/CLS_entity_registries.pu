@@ -1,0 +1,9 @@
+@startuml CLS_Entity_Registries
+interface Entity{
+    - methods
+    ---
+    + register(str:"JSONfile URL"): Entity
+    + destroy(): void
+    + rollCall()
+}
+@enduml

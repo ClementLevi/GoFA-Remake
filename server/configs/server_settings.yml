@@ -1,0 +1,4 @@
+server-name: server_1
+server-port: 114
+
+is-test-server: true

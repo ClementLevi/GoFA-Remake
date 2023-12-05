@@ -1,0 +1,20 @@
+@startuml Account Class Structure
+Class Account{
+    + String LoginMethod
+    ' 登陆方式
+    + String LoginAccount
+    ' 登录使用账号
+    + String PwMD5
+    ' 密码
+    + Time LastLogin
+    ' 上次登录时间
+}
+
+abstract Entity{
+    + UUID EntityID
+    + Time createTime
+    + bool isKilled
+    + killEntity()
+}
+Account -|> Entity
+@enduml

@@ -1,0 +1,14 @@
+@startuml Abstract Entity Class Sturcture
+abstract Entity{
+    + UUID EntityID
+    + Time createTime
+    + bool isKilled
+    + killEntity()
+}
+
+' Impl -|> Entity
+' Copy this to every implementations of it.
+
+' Inherited List:
+Account -|> Entity
+@enduml

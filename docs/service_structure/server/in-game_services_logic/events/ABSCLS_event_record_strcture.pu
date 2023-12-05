@@ -1,0 +1,9 @@
+@startuml Abstract EventRecord Class Sturcture
+abstract EventRecord{
+    + UUID EventID
+    + Time createTime
+    + bool isDeleted
+    + deleteRecord()
+}
+
+@enduml

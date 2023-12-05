@@ -1,0 +1,19 @@
+@startuml Alliance class
+abstract Group{
+    + UUID GroupID
+    + Array<Player> PlayerList
+    + Player Leader
+    + dismiss()
+    + transfer_to(Player player)
+}
+note left of Group
+Must have one "Player leader"
+as argument to construct
+end note
+class Alliance{
+    + Array<Alliance> HostileAlliance
+    + Array<Alliance> FriendlyAlliance
+}
+
+Alliance -left-|> Group
+@enduml
