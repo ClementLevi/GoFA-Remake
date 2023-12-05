@@ -1,0 +1,22 @@
+{
+  "name": "cpp_ship_combat_calc",
+  "version": "1.0.0",
+  "description": "Core algorithm implement of GoFA in game combat calculation.",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node_addon",
+    "core"
+  ],
+  "author": "Clement_Levi <1090708360@qq.com>",
+  "license": "LGPL-3.0-or-later",
+  "dependencies": {
+    "cmake-js": "^7.2.1"
+  }
+}

@@ -1,0 +1,28 @@
+@startuml
+
+' box "Side: Attackers" as TeamA
+'     actor "Player 0" as pa0
+'     actor "Player 1" as pa1
+'     actor "Player 2" as pa2
+' end box
+' box "Side: Defenders" as TeamB
+'     actor "Player 0" as pb0
+'     actor "Player 1" as pb1
+'     actor "..." as pb2
+' end box
+
+participant Situation
+
+
+' Calculate combat factors: sniper skill, is defensive side,
+' 
+activate Situation
+    create Actor TeamA
+    TeamA <- Situation : Add all players to the vector<>
+    TeamA -> Situation : Get factors
+    create Actor TeamB
+    TeamB <- Situation : Add all players to the vector<>
+    TeamB -> Situation
+    note across: TeamA
+
+@enduml

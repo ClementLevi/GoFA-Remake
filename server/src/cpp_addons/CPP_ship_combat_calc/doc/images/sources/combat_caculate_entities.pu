@@ -1,0 +1,163 @@
+@startuml
+
+enum ShipTypeEnum{
+    TYPE_DEFAULT,
+    TYPE_F1,
+    TYPE_C1,
+    TYPE_B1,
+    TYPE_I1,
+    TYPE_F2,
+    TYPE_C2,
+    TYPE_B2,
+    TYPE_I2     //9
+
+}
+
+enum CarrierTypeEnum{
+    TYPE_DEFAULT,
+    TYPE_MK1,
+    TYPE_MK2,
+    TYPE_MK3,
+    TYPE_VOID
+}
+
+entity "Precision u_char[7]" as Precision{
+    OTHER, F1, B1, I1, F2, B2, I2
+}
+
+entity "Received_P u_char[7]" as Recieved_P{
+    OTHER, MK1, MK2, MK3, VOID, B1, B2
+}
+
+class Ship{
+    - ShipTypeEnum TYPE;
+    - u_short ATK;
+    - u_short HP;
+    - u_short SHIELD;
+    - u_int LOAD_CAPACITY;
+    - Precision PRECISION;
+    - u_int count;
+    - vector<u_int> load;
+
+    + Ship(ShipTypeEnum);
+    + Ship(u_short[3], Precision, ShipTypeEnum TYPE=TYPE_DEFAULT, u_short LOAD_CAPACITY=0);
+
+    + ShipTypeEnum getTYPE();
+    + u_short getATK();
+    + u_short getHP();
+    + u_short getSHIELD();
+    + u_int getLoadCapacity();
+    + Precision getPRECISION();
+    + vector<u_int> getLoad();
+    + u_int getCount();
+
+    + u_int getTotalHP();
+    + u_int getDEF();
+    + u_int getATKagainst(ShipTypeEnum);
+
+    + void setCount(u_int);
+    + Ship operator- (Ship);
+   
+}
+note left of Ship: Precision is an "int[6]". Later on probably be [9].
+
+
+entity "struct CVupgrade" as CVupgrade{
+    u_int TYPE: 2,
+    u_int LV  : 5
+}
+
+class Carrier{
+    - CarrierTypeEnum TYPE;
+    - u_int HP;
+    - u_int ATK;
+    - Received_P RP;
+    - vector<Ship> cargo;
+    - CVupgrade upgrade;
+    
+    Carrier()
+
+    + CarrierTypeEnum getTYPE();
+    + u_int getHP();
+    + u_int getATK();
+    + Recieved_P getRP();
+    + vector<Ship> getCargo();
+    + CVupgrade getUpgrade();
+
+    + void setCargo(vector<Ship>);
+    + void setCargo(vector<int>);
+    + void setCargo(int[8]);
+
+    + void upgrade(CVupgrade);
+    + Carrier operator- (Carrier);
+}
+
+
+class Troops{
+    - u_int HP;
+    - u_int ATK;
+    - u_int count;
+
+    + void setCount(u_int);
+    + Troops operator-(Troops);
+}
+
+
+class Participant{
+    - u_short commanderLv;
+    - float sniperLv;
+    - float 
+    - vector<Carrier> fleet;
+}
+
+enum AttackerTypePhaseEnum{
+    ' Ship combat
+    DEFAULT_ON_MOVE, F_ON_MOVE, B_ON_MOVE, I_ON_MOVE,
+    ' Carrier combat
+    DEFAULT_CAR_ON_MOVE, MKS_ON_MOVE, VOID_ON_MOVE,
+    ' Planetary combat
+    AERO_ON_MOVE, TROOPS_ON_MOVE
+}
+
+class Side{
+    - bool isDefender;
+    - vector<Participant> players;
+    - AttackerTypePhaseEnum attacker_type_phase;
+    + void attack(void);
+
+}
+
+enum SituationPhaseEnum{
+    BEGIN, SHIP_COM, CAR_COM, LAND_COM, END
+}
+
+class Situation{
+    - Side defenders;
+    - Side attackers;
+    - SituationPhase phase;
+    - bool isAttackersMove = false;
+
+    - bool __flipAttackerMoveFlag();
+    + SituationPhase step(int round=1);
+    + Situation finish();
+    
+}
+
+' Relationships
+
+Situation --o Side : has 2 >
+Side --o Participant : has multiple >
+Participant --o Ship : has at least one >
+Participant --o Troops : may have >
+Participant --o Carrier : has at least one >
+
+' Attributes relationship
+Situation --* SituationPhaseEnum
+Side --* AttackerTypePhaseEnum
+Ship --* ShipTypeEnum
+Ship --* Precision
+Carrier --* Recieved_P
+Carrier --* CarrierTypeEnum
+Carrier --* CVupgrade
+
+@enduml

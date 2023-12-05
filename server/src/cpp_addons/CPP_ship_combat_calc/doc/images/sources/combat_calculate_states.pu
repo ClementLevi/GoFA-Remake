@@ -1,0 +1,81 @@
+@@startuml
+scale 1920 width
+scale 1080 height
+
+' Pragmas
+[*] -> BEGIN
+BEGIN -> SHIP_COM
+SHIP_COM -> CAR_COM
+CAR_COM -> LAND_COM
+LAND_COM -> END
+END ->[*]
+
+' Docs
+BEGIN: Get all combat factors
+BEGIN: Factors are:
+BEGIN: 1. Sniper Lv of each player
+BEGIN: 2. Is defenders side
+BEGIN: 3. Commanders Lvs sum
+BEGIN: 4. Artifact upgrade of each carrier
+BEGIN: 5. Planetary defensive technology
+BEGIN: 6. Planetary Shield Lv
+SHIP_COM: If there is ship for any side to attack
+SHIP_COM: Fs prefer to attack [I, F, B]
+SHIP_COM: Bs prefer to attack [F, B, I]
+SHIP_COM: Is prefer to attack [B, I, F]
+CAR_COM: If any side has empty carrier
+LAND_COM: If any troops is carried
+END: Finish the combat and\nreturn result Situation
+
+' Details
+state BEGIN{
+    ' Pragmas
+    CREATE --> GET_FACTOR
+    GET_FACTOR --> SUMMARIZE
+    SUMMARIZE -->FORMULATE
+
+    ' Docs
+    CREATE: Create the Situation object
+    CREATE: as environment by passing all arguments
+    CREATE: to its constructor.
+    GET_FACTOR: Get the factors listed above.
+    SUMMARIZE: Sum all participants' ships together
+    FORMULATE: Create a sum of all ships as Participant object
+}
+
+
+
+state SHIP_COM{
+    ' Declarations
+    state "Fighters Fight Back" as fd
+    state "Fighters attack" as fa
+    state "Bombers Fight Back" as bd
+    state "Bombers attack" as ba
+    state "Interceptors Fight Back" as id
+    state "Interceptors attack" as ia
+    ' Pragmas
+    
+    ' Docs
+}
+
+state CAR_COM{
+    ' Pragmas
+    
+    ' Docs
+
+}
+
+state LAND_COM{
+    ' Pragmas
+    
+    ' Docs
+
+}
+
+state END{
+    ' Pragmas
+    
+    ' Docs
+    RETURN: Return the new Situation object to Napi.
+}
+@@enduml
