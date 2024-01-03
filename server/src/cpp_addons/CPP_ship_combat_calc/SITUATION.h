@@ -4,53 +4,50 @@
     #include <iostream>
 #endif
 
+#ifndef __VECTOR
+    #include <vector>
+    #define __VECTOR
+#endif
+
+
 #ifndef __TIME
     #include <ctime>
     #define __TIME
 #endif
 
-#ifndef __PARTICIPANTS_H_
-    #include "PARTICIPANTS.h"
+#ifndef __SIDE_H_
+    #include "SIDE.h"
 #endif
 
 
 #ifndef __SITUATION_H_
 #define __SITUATION_H_
 
-enum Phase{INIT, SHIP_COMBAT, PLANETARY_COMBAT, CARRIER_COMBAT, END};
-
+enum SituationPhaseEnum{BEGIN, SHIP_COM, CAR_COM, LAND_COM, END};
 
 class Situation{
     private:
-        time_t event_time;
-        Participant attacker, defender;
-        bool attackerMoves = true;
-        
+//        time_t event_time;    // This is for JS Level
+        Side attackers, defenders;
+        bool isAttackersMove = false;
+
+        bool __flipAttackerMoveFlag();
 
     public:
-        Situation(void){
-        }
+        Situation(void);
 
-        Situation(Participant attacker, Participant defender){
-        this->attacker = attacker;
-        this->defender = defender;
-        }
+        Situation(Side, Side);
+//
+//        void shipAttack();
+//
+//        void aerospaceSupport();
+//
+//        void landforcesClash();
+//
+//        void carrierAttack();
 
-        
+        void step(int);
 
-        void shipAttack();
-
-        void aerospaceSupport();
-
-        void landforcesClash();
-
-        void carrierAttack();
-
-        void stepCombatStage();
-
-        Situation finishCalculating(){
-            Situation result;
-            return result;
-        }
+        Situation finish(void);
 };
 #endif

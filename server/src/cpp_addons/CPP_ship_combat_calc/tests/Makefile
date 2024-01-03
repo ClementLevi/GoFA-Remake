@@ -57,23 +57,13 @@ RM = /data/data/com.termux/files/usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc
+CMAKE_SOURCE_DIR = /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc
+CMAKE_BINARY_DIR = /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc
 
 #=============================================================================
 # Targets provided globally by CMake.
-
-# Special rule for the target test
-test:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
-	/data/data/com.termux/files/usr/bin/ctest --force-new-ctest-process $(ARGS)
-.PHONY : test
-
-# Special rule for the target test
-test/fast: test
-.PHONY : test/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -97,14 +87,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc && $(CMAKE_COMMAND) -E cmake_progress_start /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc/CMakeFiles /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc/tests//CMakeFiles/progress.marks
-	cd /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc/CMakeFiles 0
+	cd /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc && $(CMAKE_COMMAND) -E cmake_progress_start /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc/CMakeFiles /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc/tests//CMakeFiles/progress.marks
+	cd /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/clean
+	cd /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/clean
 .PHONY : clean
 
 # The main clean target
@@ -113,22 +103,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/preinstall
+	cd /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/preinstall
+	cd /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/rule:
-	cd /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/rule
+	cd /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/rule
 .PHONY : tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/rule
 
 # Convenience name for target.
@@ -137,7 +127,7 @@ CPP_Combat_Calculate_Tests: tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/rule
 
 # fast build rule for target.
 CPP_Combat_Calculate_Tests/fast:
-	cd /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/build.make tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/build
+	cd /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/build.make tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/build
 .PHONY : CPP_Combat_Calculate_Tests/fast
 
 main.test.o: main.test.cpp.o
@@ -145,7 +135,7 @@ main.test.o: main.test.cpp.o
 
 # target to build an object file
 main.test.cpp.o:
-	cd /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/build.make tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/main.test.cpp.o
+	cd /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/build.make tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/main.test.cpp.o
 .PHONY : main.test.cpp.o
 
 main.test.i: main.test.cpp.i
@@ -153,7 +143,7 @@ main.test.i: main.test.cpp.i
 
 # target to preprocess a source file
 main.test.cpp.i:
-	cd /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/build.make tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/main.test.cpp.i
+	cd /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/build.make tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/main.test.cpp.i
 .PHONY : main.test.cpp.i
 
 main.test.s: main.test.cpp.s
@@ -161,7 +151,7 @@ main.test.s: main.test.cpp.s
 
 # target to generate assembly for a file
 main.test.cpp.s:
-	cd /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/build.make tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/main.test.cpp.s
+	cd /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/build.make tests/CMakeFiles/CPP_Combat_Calculate_Tests.dir/main.test.cpp.s
 .PHONY : main.test.cpp.s
 
 # Help Target
@@ -172,7 +162,6 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... test"
 	@echo "... CPP_Combat_Calculate_Tests"
 	@echo "... main.test.o"
 	@echo "... main.test.i"
@@ -188,6 +177,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /data/data/com.termux/files/home/code_repos/CPP_ship_combat_calc && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /data/data/com.termux/files/home/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

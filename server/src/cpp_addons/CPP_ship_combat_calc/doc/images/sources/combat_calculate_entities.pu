@@ -29,6 +29,13 @@ entity "Received_P u_char[7]" as Recieved_P{
     OTHER, MK1, MK2, MK3, VOID, B1, B2
 }
 
+entity "Ship_Stats[4]" as ShipStats{
+    HP,
+    ATK,
+    SHIELD,
+    LOAD_CAPACITY
+}
+
 class Ship{
     - ShipTypeEnum TYPE;
     - u_short ATK;
@@ -63,8 +70,8 @@ note left of Ship: Precision is an "int[6]". Later on probably be [9].
 
 
 entity "struct CVupgrade" as CVupgrade{
-    u_int TYPE: 2,
-    u_int LV  : 5
+    u_int TYPE: 2;
+    u_int LV  : 5;
 }
 
 class Carrier{
@@ -87,8 +94,8 @@ class Carrier{
     + void setCargo(vector<Ship>);
     + void setCargo(vector<int>);
     + void setCargo(int[8]);
+    + void setUpgrade(CVupgrade);
 
-    + void upgrade(CVupgrade);
     + Carrier operator- (Carrier);
 }
 
@@ -156,6 +163,7 @@ Situation --* SituationPhaseEnum
 Side --* AttackerTypePhaseEnum
 Ship --* ShipTypeEnum
 Ship --* Precision
+Ship --* ShipStats
 Carrier --* Recieved_P
 Carrier --* CarrierTypeEnum
 Carrier --* CVupgrade
