@@ -54,7 +54,12 @@ state SHIP_COM{
     state "Interceptors Fight Back" as id
     state "Interceptors attack" as ia
     ' Pragmas
-    
+    fd --> fa
+    fa --> bd
+    bd --> ba
+    ba --> id
+    id --> ia
+    ia --> fd : if there are fighters remain
     ' Docs
 }
 
