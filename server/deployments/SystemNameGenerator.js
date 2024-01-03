@@ -1,7 +1,8 @@
 // 相对路径去世
 // 是你太菜来的大叔
-const commonFunctions = require("..\\common-functions-GoFA");
-const nameTemplates = require(".\\SystemNameLoader").name_rule;
+const path = require("path");
+const commonFunctions = require( path.resolve("..\\common-functions-GoFA") );
+const nameTemplates = require( path.resolve(".\\SystemNameLoader") ).name_rule;
 
 /**
  * 星系随机起名机

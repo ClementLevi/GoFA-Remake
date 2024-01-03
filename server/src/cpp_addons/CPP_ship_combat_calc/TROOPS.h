@@ -1,20 +1,13 @@
 #pragma once
 
-#ifndef __SHIP_STATS_H_
-    #include "SHIP_STATS.h"
-#endif
 
 #ifndef __IOSTREAM
     #include <iostream>
 #endif
 
-#ifndef __SIDE.h__
-    #include "SIDE.h"
-#endif
-
 
 #ifndef __TROOPS_H_
-    #define __TROOPS_H_
+#define __TROOPS_H_
 
 class Troops{
     private:
@@ -47,6 +40,7 @@ class Troops{
         void clash(const Side &allies, Troops enemy);
         // Get reinforced.
         Troops operator+(Troops other);
+        Troops operator-(Troops);
 };
 
 #endif

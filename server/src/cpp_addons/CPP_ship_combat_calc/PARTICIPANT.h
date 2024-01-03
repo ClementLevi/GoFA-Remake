@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __SHIP_STATS_H_
-    #include "SHIP_STATS.h"
+#ifndef __SHIP_H_
+    #include "SHIP.h"
 #endif
 
 #ifndef __IOSTREAM
