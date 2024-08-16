@@ -2,9 +2,9 @@
   "name": "GoFA-Remake",
   "describe": "GoFA-Remake",
   "avatar": "",
-  "version": "4.1.5",
+  "version": "4.7.0",
   "createdTime": "2022-9-9 13:19:30",
-  "updatedTime": "2022-11-15 00:53:19",
+  "updatedTime": "2024-1-4 22:11:04",
   "profile": {
     "default": {
       "db": "6B68AFA0-C6B9-43FE-8B7E-66A7C570D95B",
@@ -25,7 +25,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "101E4739-545D-4962-8AC6-B5A22EE08EE8"
+          "id": "101E4739-545D-4962-8AC6-B5A22EE08EE8",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "REVISION",
@@ -42,7 +43,8 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "C2E7DF4D-0A58-40D8-A9E4-D5B68B324842"
+          "id": "C2E7DF4D-0A58-40D8-A9E4-D5B68B324842",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "CREATED_TIME",
@@ -59,7 +61,8 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "295B5BA1-94EE-49C1-8B5D-B476AF5D3F83"
+          "id": "295B5BA1-94EE-49C1-8B5D-B476AF5D3F83",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "UPDATED_TIME",
@@ -76,7 +79,8 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "D0543A1A-5AC7-47B0-A229-F93CB04B7647"
+          "id": "D0543A1A-5AC7-47B0-A229-F93CB04B7647",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         }
       ],
       "entityInitProperties": {}
@@ -470,7 +474,6 @@
       "defName": "玩家账户",
       "comment": "这张表考虑单独放一个身份校验服务器里，而各个角色的数据则用没有服务器标识号字段的子服务器存储\n（合并服务器可能性微存）",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "freeze": true,
@@ -644,7 +647,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "32C76984-9E2F-40D0-873A-FF31BBAECA13",
-          "id": "B28AA7C2-FD09-42AB-81B7-6AC19827203F"
+          "id": "B28AA7C2-FD09-42AB-81B7-6AC19827203F",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "player_LoginMethod",
@@ -660,7 +664,8 @@
           "hideInGraph": false,
           "refDict": "181F1ED0-D50C-4488-8441-5162E45DBC0A",
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
-          "id": "9B52AD59-585F-4BB0-A9A5-698797BFD2ED"
+          "id": "9B52AD59-585F-4BB0-A9A5-698797BFD2ED",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "player_LoginAcct",
@@ -676,7 +681,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "F0C9970E-1549-4D1A-95FC-EFDCB1B11EBA",
-          "id": "ECE29677-2E1B-436E-8B83-B0A972937A70"
+          "id": "ECE29677-2E1B-436E-8B83-B0A972937A70",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "player_PwMD5",
@@ -692,7 +698,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "D46E13C7-5571-4348-A248-816698BFF190"
+          "id": "D46E13C7-5571-4348-A248-816698BFF190",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "player_RegisterTime",
@@ -708,7 +715,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
-          "id": "A31A43E1-0409-459A-A316-B25F14795EA3"
+          "id": "A31A43E1-0409-459A-A316-B25F14795EA3",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "player_LastLogin",
@@ -724,11 +732,16 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
-          "id": "56679E72-296C-4906-BFBC-B050A3A4B820"
+          "id": "56679E72-296C-4906-BFBC-B050A3A4B820",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "6AF5C1DC-A314-46C8-935D-7A78CCE17E27",
@@ -736,7 +749,6 @@
       "defName": "玩家角色数据",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "freeze": true,
@@ -915,7 +927,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "3116A857-94BB-4201-9247-7687393AD217"
+          "id": "3116A857-94BB-4201-9247-7687393AD217",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "role_RACE",
@@ -933,7 +946,8 @@
           "extProps": {},
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
           "id": "FABC9E50-F2FC-472C-AAB9-D5F21D4D7E4D",
-          "uiHint": "CFD12F02-A372-4389-8717-C4219CF53C51"
+          "uiHint": "CFD12F02-A372-4389-8717-C4219CF53C51",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "role_CREATE_TIME",
@@ -950,7 +964,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
-          "id": "D480CF03-7ACE-41CA-910E-1D2E95FD0488"
+          "id": "D480CF03-7ACE-41CA-910E-1D2E95FD0488",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "role_NAME",
@@ -967,7 +982,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "0ED31FBB-860E-453F-9567-ADA7DA806BC3"
+          "id": "0ED31FBB-860E-453F-9567-ADA7DA806BC3",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "role_exp",
@@ -982,7 +998,8 @@
           "defaultValue": "0",
           "hideInGraph": false,
           "id": "0A382DF6-61BE-449B-BB33-FE9D5035FAB8",
-          "domain": ""
+          "domain": "",
+          "baseType": ""
         },
         {
           "defKey": "role_lv",
@@ -998,7 +1015,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
-          "id": "85C95669-C660-41C5-A0AE-3819F354BA5A"
+          "id": "85C95669-C660-41C5-A0AE-3819F354BA5A",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "role_credit",
@@ -1013,7 +1031,8 @@
           "defaultValue": "0",
           "hideInGraph": false,
           "id": "DFA06E4E-43B6-466D-BC40-479EA17F4BE1",
-          "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC"
+          "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "role_last_login",
@@ -1030,7 +1049,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
-          "id": "2DF876AF-7849-4180-A127-CB0184B14612"
+          "id": "2DF876AF-7849-4180-A127-CB0184B14612",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "role_alliance",
@@ -1047,7 +1067,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "24E4597A-BE9C-4BCC-B95A-B83D4F42A84D"
+          "id": "24E4597A-BE9C-4BCC-B95A-B83D4F42A84D",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "role_privilege",
@@ -1064,7 +1085,8 @@
           "refDict": "22EFD39B-D99B-4368-AE99-375DDD7A5824",
           "extProps": {},
           "domain": "",
-          "id": "81720E3B-26F4-4A93-9727-A7F52AED4B41"
+          "id": "81720E3B-26F4-4A93-9727-A7F52AED4B41",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "role_skill",
@@ -1081,11 +1103,16 @@
           "refDict": "",
           "extProps": {},
           "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
-          "id": "E76D3A48-38AC-40E3-A061-2911C3A7D57B"
+          "id": "E76D3A48-38AC-40E3-A061-2911C3A7D57B",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "6838774E-6815-4333-B4B9-78A348D6FE48",
@@ -1093,7 +1120,6 @@
       "defName": "氪金记录",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "freeze": true,
@@ -1266,7 +1292,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
-          "id": "629444B6-0B5C-4450-B0E8-7C5FD4B93B59"
+          "id": "629444B6-0B5C-4450-B0E8-7C5FD4B93B59",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "role_ID",
@@ -1283,7 +1310,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "2BCDBFA7-8592-4388-986F-A6111D0B11B3"
+          "id": "2BCDBFA7-8592-4388-986F-A6111D0B11B3",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "PItem",
@@ -1300,7 +1328,8 @@
           "hideInGraph": false,
           "refDict": "",
           "uiHint": "",
-          "id": "7DC9C210-D5C6-4814-8D34-9445A7CD6CAE"
+          "id": "7DC9C210-D5C6-4814-8D34-9445A7CD6CAE",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "PAmount",
@@ -1316,7 +1345,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "38948411-0D40-46D0-A17C-E34F59129E90",
-          "id": "0953888B-4FB3-4EFA-ADFC-F49364A75168"
+          "id": "0953888B-4FB3-4EFA-ADFC-F49364A75168",
+          "baseType": "E1D383FA-7FEE-46AF-BE85-9BAD3FB0D07D"
         },
         {
           "defKey": "PChannel",
@@ -1332,7 +1362,8 @@
           "hideInGraph": true,
           "refDict": "3FC79974-9111-4C6F-84BB-F35DDDDCDBE9",
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
-          "id": "2F332B17-B225-40C4-AD3F-501EE6E7BA69"
+          "id": "2F332B17-B225-40C4-AD3F-501EE6E7BA69",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "POrderTime",
@@ -1348,7 +1379,8 @@
           "hideInGraph": true,
           "refDict": "",
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
-          "id": "2C62EB19-1C1E-45FA-BE96-1FEB6BFAAFDA"
+          "id": "2C62EB19-1C1E-45FA-BE96-1FEB6BFAAFDA",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "PStatus",
@@ -1364,7 +1396,8 @@
           "hideInGraph": true,
           "refDict": "3988254E-F875-40B0-8D38-D8FB09A43E2F",
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
-          "id": "D8575174-04FB-4882-B833-521BE815C185"
+          "id": "D8575174-04FB-4882-B833-521BE815C185",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "PRecordComment",
@@ -1380,11 +1413,16 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "F0C9970E-1549-4D1A-95FC-EFDCB1B11EBA",
-          "id": "0861EBA4-6DEE-4076-AC79-1F3EB5016A65"
+          "id": "0861EBA4-6DEE-4076-AC79-1F3EB5016A65",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "3A6736CC-91E7-4FE7-B056-587133B48D96",
@@ -1392,7 +1430,6 @@
       "defName": "玩家日志",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "freeze": true,
@@ -1491,7 +1528,8 @@
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
           "refDict": "",
           "uiHint": "",
-          "id": "391A6DBB-57F1-45B7-8F5E-F8C87941C8AE"
+          "id": "391A6DBB-57F1-45B7-8F5E-F8C87941C8AE",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "SUserID",
@@ -1508,7 +1546,8 @@
           "hideInGraph": false,
           "refDict": "",
           "uiHint": "",
-          "id": "85AF7969-CAA7-4813-804A-68DDB706BF87"
+          "id": "85AF7969-CAA7-4813-804A-68DDB706BF87",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "SAction",
@@ -1524,7 +1563,8 @@
           "hideInGraph": false,
           "refDict": "EE9FA968-A339-4C06-9CA4-762A0BDF1AE7",
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
-          "id": "AEE5EC36-E37B-4812-99D1-E5D42FCEF87B"
+          "id": "AEE5EC36-E37B-4812-99D1-E5D42FCEF87B",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "SObject",
@@ -1540,7 +1580,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "F4D32E01-ED15-406F-95D2-A2702F55EEA8"
+          "id": "F4D32E01-ED15-406F-95D2-A2702F55EEA8",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "STime",
@@ -1556,7 +1597,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
-          "id": "FFBA6D2A-D22F-407D-88C6-EA4D3E41CA62"
+          "id": "FFBA6D2A-D22F-407D-88C6-EA4D3E41CA62",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "SIP",
@@ -1572,11 +1614,16 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "ABC752FB-A80F-48B3-94D3-2CDF9E6E1563",
-          "id": "7DDAE5AA-15B8-4F2E-B4F1-D6EEDAC45103"
+          "id": "7DDAE5AA-15B8-4F2E-B4F1-D6EEDAC45103",
+          "baseType": "C4BD8736-011C-4BCB-B6A5-D1696CEFF957"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "A5FD50A4-83D4-4686-A5E1-C3EC72D92233",
@@ -1584,7 +1631,6 @@
       "defName": "玩家私信",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "freeze": true,
@@ -1683,7 +1729,8 @@
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
           "refDict": "",
           "uiHint": "",
-          "id": "CEC70ABA-3530-4EC5-870B-77FA2689E662"
+          "id": "CEC70ABA-3530-4EC5-870B-77FA2689E662",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "MSGTheme",
@@ -1700,7 +1747,8 @@
           "hideInGraph": false,
           "refDict": "",
           "uiHint": "",
-          "id": "D08F18B7-2E0A-4E95-B168-37C6AB70F6D5"
+          "id": "D08F18B7-2E0A-4E95-B168-37C6AB70F6D5",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "MSGSender",
@@ -1716,7 +1764,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "42D927ED-04F2-41A3-91B2-311BDDE7A059"
+          "id": "42D927ED-04F2-41A3-91B2-311BDDE7A059",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "MSGReceiver",
@@ -1732,7 +1781,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "B9B1D2C9-F6B7-4C57-A906-693D0B08637F"
+          "id": "B9B1D2C9-F6B7-4C57-A906-693D0B08637F",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "MSGContent",
@@ -1748,7 +1798,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "028CE6AA-5308-4327-9C01-EC7A6CD61D1B",
-          "id": "04AA34AC-7D9B-4739-B6F4-6D0B349ECB1C"
+          "id": "04AA34AC-7D9B-4739-B6F4-6D0B349ECB1C",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "MSGStatus",
@@ -1764,7 +1815,8 @@
           "hideInGraph": false,
           "refDict": "FE6C3447-DF95-420D-8B04-61DFBB1DC0AE",
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
-          "id": "C99D39D2-29A2-4B05-AC77-901DA22B2150"
+          "id": "C99D39D2-29A2-4B05-AC77-901DA22B2150",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "MSGTimestamp",
@@ -1780,11 +1832,16 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
-          "id": "E09F991A-D35B-4C31-BB25-39A6AE720042"
+          "id": "E09F991A-D35B-4C31-BB25-39A6AE720042",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "FAB5DAF9-F71E-41D8-9F06-893E93A8A534",
@@ -1798,7 +1855,6 @@
       "defName": "星图（显示星系）",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -1896,7 +1952,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "98F0C2FA-1F7D-4B38-95ED-1EDFF9096F09"
+          "id": "98F0C2FA-1F7D-4B38-95ED-1EDFF9096F09",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "chunk_CENTER",
@@ -1913,7 +1970,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
-          "id": "6E656158-5365-4029-B990-9D0A8359CC77"
+          "id": "6E656158-5365-4029-B990-9D0A8359CC77",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "chunk_system_member",
@@ -1930,11 +1988,16 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "D0D68FFC-E73F-411A-90A8-B61F34076325"
+          "id": "D0D68FFC-E73F-411A-90A8-B61F34076325",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "179405FA-8EAF-4B5D-9EF5-F525DFA09257",
@@ -1948,7 +2011,6 @@
       "defName": "星系图（显示行星）",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -2046,7 +2108,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "037F6B49-E4BD-4B5E-AD08-0FDEF2CD5AAC"
+          "id": "037F6B49-E4BD-4B5E-AD08-0FDEF2CD5AAC",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "system_X",
@@ -2063,7 +2126,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "3DD5FD2A-8586-4A14-B3AD-41BE3DD5535E",
-          "id": "736E6A91-F625-4E43-A790-83A9554CE085"
+          "id": "736E6A91-F625-4E43-A790-83A9554CE085",
+          "baseType": "E1D383FA-7FEE-46AF-BE85-9BAD3FB0D07D"
         },
         {
           "defKey": "system_Y",
@@ -2080,7 +2144,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "3DD5FD2A-8586-4A14-B3AD-41BE3DD5535E",
-          "id": "4981C51F-436C-4C14-8C91-4CD8AC7EB839"
+          "id": "4981C51F-436C-4C14-8C91-4CD8AC7EB839",
+          "baseType": "E1D383FA-7FEE-46AF-BE85-9BAD3FB0D07D"
         },
         {
           "defKey": "system_Z",
@@ -2097,7 +2162,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "3DD5FD2A-8586-4A14-B3AD-41BE3DD5535E",
-          "id": "F644EC2C-FE23-419A-8694-0BBF177CB6B3"
+          "id": "F644EC2C-FE23-419A-8694-0BBF177CB6B3",
+          "baseType": "E1D383FA-7FEE-46AF-BE85-9BAD3FB0D07D"
         },
         {
           "defKey": "system_APPEARANCE",
@@ -2115,7 +2181,8 @@
           "extProps": {},
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
           "id": "80E3355F-58AF-4EC4-84B5-1966AF8A49FB",
-          "uiHint": "CFD12F02-A372-4389-8717-C4219CF53C51"
+          "uiHint": "CFD12F02-A372-4389-8717-C4219CF53C51",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "system_NAME",
@@ -2132,7 +2199,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "F0C9970E-1549-4D1A-95FC-EFDCB1B11EBA",
-          "id": "72BED165-2C42-423E-97F2-1BE2E05B269F"
+          "id": "72BED165-2C42-423E-97F2-1BE2E05B269F",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "system_SIZE",
@@ -2149,11 +2217,16 @@
           "refDict": "",
           "extProps": {},
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
-          "id": "B497F63C-A3E1-433E-9B14-2D31E0B2A178"
+          "id": "B497F63C-A3E1-433E-9B14-2D31E0B2A178",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "869E7926-0380-43DE-9D3E-E04B86A0E0D6",
@@ -2167,7 +2240,6 @@
       "defName": "星球表（星球属性、资源、建筑）",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -2346,7 +2418,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "5A19C6A7-3021-4E2E-A703-9E6A75F5B112"
+          "id": "5A19C6A7-3021-4E2E-A703-9E6A75F5B112",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "planet_NAME",
@@ -2363,7 +2436,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
-          "id": "D8BC54E7-6CE8-40E7-A187-DC5B2D3A5247"
+          "id": "D8BC54E7-6CE8-40E7-A187-DC5B2D3A5247",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "planet_SIZE",
@@ -2380,7 +2454,8 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "637D655D-D309-452F-BBB0-B716C6264192"
+          "id": "637D655D-D309-452F-BBB0-B716C6264192",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "planet_RSS_M",
@@ -2397,7 +2472,8 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "CF728DF4-26B1-406C-A1FE-47254451DEFB"
+          "id": "CF728DF4-26B1-406C-A1FE-47254451DEFB",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "planet_RSS_G",
@@ -2414,7 +2490,8 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "10C988E2-F37A-41D0-B02C-96D737B3F785"
+          "id": "10C988E2-F37A-41D0-B02C-96D737B3F785",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "planet_RSS_C",
@@ -2431,7 +2508,8 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "AEA1773E-739C-417E-9A50-B70F3334304C"
+          "id": "AEA1773E-739C-417E-9A50-B70F3334304C",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "planet_EFFICIENCY",
@@ -2448,7 +2526,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
-          "id": "9515FCD5-CFA9-4A4E-87C1-3C377B7FC3FB"
+          "id": "9515FCD5-CFA9-4A4E-87C1-3C377B7FC3FB",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "planet_TYPE",
@@ -2466,7 +2545,8 @@
           "extProps": {},
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
           "id": "20A7C5C5-43CE-4229-B9E2-C44F6D906885",
-          "uiHint": "CFD12F02-A372-4389-8717-C4219CF53C51"
+          "uiHint": "CFD12F02-A372-4389-8717-C4219CF53C51",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "planet_owner",
@@ -2483,7 +2563,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "382C4164-AE9C-4CFD-984E-7A3FCB6E6D2B"
+          "id": "382C4164-AE9C-4CFD-984E-7A3FCB6E6D2B",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "planet_structure",
@@ -2500,7 +2581,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "",
-          "id": "0850A289-BB55-4209-8152-A473099210E9"
+          "id": "0850A289-BB55-4209-8152-A473099210E9",
+          "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2"
         },
         {
           "defKey": "planet_storage",
@@ -2517,7 +2599,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "",
-          "id": "E13B691D-E4C1-42E5-8BEE-E04DB972F141"
+          "id": "E13B691D-E4C1-42E5-8BEE-E04DB972F141",
+          "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2"
         },
         {
           "defKey": "planet_last_update",
@@ -2534,7 +2617,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
-          "id": "F224E2D8-1885-4145-8679-5B3CCD479CBB"
+          "id": "F224E2D8-1885-4145-8679-5B3CCD479CBB",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "planet_recent_attack",
@@ -2551,7 +2635,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
-          "id": "44F8ACB6-2F81-4D47-A8FE-0030C2870995"
+          "id": "44F8ACB6-2F81-4D47-A8FE-0030C2870995",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "planet_last_attacked",
@@ -2568,7 +2653,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
-          "id": "60F2D8C7-0B31-464C-977A-D6CACE44B761"
+          "id": "60F2D8C7-0B31-464C-977A-D6CACE44B761",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "planet_jumpgate_of",
@@ -2585,7 +2671,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "173302B2-CB14-45A8-8BC2-D26DA9527A4C"
+          "id": "173302B2-CB14-45A8-8BC2-D26DA9527A4C",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "REVISION",
@@ -2602,11 +2689,16 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "869DBF8C-664A-4134-94DC-45A3C086C091"
+          "id": "869DBF8C-664A-4134-94DC-45A3C086C091",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "F5759031-6803-48B7-ACEF-F20DCED6E294",
@@ -2620,7 +2712,6 @@
       "defName": "角色持有物品数量表",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -2718,7 +2809,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "8CFF53B8-506B-4400-AB19-292770DFD61B"
+          "id": "8CFF53B8-506B-4400-AB19-292770DFD61B",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "item_code",
@@ -2735,7 +2827,8 @@
           "refDict": "33E58BED-EE96-491B-9513-2AE347C244C0",
           "extProps": {},
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
-          "id": "541A9646-CD96-479E-AADD-3CBFC3F85002"
+          "id": "541A9646-CD96-479E-AADD-3CBFC3F85002",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "item_count",
@@ -2752,11 +2845,16 @@
           "refDict": "",
           "extProps": {},
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
-          "id": "FA356F4D-EA63-4CDD-8BFA-11E369D93CEC"
+          "id": "FA356F4D-EA63-4CDD-8BFA-11E369D93CEC",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "6EDB7DC8-C6CA-40DB-BC90-52573769A064",
@@ -2770,7 +2868,6 @@
       "defName": "建筑表",
       "comment": "每种建筑的建造队列所能生产的物资都有所不同，例如兵营只有1种建造队列，即训练步兵，造船厂也是，即建造飞船和航母；但雷达站可能生产无人机，也可能执行扫描任务；实验室可能正在升级研究，也可能已经装备了未在升级的研究项。这些多种可能性的，都需要在json里注明",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -2868,7 +2965,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "B9C31DAA-A68D-4E7F-BB97-911DF6222623"
+          "id": "B9C31DAA-A68D-4E7F-BB97-911DF6222623",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "REVISION",
@@ -2885,7 +2983,8 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "F385F3B0-ADD7-4558-83B4-EE9BEEFB2456"
+          "id": "F385F3B0-ADD7-4558-83B4-EE9BEEFB2456",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "UPDATED_TIME",
@@ -2902,7 +3001,8 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "8C911A89-CF25-49DB-B1EA-D5EEC5651D20"
+          "id": "8C911A89-CF25-49DB-B1EA-D5EEC5651D20",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "structure_id",
@@ -2919,7 +3019,8 @@
           "refDict": "AD6B1D47-AA5A-4B1C-A500-42D4FF40D236",
           "extProps": {},
           "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
-          "id": "F0C74517-4296-4B5A-B97E-8F78B4AF449E"
+          "id": "F0C74517-4296-4B5A-B97E-8F78B4AF449E",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "structure_lv",
@@ -2936,7 +3037,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
-          "id": "41C814BF-D126-484F-8BC1-ECF831A82514"
+          "id": "41C814BF-D126-484F-8BC1-ECF831A82514",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "structure_queue",
@@ -2953,7 +3055,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "32F75D8F-CDA0-44E7-8666-B646F070884F",
-          "id": "37C9B9C7-C7B4-45E2-8EC0-D22A5AA808EB"
+          "id": "37C9B9C7-C7B4-45E2-8EC0-D22A5AA808EB",
+          "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2"
         },
         {
           "defKey": "structure_queue_ETA",
@@ -2970,11 +3073,16 @@
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
           "refDict": "",
           "extProps": {},
-          "id": "00C058B5-BCEE-4621-8F67-C47F5D0D4FEA"
+          "id": "00C058B5-BCEE-4621-8F67-C47F5D0D4FEA",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "ABCEED33-CB90-4123-8C55-F35A14CE2D12",
@@ -2988,7 +3096,6 @@
       "defName": "玩家可用角色表",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -3086,7 +3193,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "extProps": {},
-          "id": "875D03AA-17DA-4640-94AC-B8D39084B533"
+          "id": "875D03AA-17DA-4640-94AC-B8D39084B533",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "role_ID",
@@ -3103,7 +3211,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "extProps": {},
-          "id": "07FBB87A-4157-4C2B-8C2D-D5E340C89BFD"
+          "id": "07FBB87A-4157-4C2B-8C2D-D5E340C89BFD",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "server_ID",
@@ -3120,11 +3229,16 @@
           "refDict": "",
           "extProps": {},
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
-          "id": "CDE31184-65AE-46ED-86AF-14757BE65FEB"
+          "id": "CDE31184-65AE-46ED-86AF-14757BE65FEB",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "491E4425-D5A5-459B-9856-D4A251A8A7FC",
@@ -3138,7 +3252,6 @@
       "defName": "航母表",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -3236,7 +3349,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "4D45B7AD-A489-41C3-8DF3-6B4991029823"
+          "id": "4D45B7AD-A489-41C3-8DF3-6B4991029823",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "carrier_OWNER",
@@ -3253,7 +3367,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "824818FE-68CA-4CBF-AA6D-92939C187A67"
+          "id": "824818FE-68CA-4CBF-AA6D-92939C187A67",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "carrier_TYPE",
@@ -3270,7 +3385,8 @@
           "refDict": "3E84D7C5-A574-4E6F-9803-DDA14FA2A0C8",
           "extProps": {},
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
-          "id": "C73C31E6-5210-470B-B51A-79C6A56226D6"
+          "id": "C73C31E6-5210-470B-B51A-79C6A56226D6",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "carrier_SQUADRON＿LIMIT",
@@ -3287,7 +3403,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
-          "id": "0F822022-CAB0-4CA5-AA0F-310190AD8284"
+          "id": "0F822022-CAB0-4CA5-AA0F-310190AD8284",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "carrier_name",
@@ -3304,7 +3421,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "F0C9970E-1549-4D1A-95FC-EFDCB1B11EBA",
-          "id": "F0E40005-E6A6-403E-ABC2-1AB2B67F951F"
+          "id": "F0E40005-E6A6-403E-ABC2-1AB2B67F951F",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "carrier_fleet",
@@ -3321,7 +3439,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "4586E55A-E062-43F2-8ECB-DA68B2B3FC7C"
+          "id": "4586E55A-E062-43F2-8ECB-DA68B2B3FC7C",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "carrier_task_force",
@@ -3338,7 +3457,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "E27AFB1E-8073-4890-B7C8-94EDCFEE6893"
+          "id": "E27AFB1E-8073-4890-B7C8-94EDCFEE6893",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "carrier_squadron",
@@ -3355,7 +3475,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "32F75D8F-CDA0-44E7-8666-B646F070884F",
-          "id": "854C0276-F0CA-4A75-8C81-A322AF03C7E7"
+          "id": "854C0276-F0CA-4A75-8C81-A322AF03C7E7",
+          "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2"
         },
         {
           "defKey": "carrier_upgrade_item",
@@ -3372,7 +3493,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "32F75D8F-CDA0-44E7-8666-B646F070884F",
-          "id": "EDFCB7DC-2640-44CD-ABCC-0EA1CCDD902A"
+          "id": "EDFCB7DC-2640-44CD-ABCC-0EA1CCDD902A",
+          "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2"
         },
         {
           "defKey": "carrier_updated_time",
@@ -3389,11 +3511,16 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "67CACA5E-11C9-46E3-821D-14B7BB0ABFF2"
+          "id": "67CACA5E-11C9-46E3-821D-14B7BB0ABFF2",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "49D071B7-DE7A-4B75-8090-D0F7F73DD526",
@@ -3407,7 +3534,6 @@
       "defName": "舰队平时编制表",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -3505,7 +3631,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "2C954995-18AE-4262-839C-9018D4460FD4"
+          "id": "2C954995-18AE-4262-839C-9018D4460FD4",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "fleet_OWNER",
@@ -3522,7 +3649,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "7D0874E6-C8A6-4134-A94F-6DE1A3224F93"
+          "id": "7D0874E6-C8A6-4134-A94F-6DE1A3224F93",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "fleet_name",
@@ -3539,7 +3667,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "F0C9970E-1549-4D1A-95FC-EFDCB1B11EBA",
-          "id": "50332AC8-9FB6-4D6F-8FDA-01CAEC6E7826"
+          "id": "50332AC8-9FB6-4D6F-8FDA-01CAEC6E7826",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "fleet_member",
@@ -3556,11 +3685,16 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "F0EF45EA-6056-4600-91FA-9DF2A1271FC4"
+          "id": "F0EF45EA-6056-4600-91FA-9DF2A1271FC4",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "DD7FE767-AA2F-4B68-8F74-23DA16E8AFB3",
@@ -3574,7 +3708,6 @@
       "defName": "特混舰队表",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -3672,7 +3805,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "52D91597-BB74-4FC9-AC67-FC3E54188C5C"
+          "id": "52D91597-BB74-4FC9-AC67-FC3E54188C5C",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "taskforce_OWNER",
@@ -3689,7 +3823,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "BF72364D-DFD6-456F-8451-C68A00D6F6CA"
+          "id": "BF72364D-DFD6-456F-8451-C68A00D6F6CA",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "taskforce_CREATED_TIME",
@@ -3706,7 +3841,8 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "76062F2F-527C-4DB1-A334-205F74FA9A23"
+          "id": "76062F2F-527C-4DB1-A334-205F74FA9A23",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "taskforce_UPDATED_TIME",
@@ -3723,7 +3859,8 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "7F462DE0-4A21-4998-96CA-57C1D7F1325C"
+          "id": "7F462DE0-4A21-4998-96CA-57C1D7F1325C",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "taskforce_DEPART_PLACE",
@@ -3740,7 +3877,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "EE2D2FA9-23D9-44E7-A13D-380B2DA91403"
+          "id": "EE2D2FA9-23D9-44E7-A13D-380B2DA91403",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "taskforce_DEPART_TIME",
@@ -3757,7 +3895,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
-          "id": "F8FB7808-680C-4AC9-B207-89F96762A959"
+          "id": "F8FB7808-680C-4AC9-B207-89F96762A959",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "taskforce_TASK",
@@ -3774,7 +3913,8 @@
           "refDict": "A1184B03-69E1-4CCD-90FB-18D51AACCBA3",
           "extProps": {},
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
-          "id": "6B476EC5-63B9-448E-B49D-44FD554FF228"
+          "id": "6B476EC5-63B9-448E-B49D-44FD554FF228",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "taskforce_ETA",
@@ -3791,7 +3931,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
-          "id": "6187311A-8260-437D-8BCC-634AB838A043"
+          "id": "6187311A-8260-437D-8BCC-634AB838A043",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "taskforce_MEMBER",
@@ -3808,11 +3949,16 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "39C16848-CAAE-44AA-BDDE-21605D45B7C2"
+          "id": "39C16848-CAAE-44AA-BDDE-21605D45B7C2",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "A743DD87-367A-468D-8B78-663A330D8AA1",
@@ -3826,7 +3972,6 @@
       "defName": "航母属性",
       "comment": "静态表，一般不增改删数据。建议只在服务器开机时读取一次配置（那我为什么不用json配置文件）",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -3924,7 +4069,8 @@
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
           "refDict": "3E84D7C5-A574-4E6F-9803-DDA14FA2A0C8",
           "uiHint": "",
-          "id": "7138A5CC-B5D7-4F84-B161-A0860E448FBF"
+          "id": "7138A5CC-B5D7-4F84-B161-A0860E448FBF",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "_atk",
@@ -3941,7 +4087,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "3DD5FD2A-8586-4A14-B3AD-41BE3DD5535E",
-          "id": "FD7A5EEA-203E-4B94-B568-DD09EE6B768B"
+          "id": "FD7A5EEA-203E-4B94-B568-DD09EE6B768B",
+          "baseType": "E1D383FA-7FEE-46AF-BE85-9BAD3FB0D07D"
         },
         {
           "defKey": "_def",
@@ -3958,7 +4105,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "3DD5FD2A-8586-4A14-B3AD-41BE3DD5535E",
-          "id": "0F9C7306-F5E5-4B30-8319-73BB05E10635"
+          "id": "0F9C7306-F5E5-4B30-8319-73BB05E10635",
+          "baseType": "E1D383FA-7FEE-46AF-BE85-9BAD3FB0D07D"
         },
         {
           "defKey": "_hp",
@@ -3975,7 +4123,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "3DD5FD2A-8586-4A14-B3AD-41BE3DD5535E",
-          "id": "2B33365C-A39A-4B93-A451-F806A53174FC"
+          "id": "2B33365C-A39A-4B93-A451-F806A53174FC",
+          "baseType": "E1D383FA-7FEE-46AF-BE85-9BAD3FB0D07D"
         },
         {
           "defKey": "_spd",
@@ -3992,7 +4141,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "3DD5FD2A-8586-4A14-B3AD-41BE3DD5535E",
-          "id": "E72031BA-E1FF-460D-A0CE-A62955A9F157"
+          "id": "E72031BA-E1FF-460D-A0CE-A62955A9F157",
+          "baseType": "E1D383FA-7FEE-46AF-BE85-9BAD3FB0D07D"
         },
         {
           "defKey": "_lim",
@@ -4009,7 +4159,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
-          "id": "F91302E3-79F3-412B-B080-37D3B0EA4B5A"
+          "id": "F91302E3-79F3-412B-B080-37D3B0EA4B5A",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "_range",
@@ -4026,11 +4177,16 @@
           "refDict": "",
           "extProps": {},
           "domain": "3DD5FD2A-8586-4A14-B3AD-41BE3DD5535E",
-          "id": "5016B9D1-0778-4908-A1E5-2C7431B52393"
+          "id": "5016B9D1-0778-4908-A1E5-2C7431B52393",
+          "baseType": "E1D383FA-7FEE-46AF-BE85-9BAD3FB0D07D"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "2684B31E-BA2A-4244-865E-FA1C724BAD12",
@@ -4044,7 +4200,6 @@
       "defName": "舰载机属性",
       "comment": "战机先手一方（防御玩家）对后手方当前存活的偏好目标进攻，之后由后手方选择进攻偏好目标。进攻伤害计算：被击坠数量 = 被击方数量*(被击方单体护盾+被击方生命值) - 攻击方数量*攻击方攻击力",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -4142,7 +4297,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
-          "id": "3314D43E-E201-4933-9FCF-3753C7731A20"
+          "id": "3314D43E-E201-4933-9FCF-3753C7731A20",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "_atk",
@@ -4159,7 +4315,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "3DD5FD2A-8586-4A14-B3AD-41BE3DD5535E",
-          "id": "6BA5AD04-8EA4-4451-8D1E-703DE783DCA8"
+          "id": "6BA5AD04-8EA4-4451-8D1E-703DE783DCA8",
+          "baseType": "E1D383FA-7FEE-46AF-BE85-9BAD3FB0D07D"
         },
         {
           "defKey": "_shield",
@@ -4176,7 +4333,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "3DD5FD2A-8586-4A14-B3AD-41BE3DD5535E",
-          "id": "D559A139-8FDF-4B2A-BD41-7000A75471BC"
+          "id": "D559A139-8FDF-4B2A-BD41-7000A75471BC",
+          "baseType": "E1D383FA-7FEE-46AF-BE85-9BAD3FB0D07D"
         },
         {
           "defKey": "_hp",
@@ -4193,11 +4351,16 @@
           "refDict": "",
           "extProps": {},
           "domain": "3DD5FD2A-8586-4A14-B3AD-41BE3DD5535E",
-          "id": "9F7BE133-A230-4EBE-9265-6B1108B31D1A"
+          "id": "9F7BE133-A230-4EBE-9265-6B1108B31D1A",
+          "baseType": "E1D383FA-7FEE-46AF-BE85-9BAD3FB0D07D"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "28FAA453-E3F7-4D09-B705-A4743B923CE5",
@@ -4211,7 +4374,6 @@
       "defName": "联盟基本信息表",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -4309,7 +4471,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "F76198E5-98B5-45DC-B1D4-CB94A19EBFD2"
+          "id": "F76198E5-98B5-45DC-B1D4-CB94A19EBFD2",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_NAME",
@@ -4326,7 +4489,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "F0C9970E-1549-4D1A-95FC-EFDCB1B11EBA",
-          "id": "C89B335A-5C69-4AA0-A36B-2C124A1C4A4C"
+          "id": "C89B335A-5C69-4AA0-A36B-2C124A1C4A4C",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_ABBREVIATION",
@@ -4343,7 +4507,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "",
-          "id": "9E56584F-D57C-404A-B6BC-D1314019C139"
+          "id": "9E56584F-D57C-404A-B6BC-D1314019C139",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_intro",
@@ -4360,7 +4525,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "028CE6AA-5308-4327-9C01-EC7A6CD61D1B",
-          "id": "E0D557EF-D05F-451E-8BCF-4769D3E3AF94"
+          "id": "E0D557EF-D05F-451E-8BCF-4769D3E3AF94",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_leader",
@@ -4377,7 +4543,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "35AEFC1C-BEAC-4C5B-B8CA-2E4C4F34E2DF"
+          "id": "35AEFC1C-BEAC-4C5B-B8CA-2E4C4F34E2DF",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_player_limit",
@@ -4394,7 +4561,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
-          "id": "C800916D-9F82-48A2-810C-0CF158D00C08"
+          "id": "C800916D-9F82-48A2-810C-0CF158D00C08",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "alliance_permission_lv",
@@ -4411,7 +4579,8 @@
           "refDict": "8769E815-5A9E-4AF2-BAC8-2FC5E4B03DC0",
           "extProps": {},
           "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
-          "id": "6BCE3121-11F7-4B50-A7B6-50EC18DA4CCE"
+          "id": "6BCE3121-11F7-4B50-A7B6-50EC18DA4CCE",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "UPDATED_TIME",
@@ -4428,11 +4597,16 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "F16703CB-14B4-4FFA-BDFB-6A819ED93F27"
+          "id": "F16703CB-14B4-4FFA-BDFB-6A819ED93F27",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "26A869B4-C61D-4ACD-BBE4-739C3D134EDF",
@@ -4446,7 +4620,6 @@
       "defName": "联盟玩家表",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -4544,7 +4717,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "BD310FA4-67F3-49B5-A1A0-07BB4B701CE1"
+          "id": "BD310FA4-67F3-49B5-A1A0-07BB4B701CE1",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_PLAYER_ID",
@@ -4561,7 +4735,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
-          "id": "BAB444A4-CAC7-49A5-9A67-BFB830FBA493"
+          "id": "BAB444A4-CAC7-49A5-9A67-BFB830FBA493",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_JOIN_TIME",
@@ -4578,7 +4753,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
-          "id": "F96E28FC-F1F9-47B2-8C1D-1A1737D2413C"
+          "id": "F96E28FC-F1F9-47B2-8C1D-1A1737D2413C",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "alliance_player_rank",
@@ -4595,11 +4771,16 @@
           "refDict": "6A20CB7E-5F7D-4A30-89AE-18EFB470B475",
           "extProps": {},
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
-          "id": "9486A4A0-91EB-4209-B4F8-AC8A919BEABB"
+          "id": "9486A4A0-91EB-4209-B4F8-AC8A919BEABB",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "29428374-F805-404C-8C74-872E31B0D82A",
@@ -4613,7 +4794,6 @@
       "defName": "联盟间关系表",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -4711,7 +4891,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "BFBD23C3-9F29-4530-BF13-B4DF218F369F"
+          "id": "BFBD23C3-9F29-4530-BF13-B4DF218F369F",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_relationship_TARGET",
@@ -4728,7 +4909,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
-          "id": "28DB9444-2DC1-4AB0-B18D-8010DD678E52"
+          "id": "28DB9444-2DC1-4AB0-B18D-8010DD678E52",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_relationship_RELATION",
@@ -4745,7 +4927,8 @@
           "refDict": "6EDF3F71-4FED-43C2-8217-2C9C44C7118E",
           "extProps": {},
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
-          "id": "BD8204B9-2177-40D8-A17B-8192637C6986"
+          "id": "BD8204B9-2177-40D8-A17B-8192637C6986",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "UPDATED_TIME",
@@ -4762,11 +4945,16 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "AD209DBE-7D68-4778-ACAF-F0AF603EEDE1"
+          "id": "AD209DBE-7D68-4778-ACAF-F0AF603EEDE1",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "169D0A46-B4B8-49A5-87F8-E03E1CF13A57",
@@ -4780,7 +4968,6 @@
       "defName": "联盟聊天版表",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -4878,7 +5065,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "92770FD3-40CE-480A-AB5B-938A38F0CA5B"
+          "id": "92770FD3-40CE-480A-AB5B-938A38F0CA5B",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_ID",
@@ -4895,7 +5083,8 @@
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
           "refDict": "",
           "uiHint": "",
-          "id": "1BF5D043-18E3-43E9-87C2-032D6C82AB5E"
+          "id": "1BF5D043-18E3-43E9-87C2-032D6C82AB5E",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_msg_TOPIC",
@@ -4912,7 +5101,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
-          "id": "8D3EB6E5-D395-40FB-BE8C-93911D622F8B"
+          "id": "8D3EB6E5-D395-40FB-BE8C-93911D622F8B",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "CREATED_TIME",
@@ -4929,7 +5119,8 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "54DC057E-3C05-4555-892A-E219C729E842"
+          "id": "54DC057E-3C05-4555-892A-E219C729E842",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "alliance_msg_isLocked",
@@ -4946,7 +5137,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "0DB5AEF0-4F3C-47F8-A26B-BB0A6BD8065B",
-          "id": "68ECC0DA-8A01-472F-840D-82A4CF1353FD"
+          "id": "68ECC0DA-8A01-472F-840D-82A4CF1353FD",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_msg_isPinned",
@@ -4963,11 +5155,16 @@
           "refDict": "",
           "extProps": {},
           "domain": "0DB5AEF0-4F3C-47F8-A26B-BB0A6BD8065B",
-          "id": "F90ADBE1-7924-419F-8967-D11D8B9E2A67"
+          "id": "F90ADBE1-7924-419F-8967-D11D8B9E2A67",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "D2F2E49F-5F4B-4F14-94CF-C12076BB6F9E",
@@ -4981,7 +5178,6 @@
       "defName": "联盟对话楼层表",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -5079,7 +5275,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
-          "id": "F586FB16-624A-45AC-B093-FEBD9D8DFC75"
+          "id": "F586FB16-624A-45AC-B093-FEBD9D8DFC75",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_msg_TOPICID",
@@ -5096,7 +5293,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "B6256D18-532C-4EB9-943C-C43D3ED479F3"
+          "id": "B6256D18-532C-4EB9-943C-C43D3ED479F3",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_msg_SENDER",
@@ -5113,7 +5311,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "9D1AEDE9-8BC1-42D0-BFFE-FAB48B085C7B"
+          "id": "9D1AEDE9-8BC1-42D0-BFFE-FAB48B085C7B",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_msg_LINE",
@@ -5130,7 +5329,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
-          "id": "32A398DE-C0D2-4747-B568-3134A14F8483"
+          "id": "32A398DE-C0D2-4747-B568-3134A14F8483",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
         },
         {
           "defKey": "alliance_msg_CONTENTS",
@@ -5147,7 +5347,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
-          "id": "EF5900BD-2DA0-4E8D-BDBB-1B0D2664F155"
+          "id": "EF5900BD-2DA0-4E8D-BDBB-1B0D2664F155",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "alliance_msg_isPinned",
@@ -5164,7 +5365,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "0DB5AEF0-4F3C-47F8-A26B-BB0A6BD8065B",
-          "id": "D6F17BD5-7A41-48CC-AE27-EA724908CEDA"
+          "id": "D6F17BD5-7A41-48CC-AE27-EA724908CEDA",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "CREATED_TIME",
@@ -5181,11 +5383,16 @@
           "hideInGraph": true,
           "refDict": "",
           "uiHint": "",
-          "id": "AE8510C2-CBC7-4590-933B-60E4526956E0"
+          "id": "AE8510C2-CBC7-4590-933B-60E4526956E0",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "5DA56643-2B70-4363-9925-A4B946E414EA",
@@ -5199,7 +5406,6 @@
       "defName": "私信表",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -5297,7 +5503,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "7251CA10-9281-4826-B850-340D6EFFDFEA"
+          "id": "7251CA10-9281-4826-B850-340D6EFFDFEA",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "mail_RECEIVER",
@@ -5314,7 +5521,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "8BECEF7B-EE28-415B-8635-63C4A66FE873"
+          "id": "8BECEF7B-EE28-415B-8635-63C4A66FE873",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "mail_TITLE",
@@ -5331,7 +5539,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "028CE6AA-5308-4327-9C01-EC7A6CD61D1B",
-          "id": "BEF06A5E-3DFE-46E3-B9D0-CBA3B8BA8FD7"
+          "id": "BEF06A5E-3DFE-46E3-B9D0-CBA3B8BA8FD7",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "mail_CONTENT",
@@ -5348,7 +5557,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "028CE6AA-5308-4327-9C01-EC7A6CD61D1B",
-          "id": "B886CD43-99A8-4180-8542-16FE176A3B33"
+          "id": "B886CD43-99A8-4180-8542-16FE176A3B33",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "mail_SENDTIME",
@@ -5365,7 +5575,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
-          "id": "B7C9D781-FE3A-41A0-83D8-1F8C2E57FEEE"
+          "id": "B7C9D781-FE3A-41A0-83D8-1F8C2E57FEEE",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "mail_STATUS",
@@ -5382,11 +5593,16 @@
           "refDict": "B97324AD-7FA3-49F6-858B-791902356186",
           "extProps": {},
           "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
-          "id": "6FD1B365-670B-454D-8135-55159BC4D342"
+          "id": "6FD1B365-670B-454D-8135-55159BC4D342",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "52591FE4-8E2B-4C33-B816-990563222D6D",
@@ -5400,7 +5616,6 @@
       "defName": "聊天室表",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -5498,7 +5713,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "AD53E520-A007-43F9-88AE-6187C7225D1B"
+          "id": "AD53E520-A007-43F9-88AE-6187C7225D1B",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "chat_CONTENT",
@@ -5515,7 +5731,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "028CE6AA-5308-4327-9C01-EC7A6CD61D1B",
-          "id": "93A95A1A-53DC-4E80-B443-CB2FB8E933FF"
+          "id": "93A95A1A-53DC-4E80-B443-CB2FB8E933FF",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "chat_TIME",
@@ -5532,11 +5749,16 @@
           "hideInGraph": false,
           "refDict": "",
           "uiHint": "",
-          "id": "1A8290C4-33FD-42E9-B5BC-7D1C3E3BEE3A"
+          "id": "1A8290C4-33FD-42E9-B5BC-7D1C3E3BEE3A",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "F9F52354-3DC1-4614-8C64-0C0CB2005132",
@@ -5550,7 +5772,6 @@
       "defName": "联盟聊天室表",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -5648,7 +5869,8 @@
           "hideInGraph": false,
           "refDict": "",
           "uiHint": "",
-          "id": "101B8770-B17E-4291-8AEA-AF71902DEAD1"
+          "id": "101B8770-B17E-4291-8AEA-AF71902DEAD1",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "allieschat_CONTENT",
@@ -5665,7 +5887,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "028CE6AA-5308-4327-9C01-EC7A6CD61D1B",
-          "id": "EE9BB3BB-BAF8-4436-91A8-B0495AC9DB70"
+          "id": "EE9BB3BB-BAF8-4436-91A8-B0495AC9DB70",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "allieschat_SENDER",
@@ -5682,7 +5905,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "48C12E6A-B8D2-428D-B66D-6970CCACB146"
+          "id": "48C12E6A-B8D2-428D-B66D-6970CCACB146",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "allieschat_ALLIANCE",
@@ -5699,11 +5923,16 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "F35EE7BC-DE5B-4B97-9181-16A4DFBEEC1D"
+          "id": "F35EE7BC-DE5B-4B97-9181-16A4DFBEEC1D",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "20C3A697-A970-4A42-B732-C9490F2D46F4",
@@ -5717,7 +5946,6 @@
       "defName": "工作组聊天",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -5815,7 +6043,8 @@
           "hideInGraph": false,
           "refDict": "",
           "uiHint": "",
-          "id": "3E5ED43C-516B-444B-A32B-7FED5A158625"
+          "id": "3E5ED43C-516B-444B-A32B-7FED5A158625",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
         },
         {
           "defKey": "groupchat_CONTENT",
@@ -5832,7 +6061,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "028CE6AA-5308-4327-9C01-EC7A6CD61D1B",
-          "id": "2B11C272-C497-4A8F-87F8-84CB5CC29BD5"
+          "id": "2B11C272-C497-4A8F-87F8-84CB5CC29BD5",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "groupchat_SENDER",
@@ -5849,7 +6079,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "6626ED28-C788-4432-B6B5-588DCFCEBE13"
+          "id": "6626ED28-C788-4432-B6B5-588DCFCEBE13",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "groupchat_GROUP_CREATOR",
@@ -5866,11 +6097,16 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "8019D977-A306-4022-8C50-A7AAC500630A"
+          "id": "8019D977-A306-4022-8C50-A7AAC500630A",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "F762681D-B4A4-4A7E-9A7E-B245756C8308",
@@ -5884,7 +6120,6 @@
       "defName": "小组聊天成员表",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -5982,7 +6217,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "CED1D873-EA31-4350-8A84-26E7B7AB64BD"
+          "id": "CED1D873-EA31-4350-8A84-26E7B7AB64BD",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "groupchat_member",
@@ -5999,11 +6235,16 @@
           "refDict": "",
           "extProps": {},
           "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "id": "044F86C6-CEDB-4E88-B27C-F10272A0D079"
+          "id": "044F86C6-CEDB-4E88-B27C-F10272A0D079",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     }
   ],
   "views": [
@@ -6019,7 +6260,6 @@
       "defName": "星系-星球视图",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -6108,7 +6348,8 @@
           "uiHint": "",
           "id": "30A4FBB1-375B-4A2F-BFE8-93537DC71E08",
           "refEntity": "179405FA-8EAF-4B5D-9EF5-F525DFA09257",
-          "refEntityField": "037F6B49-E4BD-4B5E-AD08-0FDEF2CD5AAC"
+          "refEntityField": "037F6B49-E4BD-4B5E-AD08-0FDEF2CD5AAC",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
           "defKey": "planet_ID",
@@ -6127,7 +6368,8 @@
           "uiHint": "",
           "id": "7639AB2E-A910-4D5D-A68F-7303AB1F304D",
           "refEntity": "869E7926-0380-43DE-9D3E-E04B86A0E0D6",
-          "refEntityField": "5A19C6A7-3021-4E2E-A703-9E6A75F5B112"
+          "refEntityField": "5A19C6A7-3021-4E2E-A703-9E6A75F5B112",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         }
       ],
       "correlations": [],
@@ -6135,7 +6377,10 @@
       "refEntities": [
         "179405FA-8EAF-4B5D-9EF5-F525DFA09257",
         "869E7926-0380-43DE-9D3E-E04B86A0E0D6"
-      ]
+      ],
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     }
   ],
   "dicts": [
@@ -7982,7 +8227,11 @@
         "38693715-8AC1-40C4-8336-86A291DAB56B",
         "22EFD39B-D99B-4368-AE99-375DDD7A5824"
       ],
-      "id": "ABA547C0-4D08-45BA-B8D0-545BD3688D35"
+      "id": "ABA547C0-4D08-45BA-B8D0-545BD3688D35",
+      "refLogicEntities": [
+        "03618135-6F68-490C-AE95-F9993CCCCB98",
+        "A52DA83B-9133-4CF3-A41F-2282E6FC16AD"
+      ]
     },
     {
       "defKey": "planet",
@@ -8124,6 +8373,11 @@
         "2F62B92B-4D4E-4EF6-A282-2461FD214BFA": "Integer",
         "E1F47664-CD93-435C-966E-575F3572F933": "int",
         "70655858-21B4-453E-90C0-DD12DF09BEF4": "INTEGER"
+      },
+      {
+        "defKey": "Long",
+        "defName": "长整型",
+        "id": "E76FDAC6-5D39-43F2-9185-2E77DC8A7E04"
       },
       {
         "defKey": "date",
@@ -9499,5 +9753,401 @@
       "id": "34125727-54C0-4ED8-8C23-FE596153E2B7"
     }
   ],
-  "standardFields": []
+  "standardFields": [],
+  "logicEntities": [
+    {
+      "defName": "玩家账户",
+      "comment": "这张表考虑单独放一个身份校验服务器里，而各个角色的数据则用没有服务器标识号字段的子服务器存储\n（合并服务器可能性微存）",
+      "properties": {},
+      "defKey": "LE_player_account",
+      "id": "03618135-6F68-490C-AE95-F9993CCCCB98",
+      "type": "L",
+      "headers": [
+        {
+          "refKey": "defKey",
+          "newCode": "defKey",
+          "value": "属性代码",
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defName",
+          "newCode": "defName",
+          "value": "属性名称",
+          "hideInGraph": false
+        },
+        {
+          "refKey": "primaryKey",
+          "newCode": "primaryKey",
+          "value": "主键",
+          "hideInGraph": false
+        },
+        {
+          "refKey": "baseType",
+          "newCode": "baseType",
+          "value": "数据类型",
+          "hideInGraph": false
+        }
+      ],
+      "fields": [
+        {
+          "defKey": "player_ID",
+          "defName": "账户ID",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": true,
+          "notNull": true,
+          "autoIncrement": true,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "refDict": "",
+          "uiHint": "32C76984-9E2F-40D0-873A-FF31BBAECA13",
+          "id": "A94BDB35-9229-4285-8C63-A096DD4DBA87",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "player_LoginMethod",
+          "defName": "登陆方式",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "181F1ED0-D50C-4488-8441-5162E45DBC0A",
+          "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
+          "id": "DA15848D-B362-4579-9796-5C5BFF82D3BC",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "player_LoginAcct",
+          "defName": "登陆账号",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "domain": "F0C9970E-1549-4D1A-95FC-EFDCB1B11EBA",
+          "id": "76DAE0FD-E58D-46E2-BEC3-AC011EEC4F7E",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "player_PwMD5",
+          "defName": "登陆密码MD5",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "id": "DEE4EA55-FEA0-4209-A0BB-D55C83E479F6",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "player_RegisterTime",
+          "defName": "注册时间",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "id": "BC919696-1CA6-4B18-B58F-B98CAD139993",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        },
+        {
+          "defKey": "player_LastLogin",
+          "defName": "上次登录事件记录",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "id": "4431044E-6C59-42E8-B613-47E737A5F731",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        }
+      ],
+      "indexes": [],
+      "correlations": [],
+      "sysProps": {
+        "fieldInputSuggest": false,
+        "lePropOrient": "V",
+        "propShowFields": [
+          "N",
+          "K",
+          "T"
+        ],
+        "nameTemplate": "{defKey}[{defName}]"
+      }
+    },
+    {
+      "defName": "玩家角色数据",
+      "comment": "",
+      "properties": {},
+      "defKey": "LE_player_role",
+      "id": "A52DA83B-9133-4CF3-A41F-2282E6FC16AD",
+      "type": "L",
+      "headers": [
+        {
+          "refKey": "defKey",
+          "newCode": "defKey",
+          "value": "属性代码",
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defName",
+          "newCode": "defName",
+          "value": "属性名称",
+          "hideInGraph": false
+        },
+        {
+          "refKey": "primaryKey",
+          "newCode": "primaryKey",
+          "value": "主键",
+          "hideInGraph": false
+        },
+        {
+          "refKey": "baseType",
+          "newCode": "baseType",
+          "value": "数据类型",
+          "hideInGraph": false
+        }
+      ],
+      "fields": [
+        {
+          "defKey": "role_ID",
+          "defName": "角色ID",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": true,
+          "notNull": true,
+          "autoIncrement": true,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "refDict": "",
+          "uiHint": "",
+          "id": "0A8F3A04-B761-4775-ACC4-AB9958613C0A",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "role_RACE",
+          "defName": "种族",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "38693715-8AC1-40C4-8336-86A291DAB56B",
+          "extProps": {},
+          "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
+          "id": "1ABAEA55-5BDC-455E-83A0-0987D7D3902C",
+          "uiHint": "CFD12F02-A372-4389-8717-C4219CF53C51",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "role_CREATE_TIME",
+          "defName": "创建时间",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "id": "3E7EFE42-5942-44E9-88AA-36AF5B6C278A",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        },
+        {
+          "defKey": "role_NAME",
+          "defName": "角色名",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "id": "8BE59DDF-6344-415E-8100-FC2FE1B924A6",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "role_exp",
+          "defName": "经验值",
+          "comment": "",
+          "type": "LONG",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "0",
+          "hideInGraph": false,
+          "id": "AB53F2F8-9208-403D-8216-D5BB349E7C52",
+          "domain": "",
+          "baseType": "E76FDAC6-5D39-43F2-9185-2E77DC8A7E04"
+        },
+        {
+          "defKey": "role_lv",
+          "defName": "等级",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "1",
+          "hideInGraph": false,
+          "refDict": "",
+          "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
+          "id": "786A8EDE-23D6-4B2E-8DCA-8A2FE90D7062",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
+        },
+        {
+          "defKey": "role_credit",
+          "defName": "信用点",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "0",
+          "hideInGraph": false,
+          "id": "C8A80EFE-06F5-42A5-A75C-636621EC76A1",
+          "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
+        },
+        {
+          "defKey": "role_last_login",
+          "defName": "上次登录时间",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "id": "647A611E-4BAB-4760-B9C1-A721C28DBC32",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        },
+        {
+          "defKey": "role_alliance",
+          "defName": "所属联盟",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "id": "9CB2AFBF-CA0A-49A5-9532-BE174BEE2F68",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "role_privilege",
+          "defName": "权限组",
+          "comment": "op又不能刷资源 要权限组干什么",
+          "type": "VARCHAR",
+          "len": 2,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "0",
+          "hideInGraph": false,
+          "refDict": "22EFD39B-D99B-4368-AE99-375DDD7A5824",
+          "extProps": {},
+          "domain": "",
+          "id": "89569803-413B-4783-B050-40DCD6E9177C",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "role_skill",
+          "defName": "技能点",
+          "comment": "char类型数组，维护各种技能的等级，形如“000A0904”表示四项技能分别为0、10、9、4级。具体技能顺序另作安排。",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
+          "id": "90E42872-E0AF-4745-81DF-62EDF1F5EFB3",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        }
+      ],
+      "indexes": [],
+      "correlations": [],
+      "sysProps": {
+        "fieldInputSuggest": false,
+        "lePropOrient": "V",
+        "propShowFields": [
+          "N",
+          "K",
+          "T"
+        ],
+        "nameTemplate": "{defKey}[{defName}]"
+      },
+      "notes": {}
+    }
+  ]
 }
