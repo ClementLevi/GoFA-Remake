@@ -1,13 +1,13 @@
 #pragma once
 
 #ifndef __VECTOR
-    #define __VECTOR
     #include <vector>
+    #define __VECTOR
 #endif
 
 #ifndef __SHIP_H_
-    #define __SHIP_H_
     #include "SHIP.h"
+    #define __SHIP_H_
 #endif
 
 

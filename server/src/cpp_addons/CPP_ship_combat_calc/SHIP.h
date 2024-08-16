@@ -1,12 +1,12 @@
 #pragma once
 #ifndef __IOSTREAM
-    #define __IOSTREAM
     #include <iostream>
+    #define __IOSTREAM
 #endif
 
 #ifndef __VECTOR
-    #define __VECTOR
     #include <vector>
+    #define __VECTOR
 #endif
 
 #ifndef __SHIP_H_
