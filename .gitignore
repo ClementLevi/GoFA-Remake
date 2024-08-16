@@ -27,3 +27,4 @@ server/src/cpp_addons/CPP_ship_combat_calc/*.cmake
 /server/src/cpp_addons/CPP_ship_combat_calc/tests/CPP_Combat_Calculate_Tests.vcxproj
 /server/src/cpp_addons/CPP_ship_combat_calc/tests/CPP_Combat_Calculate_Tests.vcxproj.filters
 /.vscode
+/server/build
