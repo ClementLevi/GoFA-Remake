@@ -1,0 +1,33 @@
+@startuml S2C & C2S paradigms
+
+' This is the sequence diagram for both the C2S_RESTful_paradigm
+' and the S2C_Event_paradigm.
+' The C2S_RESTful_paradigm is triggered by the client sending a HTTP request
+' to the server.
+' The S2C_Event_paradigm is triggered by the server sending
+' an event to the client, afterward, the client sends a normal HTTP request
+' to the server.
+
+participant Client
+control EventManager as EvtMgr
+participant Server
+
+group "C2S_RESTful_paradigm, no event"
+    Client -> Server: Http Request
+    activate Server
+    Server -> Client: Response (C2S_RESTful_paradigm)
+    deactivate Server
+end group
+
+note right of Server: "At a random point, the server \ndecides to send a message or sth.
+group  "S2C_paradigm, event triggered"
+    Server --> EvtMgr: WebSocket: Invoke event
+    EvtMgr --> Client: WebSocket: Event with minimum data load
+    activate Client
+    Client -> Server: Normal HTTP Request
+    activate Server
+    Server -> Client: Response (S2C_Event_paradigm)
+    deactivate   Server
+    deactivate Client
+end group
+@enduml
