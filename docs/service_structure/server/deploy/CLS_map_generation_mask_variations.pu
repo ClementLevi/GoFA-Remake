@@ -1,0 +1,56 @@
+@startuml Variations of "Mask"
+
+interface "IMask" {
+    -Array<String> affecting_parameters
+    +readFileSync(String maskImagePath) -> IMask
+    +readFile(String maskImagePath, Function callback) -> IMask
+}
+
+class "PrimitiveGalaxyBuilder" as galaxy{
+    +Array<Array<Nebula>> primitive_galaxy
+    +apply_mask(IMask mask) -> void:
+}
+
+class "ExistenceMask"{}
+class "ColorMask"{}
+class "RssAbundanceMask"{}
+class "PosOffsetMask"{}
+class "CapacityMask"{}
+
+class "RssMask_EFF"{}
+class "RssMask_SIZE"{}
+class "RssMask_METAL"{}
+class "RssMask_GAS"{}
+class "RssMask_CRY"{}
+class "RssMask_GAS"{}
+class "RssMask_GAS"{}
+class "RssMask_CITADEL"{}
+
+apply_mask ()- galaxy
+galaxy - IMask
+
+IMask <|.. ColorMask
+IMask <|.. RssAbundanceMask
+IMask <|.. PosOffsetMask
+IMask <|.. ExistenceMask
+IMask <|.. CapacityMask
+
+RssAbundanceMask <|-- RssMask_EFF
+RssAbundanceMask <|-- RssMask_SIZE
+RssAbundanceMask <|-- RssMask_METAL
+RssAbundanceMask <|-- RssMask_GAS
+RssAbundanceMask <|-- RssMask_CRY
+RssAbundanceMask <|-- RssMask_GAS
+RssAbundanceMask <|-- RssMask_CITADEL
+
+
+legend top
+Mask read a grayscale image file and apply it to the galactic atlas generation.
+This enables us to draw a picture and let the universe forms according to our mind.
+遮罩读取灰度图像，并将其应用于星系地图生成。这使我们能够绘制一幅图，就让宇宙按照我们的想法形成。
+Masks affect the existence (generate or not), color, resource abundance, planets capacity,
+and position offset for certain posistion.
+遮罩影响特定位置星系的存在（生成或不生成），颜色，资源丰富度，行星容量，以及位置偏移量。
+end legend
+
+@enduml

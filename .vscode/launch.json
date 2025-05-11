@@ -1,20 +1,39 @@
 {
-    "version": "0.2.0",
-    "configurations": [
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "node.js Run Current File",
+      "program": "${file}",
+      "args": [],
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Run Script: start",
+      "request": "launch",
+      "command": "npm run start",
+      "cwd": "${workspaceFolder}\\server"
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "cwd": "d:/Code_Repos/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc",
+      "program": "d:/Code_Repos/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
         {
-            "type": "node",
-            "request": "launch",
-            "name": "node.js Run Current File",
-            "program": "${file}",
-            "args": [],
-            "console": "integratedTerminal"
-        },
-        {
-            "type": "node-terminal",
-            "name": "Run Script: start",
-            "request": "launch",
-            "command": "npm run start",
-            "cwd": "${workspaceFolder}\\server"
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
         }
-    ]
+      ]
+    }
+  ]
 }

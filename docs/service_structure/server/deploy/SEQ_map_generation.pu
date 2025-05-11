@@ -1,0 +1,108 @@
+@startuml Map Generation
+
+actor "CLI" as cli
+control "Main Generator" as main
+participant "File System" as fs
+participant "Primitive Galaxy Builder" as nb
+database "Map Persistence Storage" as db
+
+note over nb
+    "Primitive Galaxy" is the primitive base of the map.
+    Each "Nebula" is a instance of "Nebula" used to form a system.
+end note
+
+create main
+cli -> main : Request Map Generation
+activate main
+
+create nb
+main ->nb: Generate Galaxy
+activate nb
+nb -> nb: Generate Nebulae by\n"this.generate_base_galaxy(noise_generator)"
+nb -> nb: Walk this.nebulae to generate planets by\n"each_nebula.generate_primitive_planets(seed)"
+nb -> main: Inform primitive galaxy base generated
+deactivate nb
+
+loop If mask is needed to modify the galaxy for better visualization
+    main -> fs : Read Designated Grayscale Image
+    deactivate nb
+    activate fs
+    fs -> main : Return Grayscale Image
+    deactivate fs
+    main -> nb : Apply Image Masking
+    activate nb
+
+    nb -> nb: modify each nebula by applying\n"each_nebula.apply_mask(mask_value)"
+    nb -> main: Inform mask applied
+    deactivate nb
+end loop
+
+main -> nb : Call "this.finish_generation()" to convert\n"Primitive Galaxy Builder" to "Atlas" class
+activate nb
+nb -> main : Return "Atlas" class
+deactivate nb
+destroy nb
+
+main -> db : Store Generated Map
+activate db
+db -> main : Inform Map Stored
+deactivate db
+main -> cli : Inform Map Generation Complete
+deactivate main
+
+@enduml
+@startuml 地图生成流程图
+
+' Chinese version of the diagram above
+' 中文版流程图
+actor "CLI" as cli
+control "主生成器" as main
+participant "文件系统" as fs
+participant "原始银河生成器" as nb
+database "地图持久化存储" as db
+
+note over nb
+"原始银河" 是地图的基础。
+每个 "星云" 都是 "Nebula" 的实例，用于形成星系。
+end note
+
+create main
+cli -> main : 请求生成地图
+activate main
+
+create nb
+main ->nb: 生成银河
+activate nb
+nb -> nb: 通过 "this.generate_base_galaxy(noise_generator)" 生成星云
+nb -> nb: 遍历 this.nebulae 生成星球，通过 "each_nebula.generate_primitive_planets(seed)"
+nb -> main: 通知原始银河生成完成
+deactivate nb
+
+loop 按需对地图基底应用遮罩，以改善视觉效果
+    main -> fs : 读取指定灰度图像
+    deactivate nb
+    activate fs
+    fs -> main : 返回灰度图像
+    deactivate fs
+    main -> nb : 应用图像遮罩
+    activate nb
+
+    nb -> nb: 对每个星云进行修改，通过 "each_nebula.apply_mask(mask_value)"
+    nb -> main: 通知遮罩应用完成
+    deactivate nb
+end loop
+
+main -> nb : 调用 "this.finish_generation()" 将原始地图生成器转化为Atlas类
+activate nb
+nb -> main : 返回 "Atlas" 类
+deactivate nb
+destroy nb
+
+main -> db : 存储生成的地图
+activate db
+db -> main : 通知地图存储完成
+deactivate db
+main -> cli : 通知地图生成完成
+deactivate main
+
+@enduml

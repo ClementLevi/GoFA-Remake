@@ -1,19 +1,20 @@
-const path = require("path");
-const fs = require("fs");
+const child_process = require("child_process");
 
-function is_required() {
-    return "Application entry point can/should not be included!"
-}
-async function main() {
+if (require.main === module) {
     // 加载配置读取系统
     // Load Config Loader
     process.env.DOTENV_CONFIG_PATH = "./server/.env";
     const dotenv = require("dotenv");
-    const CONFIG = dotenv.config().error ?
-        (() => {
-            throw dotenv.config().error;
-        })() :
-        dotenv.config().parsed;
+    const CONFIG = dotenv.config().error
+        ? (() => {
+              throw dotenv.config().error;
+          })()
+        : dotenv.config().parsed;
+    // TS check cannot tell that 'throw dotenv.config().error;' above has prevented CONFIG from being undefined.
+    // TS 检查看不出上面的语句已经可以防止 CONFIG 未定义。
+    if (!CONFIG) {
+        throw new Error("Failed to load config file. Now exiting...");
+    }
 
     // 加载命令行系统
     // Load Command Line System
@@ -30,15 +31,12 @@ async function main() {
             "-n, --new",
             "Create a new server. This will invoke world generator"
         )
-        .option("-h, --help", program.help());
+        .option("-h, --help", "display help file", program.help())
+        .option("-e,", "test", (v) => {
+            console.log("test " + v);
+        });
 
     program.parse(process.argv);
     const OPTS = program.opts();
-}
-
-if (require.main === module) {
-    main();
-} else {
-    let ret = is_required();
-    module.exports = ret;
+    
 }

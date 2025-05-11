@@ -1,0 +1,42 @@
+@startuml Enumerates used in Atlas
+
+'D:\Code_Repos\GoFA-Remake\server\services\GoFA-Remake\game_entities\atlas\system\System.js
+enum ENUM_SYSTEM_COLOR {
+    PINK : 0
+    RED : 1
+    ORANGE : 2
+    YELLOW : 3
+    LIME : 4
+    GREEN : 5
+    WATER : 6
+    BLUE : 7
+    PURPLE : 8
+    WHITE : 9
+    BLACK_HOLE : 10
+}
+
+' server\services\GoFA-Remake\game_entities\atlas\mask\ENUM_MASK_TYPE.js
+enum ENUM_MASK_TYPE {
+    UNDEFINED : 0
+    COLOR : 1
+    RSS_ABUNDANCE : 2
+    POS_OFFSET : 3
+    CAPACITY : 4
+    EXISTENCE : 5
+}
+
+' server\services\GoFA-Remake\game_entities\atlas\planet\Planet.js
+enum ENUM_PLANET_TYPE {
+    OCEANIC : 0
+    ICY : 1
+    VOLCANIC : 2
+    ROCKY : 3
+    DESERT : 4
+    JUNGLE : 5
+    RED_CIT : 6
+    YELLOW_CIT : 7
+    BLUE_CIT : 8
+    FRACTURED : 9
+}
+
+@enduml

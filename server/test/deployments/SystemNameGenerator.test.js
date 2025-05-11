@@ -3,7 +3,7 @@ const assert = require("chai").assert;
 const { describe, it, beforeEach } = require("mocha");
 const { expect } = require("chai");
 const { SystemNameGenerator } = require(path.resolve(
-    "deployments/SystemNameGenerator.js"
+    "services/GoFA-Remake/game_entities/atlas/system/SystemNameGenerator.js"
 ));
 
 describe("NameGenerator", function() {

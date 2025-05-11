@@ -1,0 +1,45 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "version": {
+            "type": "string",
+            "description": "版本号"
+        },
+        "buildings": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "建筑的名称",
+                        "minLength": 1
+                    },
+                    "queuable": {
+                        "type": "boolean",
+                        "description": "建筑是否可以排队生产"
+                    },
+                    "costs": {
+                        "type": "array",
+                        "items": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer",
+                                "description": "每个等级的建筑升级成本，依次为金属、燃气、水晶",
+                                "minimum": 0
+                            },
+                            "maxItems": 3,
+                            "minItems": 3
+                        },
+                        "description": "每个等级的建筑升级成本",
+                        "minItems": 20
+                    }
+                },
+                "required": ["name", "costs"]
+            }
+        }
+    },
+    "required": ["buildings", "version"],
+    "additionalProperties": false
+}

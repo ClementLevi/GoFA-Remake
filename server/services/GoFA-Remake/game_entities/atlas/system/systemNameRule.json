@@ -9,8 +9,17 @@
         "A", "I", "U", "E", "O"
     ],
 
-    "body": [
+    "neck": [
+        "",
         "a", "ab", "ac", "ad", "ae", "af", "ag", "ah", "ai", "ack", "an", "am", "ap", "ar", "as", "at", "au", "aw", "ax", "ay", "az",
+        "e", "es", "eb", "ed", "et", "en", "em", "el", "ee", "eg", "eh", "ei", "eck", "eo", "eu", "ez",
+        "io", "ig", "ik", "ib", "il", "im", "in", "ing", "ip", "iq", "ir", "is", "iss", "it", "iv", "ix", "iz", "ick",
+        "oi", "ob", "ock", "od", "odd", "of", "og", "oug", "oh", "ok", "ol", "om", "on", "ool", "oq", "or", "os", "oss", "ot", "ou", "ov", "ox", "oy", "oz",
+        "ua", "ub", "ud", "uf", "ug", "uh", "ui", "uk", "ul", "um", "un", "up", "ur", "url", "us", "ut", "uv", "ux", "uy", "uz"
+    ],
+    "body": [
+        ""
+        ,"a", "ab", "ac", "ad", "ae", "af", "ag", "ah", "ai", "ack", "an", "am", "ap", "ar", "as", "at", "au", "aw", "ax", "ay", "az",
         "e", "es", "eb", "ed", "et", "en", "em", "el", "ee", "eg", "eh", "ei", "eck", "eo", "eu", "ez",
         "io", "ig", "ik", "ib", "il", "im", "in", "ing", "ip", "iq", "ir", "is", "iss", "it", "iv", "ix", "iz", "ick",
         "oi", "ob", "ock", "od", "odd", "of", "og", "oug", "oh", "ok", "ol", "om", "on", "ool", "oq", "or", "os", "oss", "ot", "ou", "ov", "ox", "oy", "oz",

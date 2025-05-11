@@ -1,0 +1,11 @@
+@startuml Modifier
+interface IModifier {
+    +string name
+    +int lv
+    {abstract} +List<?> targets
+
+    ---
+    +getValue() : float
+}
+
+@enduml

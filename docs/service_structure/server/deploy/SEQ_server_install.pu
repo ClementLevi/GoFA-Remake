@@ -1,0 +1,22 @@
+@startuml Server Install Sequence
+
+box "Core Server"
+    participant "Server Daemon" as dm
+    participant "logger" as log
+    participant "Web Connections Manager" as web
+    participant "Rules Manager" as rm
+    participant "File Manager" as fs
+    participant "Event Manager" as event
+end box
+
+box "External Microservices"
+    collections "Email Server" as em
+    collections "Lobby Server" as ls
+    database "Database" as db
+end box
+
+
+create log
+dm --> log: start
+activate log
+@enduml

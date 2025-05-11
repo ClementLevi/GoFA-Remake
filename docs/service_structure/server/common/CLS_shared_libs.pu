@@ -1,0 +1,15 @@
+@startuml Image
+class Image {
+    - String filePath
+    - Number width
+    - Number height
+    - Array data
+    + constructor(String filePath)
+    + load(): Promise
+    + getPixel(Number x, Number y): Pixel
+    + setPixel(Number x, Number y, Pixel pixel): void
+    + resize(Number width, Number height): Image
+    + toGrayscale(): Image
+    + save(String filePath): void
+}
+@enduml

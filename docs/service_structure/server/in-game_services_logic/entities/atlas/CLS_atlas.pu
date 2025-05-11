@@ -1,0 +1,126 @@
+@startuml Game Map Relative Concepts and Classes
+
+legend
+    This diagram won't show the relationships between the classes
+    For relationships, please refer to: "docs\service_structure\server\deploy\CLS_map_generation.pu"
+    本图表不展示类之间的关系，请参阅： "docs\service_structure\server\deploy\CLS_map_generation.pu"
+end legend
+
+package "Generating Concepts"{
+    class PrimitiveGalaxyBuilder{
+        - Array<Array<Nebula>> galaxy
+        - Array<IMask> masks
+        + constructor(Number width, Number height)
+        + generate_base_galaxy(NoiseGenerator generator): void
+        + apply_all_masks(void): void
+        + apply_mask(IMask mask): void
+        + apply_mask(Number index): void    // apply storaged mask at index
+        + finish_galaxy_generation(): Atlas
+    }
+    class Nebula{
+        - Array<PrimitivePlanet> planets
+        - Number seed
+        + apply_mask_value(value): void
+        + generate_primitive_planet(): void
+        + finish_system_generation(): System
+    }
+    class PrimitivePlanet{
+        + apply_mask_value(value): void
+        + finish_planet_generation(): Planet
+    }
+
+
+}
+package "Generated Map"{
+
+    class Atlas {
+        - Array<System> atlas
+        + save()
+        + get_chunck(Number x, Number y)
+    }
+
+    class System {
+        +uuid  string
+        +options  string
+        +Pos  Pos2d
+        +name  string
+        +appearance  string
+        +size  int
+        +color  int
+        +heat  int
+        +is_occupied  boolean
+        +controlled_by  object
+        +is_name_modified  boolean
+        +display_name  string
+        +getPos()  Pos2d
+        +getName()  string
+        +getHeat()  int
+        +getDistance(other_system System) : float
+        +setName(name string) : void
+        +offset(e float) : void
+    }
+
+    class Planet {
+
+    }
+}
+
+package "Interfaces"{
+    interface ISystem {
+        -uuid string
+        -options string
+        -Pos Pos2d
+        -name  string
+        -appearance  string
+        -size  int
+        -color  int
+        -heat  int
+        -is_occupied  boolean
+        -controlled_by  object
+        -is_name_modified  boolean
+        -display_name  string
+        +getPos() : Pos2d
+        +getName() : string
+        +getHeat() : int
+        +getDistance(other_system ISystem) : float
+        +setName(name string) : void
+        +offset(e float) : void
+    }
+    interface IPlanet{
+        +UUID id
+        +String name
+        +Number size
+        +Number rssMetal
+        +Number rssGas
+        +Number rssCrystal
+        +Number efficiency
+        +ENUM_PLANET_TYPE type
+    }
+    interface IMask{
+        -Image image
+        -ENUM_MASK_TYPE type
+        -Symbol affect_target
+        -ENUM_MASK_OPERATION affect_operation
+        -Number[] mask_value
+        +async load_image(String path): Promise
+        +gen_2d_mask(Number x, Number y): Array<Array<Number>>
+        +gen_3d_mask(Number x, Number y, Number z): Array<Array<Array<Number>>>
+    }
+
+    enum ENUM_MASK_OPERATION{
+        INCREMENT_MAX: 'increment_max',
+        INCREMENT_MIN: 'increment_min',
+        RANDOM_INCREMENT_MAX: 'random_increment_max',
+        RANDOM_INCREMENT_MIN: 'random_increment_min',
+        SET_VALUE: 'set_value',
+        RANDOM_VALUE_FROM_RANGE: 'random_value_from_range',
+    }
+
+    interface "NoiseGenerator" as noise{
+        +generate2D(Number x, Number y): Array<Array<Number>>
+        +generate3D(Number x, Number y, Number z): Array<Array<Array<Number>>>
+    }
+}
+
+
+@enduml

@@ -1,0 +1,125 @@
+@startuml Fleet Combat Arguments
+
+' This class is used to store the arguments for fleet combat.
+' And all arguments are transferred to node C++ addon for calculation.
+
+
+class EventCombat {
+    ' Metadata
+    - uuid event_id
+    - uuid location
+    - timestamp time
+    - EnumCombatStatus status
+    ---
+    ' Arguments
+    +combatParticipants: List<CombatParticipant>
+
+}
+
+enum EnumCombatStatus{
+    PENDING = 0
+    CALCULATING = 1
+    ATK_WON = 2
+    DEF_WON = 3
+}
+
+class CombatParticipant {
+    +List<commander>: commanders
+    +List<BattlefieldEnvironmentModifier> environment_modifiers
+}
+
+class BattlefieldEnvironmentModifier{
+
+
+}
+
+class Commander{
+    +int lv
+    +List<CommanderSkills> skills
+    +List<Fleet> fleets
+    +uuid alliance_id
+}
+
+class CommanderSkill{
+    +EnumCommanderSkill name
+    +int lv
+}
+
+enum EnumCommanderSkill{
+    SNIPER
+    LANDLORD
+    FLEET_COMMANDER
+    SQUADRON_LEADER
+    CARGO_MANAGER
+
+}
+
+class Fleet {
+    -uuid departing_planet
+    +List<carrier>: carriers
+}
+
+interface ICarrier {
+    // 航母的属性和方法
+    +List<IShip> ships
+    +List<CarrierModifier> modifiers
+
+    {abstract} +applyModifiers()
+    {abstract} -applyModifier(ICarrierModifier modifier)
+}
+
+class CarrierModifier {
+    // 航母加值对象
+    +string type: <"ATK"|"DEF"|"SPD">
+    +int lv
+}
+
+interface IShip {
+    // 船只的属性和方法
+    +EnumShipType type
+    +int amount
+    +float hp
+    +float attack
+    +float shield
+    +float precision
+    +List<ILoadable> cargo
+}
+
+interface ILoadable {
+    +EnumLoadableType name
+    +int amount
+}
+
+enum EnumLoadableType{
+    METAL
+    GAS
+    CRYSTAL
+    ARMY
+    SCOUT_DRONE
+}
+enum EnumShipType{
+    F1: Fighter1
+    F2: Fighter2
+    B1: Bomber1
+    B2: Bomber2
+    I1: Interceptor1
+    I2: Interceptor2
+    C1: Cargo1
+    C2: Cargo2
+}
+
+' 关系
+EventCombat "1" *-- "2" CombatParticipant : 包含
+EventCombat "1" *-- "1" EnumCombatStatus : 状态
+CombatParticipant "1" o-- "*" Commander : 包含
+CombatParticipant "1" *-- "*" BattlefieldEnvironmentModifier : 包含
+Commander *-- Fleet : 包含
+Commander "1" *-- "*" CommanderSkill : 包含
+CommanderSkill "1" *-- "*" EnumCommanderSkill : 技能类型
+Fleet o-- ICarrier : 包含
+ICarrier o-- IShip : 包含
+IShip "1" *-- "*" EnumShipType : 类型
+ICarrier "1" *-- "*" CarrierModifier : 包含
+ICarrier "1" *-- "*" ILoadable : 包含
+ILoadable "1" *-- "*" EnumLoadableType : 类型
+@enduml

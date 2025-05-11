@@ -1,0 +1,41 @@
+@startuml Server Components Division
+legend top
+Server runs on a event bus, which is the main communication channel between the different components.
+
+end legend
+
+package "Core Server" {
+
+    [Scheduled Task Manager]
+    [Event Manager]
+    [Logger]
+    [Server Daemon]
+    [Database Manager]
+    [Game Logic Worker]
+    [Web Connection Manager]
+    [Command Line Interface]
+    [Game Rules Manager]
+
+    interface EventsDatabase
+    interface EventsConnection
+    interface EventsCLI
+    interface EventsRules
+    () EventsAnything as anyEv
+
+    [Scheduled Task Manager] ..> [Event Manager] : manages
+
+
+
+    [Web Connection Manager] ..> anyEv : produces callbacks
+    [Command Line Interface] ..> EventsCLI : produces
+    [Game Rules Manager] ..> EventsRules : produces
+
+    [Logger] <.. anyEv : Logs everything needs to log
+    [Server Daemon] ..> EventsConnection : consumes
+    [Server Daemon] <.. EventsCLI : responds
+    [Server Daemon] ..> EventsRules : consumes
+
+    [Game Logic Worker] ..> [Database Manager] : reads/writes
+    EventsDatabase <.. [Database Manager]
+}
+@enduml

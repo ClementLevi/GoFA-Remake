@@ -1,0 +1,104 @@
+@startuml Map Generation Related Classes
+' This diagram only shows necessary attributes and methods.
+' For more details , please refer to "docs\service_structure\server\in-game_services_logic\entities\atlas\CLS_atlas.pu"
+' 本图仅显示必要的属性和方法。
+' 如需详细信息，请参阅 "docs\service_structure\server\in-game_services_logic\entities\atlas\CLS_atlas.pu"
+package "Generating Map" as ging{
+
+    class "PrimitiveGalaxyBuilder" as galaxy{
+        - Array<Array<Nebula>> galaxy
+        - Array<IMask> masks
+        + constructor(Number width, Number height)
+        + generate_base_galaxy(NoiseGenerator generator): void
+        + apply_all_masks(void): void
+        + apply_mask(IMask mask): void
+        + apply_mask(Number index): void    // apply storaged mask at index
+        + finish_galaxy_generation(): Atlas
+    }
+    note left of galaxy
+    generate_base_galaxy() generates a series of 2d arrays of numbers,
+    which defines the appearace, and richness of resources of the systems.
+    generate_base_galaxy()方法会生成一系列的2D数组，它们决定了星系的外观和资源丰度。
+    To be more specific, the systems generate their stats based on the values
+    and the stats take effect in the random number generation process by adding or
+    multiplying the values.
+    具体来说，星系生成的数据是基于这些数值的，它们在生成的随机数上作为加值或乘法系数。
+    end note
+
+    class Nebula {
+        - Array<PrimitivePlanet> planets
+        - Number seed
+        + apply_mask_value(value): void
+        + generate_primitive_planet(): void
+        + finish_system_generation(): System
+    }
+
+    note left of Nebula
+    apply_mask_value(value) affects both the nebula and its primitive planets,
+    and is usually called by the "PrimitiveGalaxyBuilder" class that owns it.
+    apply_mask_value(value) 同时影响星云和原始星球，一般由“PrimitiveGalaxyBuilder”类调用
+    endnote
+    class "PrimitivePlanet" as pp{
+        + apply_mask_value(value): void
+        + finish_planet_generation(): Planet
+    }
+    note left of pp
+    apply_mask_value(value) is usually called by the Nebula class that owns it.
+    apply_mask_value(value) 一般由其所属的Nebula类遍历调用
+    endnote
+}
+package "Generated Map" as ged{
+    class Atlas{
+        - Array<System> atlas
+    }
+    class System{}
+    class Planet{}
+}
+interface IPlanet{
+    +UUID id
+    +String name
+    +Number size
+    +Number rssMetal
+    +Number rssGas
+    +Number rssCrystal
+    +Number efficiency
+    +ENUM_PLANET_TYPE type
+}
+interface IMask{}
+interface "NoiseGenerator" as noise{
+    +generate2D(Number x, Number y): Array<Array<Number>>
+    +generate3D(Number x, Number y, Number z): Array<Array<Array<Number>>>
+}
+interface ISystem{}
+
+legend left
+Sector is not a class, but a concept in the code.
+Although systems are retrieved by clients from the database in form of "sectors",
+they are not stored in the database as such.
+The concept of "sector" is used to limit the amount of data that needs to be retrieved
+from the database and processed by the server, by limiting the query to a certain area
+by windowing a target position range.
+This window is defined by the client camera/viewport center posistion of the map.
+星区不是一个类，而只是一个概念。
+尽管客户端从数据库取数据时，星系会被并作“星区”，但它们不会这样存储在数据库中。
+“星区”这个概念用于限制需要检索的数据量，
+它将星系数据查询按坐标范围限制在某个区域，从数据库中获取并由服务器处理。
+此窗口范围由地图的客户端摄像头/视口中心位置确定。
+end legend
+
+galaxy "1" o-- "*" Nebula
+Nebula "1" o-- "*" pp
+galaxy --> IMask: uses as parameter
+noise <-- galaxy: uses as parameter
+
+pp ..|> IPlanet
+IPlanet <|. Planet
+Nebula ..|> ISystem
+ISystem <. System
+
+ging "1" ---> "1" ged: becomes after generation complete
+
+Atlas "1" o-- "*" System
+System "1" o-- "*" Planet
+
+@enduml
