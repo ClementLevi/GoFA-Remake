@@ -5,7 +5,7 @@ const IGoFAEvent = require(__dirname + "/IGoFAEvent");
 class PrioritizedEvent extends IGoFAEvent {
     constructor(priority) {
         super();
-        this.priority = this.schedule?.;
+        this.priority = this.schedule?.timeLeft;
     }
 }
 
