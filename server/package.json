@@ -37,7 +37,7 @@
     "scripts": {
         "test": "mocha --recursive",
         "server-install": "node ./deployments/install.js",
-        "start": "node ./services/GoFA-Remake/daemon/daemon.js",
+        "start": "node ./main.js",
         "doc": "jsdoc -r -c jsdoc.json -d ./docs/JsDoc/out/"
     },
     "repository": {

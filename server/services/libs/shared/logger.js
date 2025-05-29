@@ -3,6 +3,7 @@ const chalk = require("chalk");
 const ls = require("log-symbols");
 const ora = require("ora");
 const moment = require("moment");
+const singleton = require(__dirname + "/Singleton");
 
 // console.log(ls.success, chalk.yellow("YEAH!"));
 // console.log(ls.error, chalk.red("SAD"));
@@ -108,8 +109,8 @@ class Logger {
         }
     }
 }
-
-module.exports = { Logger };
+const LoggerInstance = singleton(new Logger());
+module.exports = LoggerInstance;
 
 // 使用示例
 if (require.main === module) {
