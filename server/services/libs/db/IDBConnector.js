@@ -1,10 +1,10 @@
-const dotnet = require("dotnet");
+const dotenv = require("dotenv");
 const path = require("path");
-const sql = require("sqlite3");
+const sqlite3 = require("sqlite3");
 
-class DB {
+class IDBConnector {
     constructor() {
-        this.db = new sql.Database(path.join(__dirname, "GoFA.db"));
+        this.db = new sqlite3.Database(path.join(__dirname, "GoFA.db"));
     }
     run(query, params)   {}
     get(query, params)   {}
@@ -14,4 +14,4 @@ class DB {
     close()              {}
 }
 
-module.exports = DB;
+module.exports = IDBConnector;
