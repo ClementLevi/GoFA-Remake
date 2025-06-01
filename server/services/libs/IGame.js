@@ -11,19 +11,43 @@
  * @method {void} tick - called every tick.
  */
 const Log = require(__dirname + "/shared/logger");
+/**
+ * @abstract
+ * @interface IGame
+ * @property {Enum<>} state - the current state of the game.
+ * @property {Array} eventBuses - the event buses of the game.
+ * @property {number} tickInterval - the interval of the game's tick.
+ */
 class IGame {
+    static stages = {
+        INIT: "init",
+        RUNNING: "running",
+        EXITING: "exiting",
+    };
+    /**
+     * @constructor
+     */
     constructor() {
         this.state = null;
         this.eventBuses = [];
         this.tickInterval = -1;
     }
-    getInstance(){return this}
-    onLoad(){}
-    onExit(){}
-    registerEventBus(){}
-    beforeTick(){}
-    tick(tickInterval=this.tickInterval) {
-        Log.info("IGame ticked.")
+    getInstance() {
+        return this;
+    }
+    init() {
+        this.state = IGame.stages.INIT;
+        // do something
+    }
+    exit() {
+        this.state = IGame.stages.EXITING;
+    }
+    registerEventBus(evb) {
+        this.eventBuses.push(evb);
+    }
+    beforeTick() {}
+    tick(tickInterval = this.tickInterval) {
+        Log.info("IGame ticked.");
     }
     setTickInterval(ms) {
         if (typeof ms !== "number") {
@@ -34,6 +58,5 @@ class IGame {
         }
         this.tickInterval = ms;
     }
-
 }
 module.exports = IGame;

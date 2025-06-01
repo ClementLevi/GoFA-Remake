@@ -1,19 +1,29 @@
 const log4js = require("log4js");
+const readline = require("readline");
 const chalk = require("chalk");
 const ls = require("log-symbols");
 const ora = require("ora");
 const moment = require("moment");
 const singleton = require(__dirname + "/Singleton");
 
-// console.log(ls.success, chalk.yellow("YEAH!"));
-// console.log(ls.error, chalk.red("SAD"));
 /**
  * @class Logger
- * @description Logger class for logging messages and displaying spinners. 用于记录消息和显示加载动画的Logger类。
+ * @description Logger class for logging messages and displaying spinners.
+ * Now includes command system functionality for console interaction.
+ * 用于记录消息和显示加载动画的Logger类，现在包含控制台交互的命令系统功能。
  */
 class Logger {
-    constructor(customConfig) {
+    /**
+     * Creates an instance of Logger.
+     * @param {Object} [customConfig={}] - Custom configuration object. 自定义配置对象。
+     */
+    constructor(customConfig = {}) {
         const defaultConfig = {
+            debug: {
+                color: "gray",
+                symbol: "star",
+                output: ["console", "file"],
+            },
             info: {
                 color: "blue",
                 symbol: "info",
@@ -33,7 +43,64 @@ class Logger {
 
         this.config = { ...defaultConfig, ...customConfig };
         this.logger = log4js.getLogger();
+        this.commands = {};
+
+        // Initialize command system
+        this.rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+            prompt: "[ GoFA ] > ",
+        });
+
+        // Register built-in commands
+        this.registerCommand("help", () => this._showHelp());
+        this.registerCommand("exit", () => process.exit());
+
+        this.rl.on("line", (input) => {
+            const [cmd, ...args] = input.trim().split(" ");
+            if (this.commands[cmd]) {
+                this.commands[cmd](args);
+            } else {
+                this.error(`Unknown command: ${cmd}`);
+            }
+            this.rl.prompt();
+        });
     }
+
+    /**
+     * Register a new command to the logger's command system.
+     * 向logger的命令系统注册一个新命令。
+     * @param {string} name - The command name. 命令名称。
+     * @param {function} handler - The command handler function. 命令处理函数。
+     */
+    registerCommand(name, handler) {
+        this.commands[name] = handler;
+    }
+
+    /**
+     * Register multiple commands to the logger's command system.
+     * 向logger的命令系统注册多个命令。
+     * @param {Object} commands - An object containing command names and their handlers.
+     * 包含命令名称和处理函数的对象。
+     */
+    registerCommandsBatch(commands) {
+        Object.entries(commands).forEach(([name, handler]) => {
+            this.registerCommand(name, handler);
+        });
+    }
+
+    /**
+     * Display help information for available commands.
+     * 显示可用命令的帮助信息。
+     * @private
+     */
+    _showHelp() {
+        this.info("Available commands:");
+        Object.keys(this.commands).forEach((cmd) => {
+            this.info(`- ${cmd}`);
+        });
+    }
+
     /**
      * Set the configuration for the logger.
      * 设置Logger的配置。
@@ -43,52 +110,76 @@ class Logger {
     setConfig(customConfig) {
         this.config = { ...this.config, ...customConfig };
     }
+
+    /**
+     * Log a debug message.
+     * 记录调试消息。
+     * @memberof Logger
+     * @param {string[]} message
+     */
+    debug(...message) {
+        this._log("debug", ...message);
+    }
+
     /**
      * Log an information message.
      * 记录信息消息。
      * @memberof Logger
-     * @param {string} message - The information message to log. 要记录的信息消息。
+     * @param {string[]} message - The information message to log. 要记录的信息消息。
      */
-
-    info(message) {
-        this.log("info", message);
+    info(...message) {
+        this._log("info", ...message);
     }
+
     /**
      * Log a warning message.
      * 记录警告消息。
      * @memberof Logger
-     * @param {string} message - The warning message to log. 要记录的警告消息。
+     * @param {string[]} message - The warning message to log. 要记录的警告消息。
      */
-    warn(message) {
-        this.log("warn", message);
+    warn(...message) {
+        this._log("warn", ...message);
     }
+
     /**
      * Log an error message.
      * 记录错误消息。
      * @memberof Logger
-     * @param {string} message - The error message to log. 要记录的错误消息。
+     * @param {string[]} message - The error message to log. 要记录的错误消息。
      */
-    error(message) {
-        this.log("error", message);
+    error(...message) {
+        this._log("error", ...message);
     }
+
     /**
      * Log a message with the specified level.
      * 显示带有指定文本的加载动画。
      * @memberof Logger
+     * @private
      * @param {string} level - The log level (info, warn, error).
-     * @param {string} message - The message to log.
+     * @param {string[]} message - The message to log.
      */
-    log(level, message) {
+    _log(level, ...message) {
         var time = moment().format("YYYY-MM-DD HH:mm:ss:SSS");
         const { color, symbol, output } = this.config[level];
 
-        if (output.includes("console")) {
-            console.log(chalk[color](`[${time} ${ls[symbol]} ]: ${message}`));
-        }
+        const logMessage = chalk[color](
+            `[${time} ${ls[symbol]} ]: ${message.join(" ")}`
+        );
+        // ! 有点卡
+        // TODO 性能问题
+        readline.cursorTo(process.stdout, 0);
+        readline.clearLine(process.stdout, 0);
+
+        // Output message without newline
+        process.stdout.write(logMessage + "\n");
+        // @ts-ignore 内部保留方法说是
+        this.rl._refreshLine();
         if (output.includes("file")) {
             this.logger[level](message);
         }
     }
+
     /**
      * Start a spinner with the specified text.
      * 显示带有指定文本的加载动画。
@@ -98,6 +189,7 @@ class Logger {
     startSpinner(text) {
         this.spinner = ora(text).start();
     }
+
     /**
      * Stop the currently running spinner.
      * 停止当前运行的加载动画。
@@ -108,12 +200,19 @@ class Logger {
             this.spinner.stop();
         }
     }
+    getInstance() {
+        return this;
+    }
 }
+
+// Export singleton instance
 const LoggerInstance = singleton(new Logger());
 module.exports = LoggerInstance;
 
 // 使用示例
 if (require.main === module) {
+    // console.log(ls.success, chalk.yellow("YEAH!"));
+    // console.log(ls.error, chalk.red("SAD"));
     const loggerInstance = new Logger();
 
     loggerInstance.info("This is an information message");
@@ -135,4 +234,7 @@ if (require.main === module) {
     });
 
     loggerInstance.info("This is a customized information message");
+    setInterval(() => {
+        loggerInstance.info("new line to interrupt your typing lol");
+    }, 1000);
 }
