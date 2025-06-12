@@ -30,3 +30,4 @@ server/src/cpp_addons/CPP_ship_combat_calc/*.cmake
 /server/build
 .vscode/launch.json
 /server/.env
+/.idea

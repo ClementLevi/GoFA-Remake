@@ -1,12 +1,14 @@
 {
   "version": "0.2.0",
   "configurations": [
+
     {
       "type": "node",
       "request": "launch",
       "name": "node.js Run Current File",
-      "program": "${file}",
-      "args": [],
+      "command": "node ${file}",
+      "args": ["--inspect-brk"],
+      "cwd": "${fileDirname}",
       "console": "integratedTerminal"
     },
     {
