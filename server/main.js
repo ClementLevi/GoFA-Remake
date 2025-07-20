@@ -38,7 +38,10 @@ class Main {
         // 2. 加载命令行系统  Load Command Line System
         this.logger = Log.getInstance();
         await this.regCommands();
-        // 3. 创建游戏实例  Create Game Instance
+        // 3. 加载数据库系统  Load Database System
+        this.db = require(path.resolve(__dirname, "./services/libs/db/Database"))(this.config.DB_TYPE, {})
+        // 3.1 数据库内需有合法的
+        // 4. 创建游戏实例  Create Game Instance
         this.game = GAME.getInstance();
         await this.game.init();
     }
@@ -47,6 +50,7 @@ class Main {
      * @private
      */
     async loadConfig() {
+        
         process.env.DOTENV_CONFIG_PATH = path.resolve(".env");
         const CONFIG = dotenv.config({
             path: process.env.DOTENV_CONFIG_PATH,
@@ -58,6 +62,7 @@ class Main {
             throw new Error("Failed to load config file. Now exiting...");
         }
         this.config = CONFIG;
+        return CONFIG;
         this.stage = Main.ENUM_STAGE.RUNNING;
     }
     /**
