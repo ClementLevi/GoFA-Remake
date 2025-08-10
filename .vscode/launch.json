@@ -6,7 +6,7 @@
       "type": "node",
       "request": "launch",
       "name": "node.js Run Current File",
-      "command": "node ${file}",
+      "program": "${file}",
       "args": ["--inspect-brk"],
       "cwd": "${fileDirname}",
       "console": "integratedTerminal"
@@ -18,24 +18,5 @@
       "command": "npm run start",
       "cwd": "${workspaceFolder}\\server"
     },
-    {
-      "name": "C/C++ Runner: Debug Session",
-      "type": "cppdbg",
-      "request": "launch",
-      "args": [],
-      "stopAtEntry": false,
-      "externalConsole": true,
-      "cwd": "d:/Code_Repos/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc",
-      "program": "d:/Code_Repos/GoFA-Remake/server/src/cpp_addons/CPP_ship_combat_calc/build/Debug/outDebug",
-      "MIMode": "gdb",
-      "miDebuggerPath": "gdb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for gdb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ]
-    }
   ]
 }
