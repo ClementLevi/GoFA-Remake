@@ -31,7 +31,17 @@ class ValueError extends Error {
     }
 }
 
+/**
+ * @description Configuration is not valid during some initialization processes.
+ */
+class ConfigError extends Error {
+    constructor(message) {
+        super(message);
+    }
+}
+
 module.exports = {
     AbstractClassError,
     ValueError,
+    ConfigError,
 };
