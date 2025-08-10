@@ -7,10 +7,32 @@ const moment = require("moment");
 const singleton = require(__dirname + "/Singleton");
 
 /**
+ * @typedef LoggerConfigEntry
+ * @property {string} color - The color of the message. 信息消息的颜色。
+ * @property {string} symbol - The symbol to display before the message. 信息消息前显示的符号。
+ * @property {("console" | string)[]} output - The output destinations for the message. 信息消息的输出目标。
+ */
+
+
+/**
+ * @typedef LoggerConfig
+ * @property {LoggerConfigEntry} [debug]
+ * @property {LoggerConfigEntry} [info]
+ * @property {LoggerConfigEntry} [warn]
+ * @property {LoggerConfigEntry} [error]
+ */
+
+
+
+/**
  * @class Logger
  * @description Logger class for logging messages and displaying spinners.
  * Now includes command system functionality for console interaction.
  * 用于记录消息和显示加载动画的Logger类，现在包含控制台交互的命令系统功能。
+ * @property {Object} config - The logger configuration. 日志记录器配置。
+ * @property {Object} logger - The log4js logger instance. 日志记录器实例。
+ * @property {Object} commands - The command system for the logger. 日志记录器的命令系统。
+ * @property {Object} [rl] - The readline interface for the logger. Required to be initialized in the initTerminal() method. 日志记录器的readline接口。需要在initTerminal()方法中初始化。
  */
 class Logger {
     /**
@@ -21,7 +43,7 @@ class Logger {
         const defaultConfig = {
             debug: {
                 color: "gray",
-                symbol: "star",
+                symbol: "info",
                 output: ["console", "file"],
             },
             info: {
@@ -44,8 +66,15 @@ class Logger {
         this.config = { ...defaultConfig, ...customConfig };
         this.logger = log4js.getLogger();
         this.commands = {};
-
-        // Initialize command system
+        this.spinner = null;
+    }
+    /**
+     * Initialize the readline interface for command input.
+     * 初始化readline接口以进行命令输入。
+     * @memberof Logger
+     * @public
+     */
+    initTerminal(){
         this.rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout,
@@ -63,7 +92,7 @@ class Logger {
             } else {
                 this.error(`Unknown command: ${cmd}`);
             }
-            this.rl.prompt();
+            this.rl?.prompt();
         });
     }
 
@@ -105,6 +134,7 @@ class Logger {
      * Set the configuration for the logger.
      * 设置Logger的配置。
      * @memberof Logger
+     * @public
      * @param {Object} customConfig - Custom configuration object. 自定义配置对象。
      */
     setConfig(customConfig) {
@@ -115,6 +145,7 @@ class Logger {
      * Log a debug message.
      * 记录调试消息。
      * @memberof Logger
+     * @public
      * @param {string[]} message
      */
     debug(...message) {
@@ -125,6 +156,7 @@ class Logger {
      * Log an information message.
      * 记录信息消息。
      * @memberof Logger
+     * @public
      * @param {string[]} message - The information message to log. 要记录的信息消息。
      */
     info(...message) {
@@ -135,6 +167,7 @@ class Logger {
      * Log a warning message.
      * 记录警告消息。
      * @memberof Logger
+     * @public
      * @param {string[]} message - The warning message to log. 要记录的警告消息。
      */
     warn(...message) {
@@ -145,6 +178,7 @@ class Logger {
      * Log an error message.
      * 记录错误消息。
      * @memberof Logger
+     * @public
      * @param {string[]} message - The error message to log. 要记录的错误消息。
      */
     error(...message) {
@@ -172,9 +206,10 @@ class Logger {
         readline.clearLine(process.stdout, 0);
 
         // Output message without newline
-        process.stdout.write(logMessage + "\n");
+        if (output.includes("console"))  process.stdout.write(logMessage + "\n");
         // @ts-ignore 内部保留方法说是
-        this.rl._refreshLine();
+        this.rl?._refreshLine();
+        // TODO 将有关日志记录的内容输出到文件，现在这种写法肯定不对。
         if (output.includes("file")) {
             this.logger[level](message);
         }
@@ -184,6 +219,7 @@ class Logger {
      * Start a spinner with the specified text.
      * 显示带有指定文本的加载动画。
      * @memberof Logger
+     * @public
      * @param {string} text - The text to display in the spinner. 要在加载动画中显示的文本。
      */
     startSpinner(text) {
@@ -234,7 +270,10 @@ if (require.main === module) {
     });
 
     loggerInstance.info("This is a customized information message");
-    setInterval(() => {
+    let loop = setInterval(() => {
         loggerInstance.info("new line to interrupt your typing lol");
     }, 1000);
+    setTimeout(() => {
+        clearInterval(loop);
+    },10000);
 }
