@@ -6,7 +6,8 @@
             "request": "launch",
             "name": "node.js 单文件调试",
             "program": "${workspaceFolder}/${file}",
-            "skipFiles": ["<node_internals>/**"]
+            "skipFiles": ["<node_internals>/**"],
+            "console": "integratedTerminal"
         },
         {
             "type": "node-terminal",
