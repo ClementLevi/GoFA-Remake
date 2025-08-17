@@ -1,3 +1,4 @@
+const events = require("node:events");
 const log4js = require("log4js");
 const readline = require("readline");
 const chalk = require("chalk");
@@ -13,7 +14,6 @@ const singleton = require(__dirname + "/Singleton");
  * @property {("console" | string)[]} output - The output destinations for the message. 信息消息的输出目标。
  */
 
-
 /**
  * @typedef LoggerConfig
  * @property {LoggerConfigEntry} [debug]
@@ -21,8 +21,6 @@ const singleton = require(__dirname + "/Singleton");
  * @property {LoggerConfigEntry} [warn]
  * @property {LoggerConfigEntry} [error]
  */
-
-
 
 /**
  * @class Logger
@@ -34,12 +32,13 @@ const singleton = require(__dirname + "/Singleton");
  * @property {Object} commands - The command system for the logger. 日志记录器的命令系统。
  * @property {Object} [rl] - The readline interface for the logger. Required to be initialized in the initTerminal() method. 日志记录器的readline接口。需要在initTerminal()方法中初始化。
  */
-class Logger {
+class Logger extends events {
     /**
      * Creates an instance of Logger.
      * @param {Object} [customConfig={}] - Custom configuration object. 自定义配置对象。
      */
     constructor(customConfig = {}) {
+        super();
         const defaultConfig = {
             debug: {
                 color: "gray",
@@ -67,6 +66,23 @@ class Logger {
         this.logger = log4js.getLogger();
         this.commands = {};
         this.spinner = null;
+
+        // Listen to log events
+        this.on("command", (cmd, ...args) => {
+            this.commands[cmd] ? this.commands[cmd](args) : void 0;
+        });
+        this.on("debug", (message) => {
+            this._log("debug", message);
+        });
+        this.on("info", (message) => {
+            this._log("info", message);
+        });
+        this.on("warn", (message) => {
+            this._log("warn", message);
+        });
+        this.on("error", (message) => {
+            this._log("error", message);
+        });
     }
     /**
      * Initialize the readline interface for command input.
@@ -74,7 +90,7 @@ class Logger {
      * @memberof Logger
      * @public
      */
-    initTerminal(){
+    initTerminal() {
         this.rl = readline.createInterface({
             input: process.stdin,
             output: process.stdout,
@@ -206,7 +222,7 @@ class Logger {
         readline.clearLine(process.stdout, 0);
 
         // Output message without newline
-        if (output.includes("console"))  process.stdout.write(logMessage + "\n");
+        if (output.includes("console")) process.stdout.write(logMessage + "\n");
         // @ts-ignore 内部保留方法说是
         this.rl?._refreshLine();
         // TODO 将有关日志记录的内容输出到文件，现在这种写法肯定不对。
@@ -275,5 +291,16 @@ if (require.main === module) {
     }, 1000);
     setTimeout(() => {
         clearInterval(loop);
-    },10000);
+    }, 10000);
+
+    // Use event system to log messages
+    // this time use a new instance of the logger
+    const logger2 = new Logger();
+
+    logger2.emit("debug", "This is a debug message from event system");
+    logger2.emit("info", "This is an information message from event system");
+    logger2.emit("warn", "This is a warning message from event system");
+    logger2.emit("error", "This is an error message from event system");
+
+    logger2.emit("command", "help");    // TODO: not triggering
 }
