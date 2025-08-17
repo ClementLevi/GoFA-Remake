@@ -66,10 +66,17 @@ class Logger extends events {
         this.logger = log4js.getLogger();
         this.commands = {};
         this.spinner = null;
+        // Register built-in commands
+        this.registerCommand("help", () => this._showHelp());
+        this.registerCommand("exit", () => process.exit());
 
         // Listen to log events
         this.on("command", (cmd, ...args) => {
-            this.commands[cmd] ? this.commands[cmd](args) : void 0;
+            // this._log(
+            //     "debug",
+            //     `Command received: ${cmd}, args: ${args.join(", ")}`
+            // );
+            this.onCommand(cmd, ...args);
         });
         this.on("debug", (message) => {
             this._log("debug", message);
@@ -97,17 +104,9 @@ class Logger extends events {
             prompt: "[ GoFA ] > ",
         });
 
-        // Register built-in commands
-        this.registerCommand("help", () => this._showHelp());
-        this.registerCommand("exit", () => process.exit());
-
         this.rl.on("line", (input) => {
             const [cmd, ...args] = input.trim().split(" ");
-            if (this.commands[cmd]) {
-                this.commands[cmd](args);
-            } else {
-                this.error(`Unknown command: ${cmd}`);
-            }
+            this.onCommand(cmd, ...args);
             this.rl?.prompt();
         });
     }
@@ -132,6 +131,20 @@ class Logger extends events {
         Object.entries(commands).forEach(([name, handler]) => {
             this.registerCommand(name, handler);
         });
+    }
+
+    /**
+     * Execute a command with the specified arguments.
+     * 执行带有指定参数的命令。
+     * @param {string} cmd - The command name. 命令名称。
+     * @param  {...any} args - The arguments to pass to the command handler. 传递给命令处理函数的参数。
+     */
+    onCommand(cmd, ...args) {
+        if (this.commands[cmd]) {
+            this.commands[cmd](args);
+        } else {
+            this.error(`Unknown command: ${cmd}`);
+        }
     }
 
     /**
@@ -302,5 +315,5 @@ if (require.main === module) {
     logger2.emit("warn", "This is a warning message from event system");
     logger2.emit("error", "This is an error message from event system");
 
-    logger2.emit("command", "help");    // TODO: not triggering
+    logger2.emit("command", "help", 1, 2, 3);
 }
