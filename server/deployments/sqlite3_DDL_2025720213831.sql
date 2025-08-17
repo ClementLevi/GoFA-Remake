@@ -1,3 +1,5 @@
+-- 如果之前生成的代码里有AUTOINCREMENT关键字，请增加 PRIMARY KEY 关键字。
+-- 这行别传git
 DROP TABLE IF EXISTS player_account;
 CREATE TABLE player_account(
     player_ID TEXT(32) NOT NULL  , --账户ID
