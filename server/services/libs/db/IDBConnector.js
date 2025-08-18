@@ -1,5 +1,6 @@
 /**
  * @file IDBConnector.js
+ * @module IDBConnector
  */
 
 /**
@@ -53,7 +54,7 @@ class IDBConnector {
     /**
      * 测试数据库连接
      * @abstract
-     * @returns {Promise<void>}
+     * @returns {Promise<boolean>}
      */
     async test(){
         throw new Error("Must be implemented by subclass.");
