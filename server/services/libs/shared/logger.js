@@ -1,6 +1,7 @@
 const events = require("node:events");
-const log4js = require("log4js");
 const readline = require("readline");
+const util = require("node:util");
+const log4js = require("log4js");
 const chalk = require("chalk");
 const ls = require("log-symbols");
 const ora = require("ora");
@@ -8,6 +9,7 @@ const moment = require("moment");
 const singleton = require(__dirname + "/Singleton");
 
 /**
+ * @description The logger configuration entry. 日志记录器配置项。
  * @typedef LoggerConfigEntry
  * @property {string} color - The color of the message. 信息消息的颜色。
  * @property {string} symbol - The symbol to display before the message. 信息消息前显示的符号。
@@ -15,6 +17,7 @@ const singleton = require(__dirname + "/Singleton");
  */
 
 /**
+ * @description The logger configuration. 日志记录器配置。
  * @typedef LoggerConfig
  * @property {LoggerConfigEntry} [debug]
  * @property {LoggerConfigEntry} [info]
@@ -22,47 +25,54 @@ const singleton = require(__dirname + "/Singleton");
  * @property {LoggerConfigEntry} [error]
  */
 
+// TODO: 为命令的说明文本留出空间
+/**
+ * @description The command handler function. 命令注册表条目。
+ * @typedef {Object.<string, Function[]>} CommandRegistry
+ * @property {string} command - The command name. 命令名称。
+ * @property {Function[]} handlers - The command handler functions. 命令处理函数数组。
+ */
+
 /**
  * @class Logger
  * @description Logger class for logging messages and displaying spinners.
  * Now includes command system functionality for console interaction.
  * 用于记录消息和显示加载动画的Logger类，现在包含控制台交互的命令系统功能。
- * @property {Object} config - The logger configuration. 日志记录器配置。
+ * @property {LoggerConfig} config - The logger configuration. 日志记录器配置。
  * @property {Object} logger - The log4js logger instance. 日志记录器实例。
- * @property {Object} commands - The command system for the logger. 日志记录器的命令系统。
+ * @property {CommandRegistry} commands - The command system for the logger. 日志记录器的命令系统。
  * @property {Object} [rl] - The readline interface for the logger. Required to be initialized in the initTerminal() method. 日志记录器的readline接口。需要在initTerminal()方法中初始化。
  */
 class Logger extends events {
+    static DEFAULT_CONFIG = {
+        debug: {
+            color: "gray",
+            symbol: "info",
+            output: ["console"],
+        },
+        info: {
+            color: "white",
+            symbol: "info",
+            output: ["console"],
+        },
+        warn: {
+            color: "yellow",
+            symbol: "warning",
+            output: ["console"],
+        },
+        error: {
+            color: "red",
+            symbol: "error",
+            output: ["console"],
+        },
+    };
     /**
      * Creates an instance of Logger.
-     * @param {Object} [customConfig={}] - Custom configuration object. 自定义配置对象。
+     * @param {LoggerConfig} [customConfig={}] - Custom configuration object. 自定义配置对象。
      */
     constructor(customConfig = {}) {
         super();
-        const defaultConfig = {
-            debug: {
-                color: "gray",
-                symbol: "info",
-                output: ["console", "file"],
-            },
-            info: {
-                color: "blue",
-                symbol: "info",
-                output: ["console"],
-            },
-            warn: {
-                color: "yellow",
-                symbol: "warning",
-                output: ["console"],
-            },
-            error: {
-                color: "red",
-                symbol: "error",
-                output: ["console", "file"],
-            },
-        };
-
-        this.config = { ...defaultConfig, ...customConfig };
+        this.config = { ...Logger.DEFAULT_CONFIG, ...customConfig };
         this.logger = log4js.getLogger();
         this.commands = {};
         this.spinner = null;
@@ -72,10 +82,6 @@ class Logger extends events {
 
         // Listen to log events
         this.on("command", (cmd, ...args) => {
-            // this._log(
-            //     "debug",
-            //     `Command received: ${cmd}, args: ${args.join(", ")}`
-            // );
             this.onCommand(cmd, ...args);
         });
         this.on("debug", (message) => {
@@ -96,6 +102,7 @@ class Logger extends events {
      * 初始化readline接口以进行命令输入。
      * @memberof Logger
      * @public
+     * @returns {Logger} The logger instance.
      */
     initTerminal() {
         this.rl = readline.createInterface({
@@ -109,6 +116,7 @@ class Logger extends events {
             this.onCommand(cmd, ...args);
             this.rl?.prompt();
         });
+        return this;
     }
 
     /**
@@ -116,9 +124,15 @@ class Logger extends events {
      * 向logger的命令系统注册一个新命令。
      * @param {string} name - The command name. 命令名称。
      * @param {function} handler - The command handler function. 命令处理函数。
+     * @returns {Logger} The logger instance.
      */
     registerCommand(name, handler) {
-        this.commands[name] = handler;
+        // TODO: 增加说明文本入参
+        // ! 这将会改变方法签名，也会改变registerCommandBatch内部实现
+        this.commands[name]
+            ? this.commands[name].push(handler)
+            : (this.commands[name] = [handler]);
+        return this;
     }
 
     /**
@@ -126,11 +140,13 @@ class Logger extends events {
      * 向logger的命令系统注册多个命令。
      * @param {Object} commands - An object containing command names and their handlers.
      * 包含命令名称和处理函数的对象。
+     * @returns {Logger} The logger instance.
      */
     registerCommandsBatch(commands) {
         Object.entries(commands).forEach(([name, handler]) => {
             this.registerCommand(name, handler);
         });
+        return this;
     }
 
     /**
@@ -141,7 +157,9 @@ class Logger extends events {
      */
     onCommand(cmd, ...args) {
         if (this.commands[cmd]) {
-            this.commands[cmd](args);
+            this.commands[cmd].forEach((cb) => {
+                cb(args);
+            });
         } else {
             this.error(`Unknown command: ${cmd}`);
         }
@@ -153,6 +171,7 @@ class Logger extends events {
      * @private
      */
     _showHelp() {
+        // TODO: 增加说明文本展示
         this.info("Available commands:");
         Object.keys(this.commands).forEach((cmd) => {
             this.info(`- ${cmd}`);
@@ -165,9 +184,22 @@ class Logger extends events {
      * @memberof Logger
      * @public
      * @param {Object} customConfig - Custom configuration object. 自定义配置对象。
+     * @returns {Logger} The logger instance.
      */
     setConfig(customConfig) {
         this.config = { ...this.config, ...customConfig };
+        return this;
+    }
+
+    /**
+     * Set the default configuration for the logger.
+     * 简写设置默认配置。
+     * @memberof Logger
+     * @public
+     * @returns {Logger} The logger instance.
+     */
+    useDefaultConfig() {
+        return this.setConfig(Logger.DEFAULT_CONFIG);
     }
 
     /**
@@ -226,8 +258,15 @@ class Logger extends events {
         var time = moment().format("YYYY-MM-DD HH:mm:ss:SSS");
         const { color, symbol, output } = this.config[level];
 
+        // 使用util.inspect来处理对象，展开属性和方法
         const logMessage = chalk[color](
-            `[${time} ${ls[symbol]} ]: ${message.join(" ")}`
+            `[${time} ${ls[symbol]} ]: ${message
+                .map((msg) =>
+                    typeof msg === "object" && msg !== null
+                        ? util.inspect(msg, { depth: null })
+                        : msg
+                )
+                .join(" ")}`
         );
         // ! 有点卡
         // TODO 性能问题
@@ -310,10 +349,18 @@ if (require.main === module) {
     // this time use a new instance of the logger
     const logger2 = new Logger();
 
-    logger2.emit("debug", "This is a debug message from event system");
-    logger2.emit("info", "This is an information message from event system");
-    logger2.emit("warn", "This is a warning message from event system");
-    logger2.emit("error", "This is an error message from event system");
+    logger2.emit("debug", "logger2 debug event");
+    logger2.emit("info", "logger2 info event");
+    logger2.emit("warn", "logger2 warn event");
+    logger2.emit("error", "logger2 error event");
 
+    logger2
+        .registerCommand("test", (args) => {
+            logger2.debug("Command test called with arguments:", args);
+        })
+        .registerCommand("test", (args) => {
+            logger2.debug("Command test called twice:", args);
+        })
+        .emit("command", "test", "arg1", "arg2");
     logger2.emit("command", "help", 1, 2, 3);
 }
