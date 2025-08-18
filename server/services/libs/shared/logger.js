@@ -1,6 +1,6 @@
 const events = require("node:events");
 const readline = require("readline");
-const util = require("node:util");
+const {inspect} = require("node:util");
 const log4js = require("log4js");
 const chalk = require("chalk");
 const ls = require("log-symbols");
@@ -207,7 +207,7 @@ class Logger extends events {
      * 记录调试消息。
      * @memberof Logger
      * @public
-     * @param {string[]} message
+     * @param {any[]} message
      */
     debug(...message) {
         this._log("debug", ...message);
@@ -218,7 +218,7 @@ class Logger extends events {
      * 记录信息消息。
      * @memberof Logger
      * @public
-     * @param {string[]} message - The information message to log. 要记录的信息消息。
+     * @param {any[]} message - The information message to log. 要记录的信息消息。
      */
     info(...message) {
         this._log("info", ...message);
@@ -229,7 +229,7 @@ class Logger extends events {
      * 记录警告消息。
      * @memberof Logger
      * @public
-     * @param {string[]} message - The warning message to log. 要记录的警告消息。
+     * @param {any[]} message - The warning message to log. 要记录的警告消息。
      */
     warn(...message) {
         this._log("warn", ...message);
@@ -240,7 +240,7 @@ class Logger extends events {
      * 记录错误消息。
      * @memberof Logger
      * @public
-     * @param {string[]} message - The error message to log. 要记录的错误消息。
+     * @param {any[]} message - The error message to log. 要记录的错误消息。
      */
     error(...message) {
         this._log("error", ...message);
@@ -252,7 +252,7 @@ class Logger extends events {
      * @memberof Logger
      * @private
      * @param {string} level - The log level (info, warn, error).
-     * @param {string[]} message - The message to log.
+     * @param {any[]} message - The message to log.
      */
     _log(level, ...message) {
         var time = moment().format("YYYY-MM-DD HH:mm:ss:SSS");
@@ -263,7 +263,7 @@ class Logger extends events {
             `[${time} ${ls[symbol]} ]: ${message
                 .map((msg) =>
                     typeof msg === "object" && msg !== null
-                        ? util.inspect(msg, { depth: null })
+                        ? inspect(msg, { depth: null })
                         : msg
                 )
                 .join(" ")}`
@@ -322,6 +322,7 @@ if (require.main === module) {
     loggerInstance.info("This is an information message");
     loggerInstance.warn("This is a warning message");
     loggerInstance.error("This is an error message");
+    loggerInstance.debug(loggerInstance);
 
     loggerInstance.startSpinner("Loading...");
     setTimeout(() => {
