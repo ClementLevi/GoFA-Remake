@@ -1,6 +1,6 @@
 const events = require("node:events");
 const readline = require("readline");
-const {inspect} = require("node:util");
+const { inspect } = require("node:util");
 const log4js = require("log4js");
 const chalk = require("chalk");
 const ls = require("log-symbols");
@@ -84,17 +84,17 @@ class Logger extends events {
         this.on("command", (cmd, ...args) => {
             this.onCommand(cmd, ...args);
         });
-        this.on("debug", (message) => {
-            this._log("debug", message);
+        this.on("debug", (...message) => {
+            this._log("debug", ...message);
         });
-        this.on("info", (message) => {
-            this._log("info", message);
+        this.on("info", (...message) => {
+            this._log("info", ...message);
         });
-        this.on("warn", (message) => {
-            this._log("warn", message);
+        this.on("warn", (...message) => {
+            this._log("warn", ...message);
         });
-        this.on("error", (message) => {
-            this._log("error", message);
+        this.on("error", (...message) => {
+            this._log("error", ...message);
         });
     }
     /**
@@ -261,11 +261,27 @@ class Logger extends events {
         // 使用util.inspect来处理对象，展开属性和方法
         const logMessage = chalk[color](
             `[${time} ${ls[symbol]} ]: ${message
-                .map((msg) =>
-                    typeof msg === "object" && msg !== null
-                        ? inspect(msg, { depth: null })
-                        : msg
-                )
+                .map((msg) => {
+                    if (typeof msg === "string") {
+                        return msg;
+                    } else if (typeof msg === "function") {
+                        return msg.toString();
+                    } else if (typeof msg === "symbol") {
+                        return msg.toString();
+                    } else if (msg instanceof Error) {
+                        return msg.stack;
+                    } else if (typeof msg === "object") {
+                        return inspect(msg, { depth: null });
+                    } else if (msg === undefined) {
+                        return "undefined";
+                    } else if (msg === null) {
+                        return null;
+                    } else if (Number.isNaN(msg)) {
+                        return NaN;
+                    } else {
+                        return msg;
+                    }
+                })
                 .join(" ")}`
         );
         // ! 有点卡
@@ -350,6 +366,26 @@ if (require.main === module) {
     // this time use a new instance of the logger
     const logger2 = new Logger();
 
+    logger2.emit(
+        "error",
+        undefined,
+        null,
+        Symbol("test"),
+        function (a) {
+            return a + 1;
+        },
+        [1,1,4,5,1,4],
+        {
+            a: 1,
+            b: 2,
+            c: {
+                d: () => {
+                    return "d";
+                },
+            },
+        },
+        new Error("test error"),
+    );
     logger2.emit("debug", "logger2 debug event");
     logger2.emit("info", "logger2 info event");
     logger2.emit("warn", "logger2 warn event");
