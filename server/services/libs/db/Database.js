@@ -4,7 +4,7 @@ const { ConfigError } = require(path.resolve(__dirname, "../error/Error"));
 const Log = require(path.resolve(__dirname, "../shared/logger.js"));
 const singleton = require(path.resolve(__dirname, "../shared/Singleton.js"));
 // Implementations of IDBConnector
-const IDBConnector = require(__dirname + '/IDBConnector');
+const IDBConnector = require(__dirname + "/IDBConnector");
 
 /**
  * 数据库类型枚举
@@ -27,7 +27,6 @@ const ENUM_DB_TYPE = {
  * @property {string} [password] - 数据库密码，仅在使用MySQL或PostgreSQL时需要。
  */
 
-
 /**
  * 数据库连接器
  * @class
@@ -48,7 +47,7 @@ class Database {
         let DB_Impl = null;
         switch (DB_Type) {
             case ENUM_DB_TYPE.SQLITE: {
-                DB_Impl = require(__dirname + '/SqliteConnector.js');
+                DB_Impl = require(__dirname + "/SqliteConnector.js");
                 break;
             }
             default: {
@@ -58,16 +57,18 @@ class Database {
         try {
             this.db = new DB_Impl(DB_Config);
         } catch (e) {
-            throw new ConfigError("Database initialization arguments error:"+e.message);
+            throw new ConfigError(
+                "Database initialization arguments error: " + e.message
+            );
         }
     }
-    test(){
+    test() {
         return this.db.test();
     }
     init() {
         return this.db.init();
     }
-    close(){
+    close() {
         return this.db.close();
     }
     execute(sql, params, cb) {
@@ -76,7 +77,7 @@ class Database {
 }
 
 /**
- *
+ * @function __exports
  * @param {ENUM_DB_TYPE} arg_DB_Type
  * @param {DB_Config} arg_DB_Config
  * @returns {Database}
@@ -87,7 +88,16 @@ let __exports = (arg_DB_Type, arg_DB_Config) => {
 module.exports = __exports; // 需要参数的单例到调用者处实例化传入
 
 if (require.main === module) {
-    console.log("Database class definition");
-    const db = new Database("sqlite3", { filePath: __dirname + "/test.db" });
-    console.log("Database instance created:", db);
+    Log.info("Database class definition");
+    const db = new Database("sqlite3", {
+        filePath: path.resolve(__dirname, "./test.db"),
+    });
+    db.init()
+        .then(() => {
+            Log.info("Database instance created:\n", db);
+            Log.debug(db?.db?.db);
+        })
+        .catch((err) => {
+            Log.error(err);
+        });
 }

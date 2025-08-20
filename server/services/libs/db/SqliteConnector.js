@@ -29,7 +29,7 @@ const ENUM_DB_TYPE = {
 /**
  * @class
  * @description SQLite数据库连接器类，用于处理SQLite数据库连接。
- * @extends IDBConnector
+ * @implements {IDBConnector}
  */
 class SqliteConnector extends IDBConnector {
     /**
@@ -54,7 +54,9 @@ class SqliteConnector extends IDBConnector {
             (!fs.existsSync(DB_Config.filePath) ||
                 !fs.statSync(DB_Config.filePath).isFile())
         )
-            throw new Error("Database file is unreachable.");
+            Log.warn(
+                `Database file not found: ${DB_Config.filePath}. Creating a new one...`
+            );
 
         // 初始化实例属性
         this._db = null;
@@ -67,7 +69,7 @@ class SqliteConnector extends IDBConnector {
      * @description 不建议访问该受封装属性，建议在被调用时展示调用堆栈以便追踪可能的扩展兼容性问题
      */
     get db() {
-        Log.warn("Accessing protected attribute 'db':" + new Error().stack);
+        Log.warn("Accessing protected attribute 'db':\n" + new Error().stack);
         return this._db;
     }
     set db(v) {
@@ -75,17 +77,33 @@ class SqliteConnector extends IDBConnector {
     }
     /**
      * 测试数据库连接
-     * @abstract
      * @returns {Promise<boolean>}
      */
-    async test() {}
+    async test() {
+        return new Promise((resolve, reject) => {
+            if (!this._db)
+                return reject(
+                    new Error("Database connection is not initialized.")
+                );
+            this._db.get("SELECT 1", [], (err, row) => {
+                if (err) {
+                    Log.error(`Database test query error: ${err.message}`);
+                    return reject(err);
+                }
+                resolve(row !== undefined);
+            });
+        });
+    }
     /**
      *
+     * @returns {Promise<this>}
      */
     async init() {
         if (this._isInitialized) {
             Log.warn("Database already initialized");
-            return;
+            return new Promise((resolve, reject) => {
+                reject();
+            });
         }
 
         try {
@@ -94,7 +112,7 @@ class SqliteConnector extends IDBConnector {
                 await this._checkDatabaseFile();
             }
             // 2. 异步建立数据库连接
-            await new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 this._db = new sqlite3.Database(this._db_path, (err) => {
                     if (err) {
                         Log.error(`Database connection error: ${err.message}`);
@@ -103,7 +121,7 @@ class SqliteConnector extends IDBConnector {
                     }
                     Log.info(`Connected to the database '${this._db_path}'`);
                     this._isInitialized = true;
-                    resolve();
+                    resolve(this);
                 });
             });
         } catch (error) {
@@ -122,7 +140,8 @@ class SqliteConnector extends IDBConnector {
         return this._db.close();
     }
     /**
-     * 基于Sqlite3的all API执行查询。
+     * @description 基于Sqlite3的“all” API执行查询。
+     * @borrows sqlite3.Database.all as execute
      * @param {string} query
      * @param {any[]} [params]
      * @param {sqlite3Callback} [cb]
@@ -139,15 +158,19 @@ class SqliteConnector extends IDBConnector {
     }
     /**
      * 检查数据库文件是否存在且可读写
-     * @returns {Promise<void>}
+     * @returns {Promise<boolean>}
      * @private
      */
     async _checkDatabaseFile() {
+        let ret = false;
         try {
             // 检查文件是否存在且可读写
             await fs.access(
                 this._db_path,
-                fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK
+                fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK,
+                () => {
+                    ret = true;
+                }
             );
         } catch (err) {
             if (err.code === "ENOENT") {
@@ -161,6 +184,8 @@ class SqliteConnector extends IDBConnector {
                     `Error accessing database file: ${err.message}`
                 );
             }
+        } finally {
+            return ret;
         }
     }
 }
@@ -178,14 +203,24 @@ if (require.main === module) {
     sqliteConnector
         .init()
         .then(() => {
+            return sqliteConnector.test();
+        })
+        .then((result) => {
+            Log.info(`Database test result: ${result}`);
+        })
+        .then(() => {
             Log.info("Database initialized successfully.");
-            return sqliteConnector._db.each("SELECT sqlite_version();", info=>{
-                Log.info(`${info}`);
-            }); // TODO: 查不出版本来
+            return sqliteConnector._db.each(
+                "SELECT sqlite_version();",
+                (info) => {
+                    Log.info(`info: ${info}`);
+                }
+            ); // TODO: 查不出版本来
             // ! 使用受保护的属性 _db 仅用于测试目的
         })
-        .then((rows) => {
-            Log.info(`SQLite version: ${JSON.stringify(rows)}`);
+        .then(arg=> {
+            Log.info(`SQLite instance: `, arg);
+            // ? 这里的arg是sqlite3的Database实例
         })
         .catch((err) => {
             Log.error(`Error: ${err.message}`);
