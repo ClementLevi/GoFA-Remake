@@ -214,9 +214,9 @@ class SimplexNoiseGenerator extends INoiseGenerator {
 }
 
 module.exports = {
+    INoiseGenerator,
     PerlinNoiseGenerator,
     SimplexNoiseGenerator,
-    // You may add more noise generators here.
 };
 
 if (require.main === module) {
