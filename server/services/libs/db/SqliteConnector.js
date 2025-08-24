@@ -55,7 +55,7 @@ class SqliteConnector extends IDBConnector {
                 !fs.statSync(DB_Config.filePath).isFile())
         )
             Log.warn(
-                `Database file not found: ${DB_Config.filePath}. Creating a new one...`
+                `Database file not found: "${DB_Config.filePath}". Creating a new one...`
             );
 
         // 初始化实例属性
