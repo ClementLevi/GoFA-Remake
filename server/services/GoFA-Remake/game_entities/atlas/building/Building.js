@@ -1,4 +1,8 @@
-const path = require('path');
-const IBuilding = require(__dirname + '/IBuilding');
+const path = require("node:path");
+const IBuilding = require(path.resolve(__dirname, "./IBuilding"));
 
-class 
+class Building extends IBuilding {}
+module.exports = Building;
+
+if (require.main === module) {
+}
