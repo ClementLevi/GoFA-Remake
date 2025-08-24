@@ -1,7 +1,7 @@
-const path = require("path");
-const Image = require(path.resolve("services/libs/image/Image.js"));
+const path = require("node:path");
+const Image = require(path.resolve(__dirname,"../../../../libs/image/Image.js"));
 
-const ENUM_MASK_TYPE = require(__dirname + "/ENUM_MASK_TYPE.js");
+const ENUM_MASK_TYPE = require(path.resolve(__dirname, "./ENUM_MASK_TYPE.js"));
 module.exports = class IMask {
     /**
      * Mask operation is determined by its type,

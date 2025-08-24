@@ -1,24 +1,24 @@
 //@ts-check
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
-const Atlas = require(path.resolve(
-    "services/GoFA-Remake/game_entities/atlas/Atlas.js"
+const Atlas = require(path.resolve(__dirname, "../Atlas.js"));
+const Masks = require(path.resolve(__dirname, "../mask/Mask.js"));
+const Nebula = require(path.resolve(__dirname, "Nebula.js"));
+const Serializer = require(path.resolve(
+    __dirname,
+    "../../../../libs/shared/Serializer.js"
 ));
-const Masks = require(path.resolve(
-    "services/GoFA-Remake/game_entities/atlas/mask/Mask.js"
-));
-const Nebula = require(path.resolve(
-    "services/GoFA-Remake/game_entities/atlas/Generator/Nebula.js"
-));
-const Serializer = require(path.resolve("services/libs/shared/Serializer.js"));
-const NoiseGenerator = require(path.resolve(
-    "services/libs/shared/NoiseGenerator.js"
+const NoiseGeneratorModule = require(path.resolve(
+    __dirname,
+    "../../../../libs/generators/NoiseGenerator.js"
 ));
 
 class PrimitiveGalaxyBuilder {
-    constructor(ng = NoiseGenerator.PerlinNoiseGenerator) {
-        this.name = "Generator";
+    /**
+     * @param {import("../../../../libs/generators/NoiseGenerator.js").INoiseGenerator} ng 噪音生成器类
+     */
+    constructor(ng = NoiseGeneratorModule.PerlinNoiseGenerator) {
         this._ng = ng;
     }
 

@@ -1,12 +1,17 @@
+const Log = require(__dirname + "/../../../../services/libs/shared/logger");
 class Atlas {
     constructor(primitive_galaxy_builder) {
         this.atlas = [];
     }
 
+    async load(){
+        
+    }
+
     async save() {
-        console.log("Saving atlas");
+        Log.info("Saving atlas");
         return new Promise(() => {
-            console.log(`Atlas saved`);
+            Log.info(`Atlas saved`);
         });
     }
 }
