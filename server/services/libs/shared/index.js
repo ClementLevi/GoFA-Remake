@@ -1,21 +1,43 @@
 /**
- * 随机输出数组元素
- * Randomly choose an element from an array
- * @param {Array|String} list
- * @returns {*|Null} an element randomly chosen from given array or string
+ * 随机输出可迭代对象中的一个元素
+ * Randomly choose an element from an iterable object
+ * @param {Iterable} iterable - 可迭代对象
+ * @returns {*} - 随机选择的元素
  */
-module.exports.ranchoice = function ranchoice(list) {
-    if (!(list instanceof Array) && !(typeof list == "string")) {
-        throw new TypeError(
-            "argument `list` must be an instance of array or string"
-        );
+module.exports.ranchoice = function ranchoice(iterable) {
+    if (typeof iterable[Symbol.iterator] !== "function") {
+        throw new TypeError("argument `iterable` must be an iterable object");
     }
-    switch (list instanceof Array) {
-        case true:
-            return list[Math.floor(Math.random() * list.length)];
-        case false:
-            return list[Math.floor(Math.random() * list.length)];
+    const iterableArray = Array.from(iterable);
+    if (iterableArray.length === 0) {
+        return null;
     }
+    const randomIndex = Math.floor(Math.random() * iterableArray.length);
+    return iterableArray[randomIndex];
+};
+
+/**
+ * 随机弹出可迭代对象中的一个值
+ * Randomly pop an element from an iterable object
+ * @param {Iterable} iterable - 可迭代对象
+ * @returns {*} - 随机弹出的值
+ */
+module.exports.randomPop = function randomPop(iterable) {
+    if (typeof iterable[Symbol.iterator] !== "function") {
+        throw new TypeError("argument `iterable` must be an iterable object");
+    }
+    const iterableArray = Array.from(iterable);
+    if (iterableArray.length === 0) {
+        throw new Error("iterable is empty");
+    }
+    const randomIndex = Math.floor(Math.random() * iterableArray.length);
+    const randomValue = iterableArray[randomIndex];
+    if (iterable instanceof Set) {
+        iterable.delete(randomValue);
+    } else if (Array.isArray(iterable)) {
+        iterable.splice(randomIndex, 1);
+    }
+    return randomValue;
 };
 
 /**
