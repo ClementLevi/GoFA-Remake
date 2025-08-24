@@ -120,27 +120,6 @@ class NameGenerator {
     }
     /**
      * @throws {InitializationViolationError}
-     * @returns {Generator<String>} - 随机生成的名字
-     */
-    *yield() {
-        if (!this._is_initialized) {
-            throw new InitializationViolationError(
-                "Use `use_name_template` method to load name template first.",
-                "Then call async `generate` method to generate names."
-            );
-        }
-        if (this.namePool.size === 0) {
-            this._is_initialized = false; // 需要重新初始化
-            throw new InitializationViolationError(
-                "No unused name left. Use async `generate` method to generate names first."
-            );
-        }
-        while (this.namePool.size > 0) {
-            yield commonFunctions.randomPop(this.namePool);
-        }
-    }
-    /**
-     * @throws {InitializationViolationError}
      * @returns {string} - 随机生成的名字
      */
     pick() {
