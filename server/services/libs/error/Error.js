@@ -40,8 +40,18 @@ class ConfigError extends Error {
     }
 }
 
+/**
+ * @description Improper use of an object before initialization.
+ */
+class InitializationViolationError extends Error {
+    constructor(message) {
+        super(message);
+    }
+}
+
 module.exports = {
     AbstractClassError,
     ValueError,
     ConfigError,
+    InitializationViolationError,
 };
