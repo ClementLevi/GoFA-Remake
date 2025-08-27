@@ -1,6 +1,6 @@
 {
     "source": {
-        "include": ["deployments", "services","src"],
+        "include": ["deployments", "services", "server"],
         "includePattern": ".js$",
         "excludePattern": "(node_modules/|docs)"
     },
