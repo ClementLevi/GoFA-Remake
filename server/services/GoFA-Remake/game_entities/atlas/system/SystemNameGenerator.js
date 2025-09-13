@@ -85,8 +85,7 @@ class NameGenerator {
     }
     /**
      * 使用的命名模板，必须是满足{@link NameRule}结构的JSON文件
-     * @param {string|
-     * NameRule} template 要使用的JSON文件相对路径
+     * @param {string | NameRule} template 要使用的JSON文件相对路径
      * @see NameRule
      * @returns {Promise<NameGenerator>}
      */

@@ -1,6 +1,6 @@
 //@ts-check
-
-const IGoFAEvent = require(__dirname + "/IGoFAEvent");
+const path = require('node:path');
+const IGoFAEvent = require(path.resolve(__dirname, "./IGoFAEvent"));
 
 class PrioritizedEvent extends IGoFAEvent {
     constructor(priority) {
@@ -36,7 +36,10 @@ class PriorityQueue {
 module.exports = PriorityQueue;
 
 if (require.main === module) {
+    const Log = require(path.resolve(__dirname,"../../libs/shared/logger"));
     const pq = new PriorityQueue();
-    pq.push(new PrioritizedEvent(1));
     pq.push(new PrioritizedEvent(3));
+    Log.info(pq.getTopPriority());
+    Log.info(pq.pop());
+    Log.info(pq.isEmpty());
 }
