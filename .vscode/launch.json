@@ -15,6 +15,14 @@
             "request": "launch",
             "command": "npm run start",
             "cwd": "${workspaceFolder}\\server"
+        },
+        {
+            "type": "node",
+            "name": "GoFA-Remake Debug",
+            "request": "launch",
+            "program": "${workspaceFolder}/server/main.js",
+            "sourceMaps": true,
+            "cwd": "${workspaceFolder}\\server"
         }
     ]
 }
