@@ -244,6 +244,7 @@ class Logger extends events {
      */
     error(...message) {
         this._log("error", ...message);
+        console.trace();
     }
 
     /**
@@ -290,7 +291,7 @@ class Logger extends events {
         readline.clearLine(process.stdout, 0);
 
         // Output message without newline
-        if (output.includes("console")) process.stdout.write(logMessage + "\n");
+        if (output.includes("console")) console.log(logMessage)  //process.stdout.write(logMessage + "\n");
         // @ts-ignore 内部保留方法说是
         this.rl?._refreshLine();
         // TODO 将有关日志记录的内容输出到文件，现在这种写法肯定不对。
