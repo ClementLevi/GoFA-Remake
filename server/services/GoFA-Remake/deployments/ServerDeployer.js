@@ -1,14 +1,34 @@
-const fs = require("fs");
-const Log = require(__dirname + "/../../../services/libs/shared/logger");
-const IDBConnector = require(__dirname +
-    "/../../../services/libs/db/IDBConnector");
+const fs = require("node:fs");
 const path = require("node:path");
+
+/** @typedef {import ("../../../services/libs/shared/logger")} Log */
+const Log = require(path.resolve(
+    __dirname,
+    "../../../services/libs/shared/logger"
+));
+/** @typedef {import ("../../../services/libs/error/Error").ConfigError} ConfigError */
+const { ConfigError } = require(path.resolve(
+    __dirname,
+    "../../../services/libs/error/Error"
+));
+/** @typedef {import ("../../libs/db/IDBConnector")} IDBConnector */
+const IDBConnector = require(path.resolve(
+    __dirname,
+    "../../../services/libs/db/IDBConnector"
+));
+const PrimitiveGalaxyBuilder = require(path.resolve(
+    __dirname,
+    "../game_entities/atlas/generator/PrimitiveGalaxyBuilder.js"
+));
 // DDL Files
-const INSTALLATION_DDL = path.resolve("./server/deployments/testDDL.sql");
+const INSTALLATION_DDL = path.resolve(
+    path.resolve(__dirname, "../../../deployments/testDDL.sql")
+);
 
 /**
- * @typedef {import ("../../libs/db/IDBConnector").DB_Config} DB_Config
- * 从IDBConnector模块导入DB_Config类型定义
+ * @typedef {import ("../../libs/db/DB_Config.t")} DB_Config
+ * @typedef {import ("../../libs/db/Database")} DatabaseConstructor
+ * @typedef {import ("../../../main")} IMain
  */
 
 /**
@@ -17,30 +37,54 @@ const INSTALLATION_DDL = path.resolve("./server/deployments/testDDL.sql");
  */
 class ServerDeployer {
     static VALIDATE_DDL = `SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';`;
-    constructor(ctx) {
-        this.ctx = ctx;
-        this.DB = null;
-    }
     /**
      *
-     * @param {Function | IDBConnector} db 指定将要使用的数据库，如果传入构造器
-     * 则自行使用config创建新实例；如果传入实例则直接使用。
-     * @param {DB_Config | undefined} [config]
+     * @param {IMain} ctx
+     */
+    constructor(ctx) {
+        /** @type {IMain}  */
+        if (!ctx.db) throw new ConfigError("Database not initialized.");
+        this.ctx = ctx;
+        /** @type {ReturnType<DatabaseConstructor>} */
+        this.DB = this.ctx.db;
+        /** @type {boolean} */
+        this.isInitialized = false;
+    }
+
+    /**
+     *
      * @returns {this}
      */
-    useDB(db, config = void 0) {
-        if (typeof db === "function") {
+    init() {
+        if (this.isInitialized) return this;
+        this.DB.init()
+            .then(() => {
+                this.isInitialized = true;
+            })
+            .catch((err) => {
+                Log.error(err);
+                this.isInitialized = false;
+            });
+        return this;
+    }
+
+    /**
+     * @param {new (...args: any[]) => IDBConnector | IDBConnector} db 指定将要使用的数据库，
+     * 如果传入构造器则自行使用config创建新实例；如果传入实例则直接使用。
+     * @param {DB_Config} [config]
+     * @returns {this}
+     */
+    useDB(db, config) {
+        if (db instanceof Function) {
             this.DB = new db(config);
         } else {
             this.DB = db;
         }
-        this.config = config;
         return this;
     }
+
     /**
      * 校验所用数据库是否包含完整的游戏数据，这指的是数据库已经进行过完整的初始化，表结构完整，符合现版本所需。
-     * @private
-     * @synchronous
      * @returns {boolean}
      */
     validateExistingData() {
@@ -64,11 +108,13 @@ class ServerDeployer {
      */
     deploy() {
         Log.info("Deploying server...");
-        // 1. 创建数据库
+        // 1. 使用地图生成器创建地图
+        let map_builder = new PrimitiveGalaxyBuilder();
+        map_builder.generate_base_galaxy();
+        // 2. 创建数据库
         let DDL_SCHEMA = fs.readFileSync(INSTALLATION_DDL, "utf8");
         Log.info(DDL_SCHEMA);
         this.DB.execute(DDL_SCHEMA, []);
-        // 2. 使用地图生成器创建地图
         // 3. 序列化、持久化地图
         return this;
     }
@@ -76,7 +122,7 @@ class ServerDeployer {
      * 完成部署工作，关闭数据库连接。
      */
     finishDeploy() {
-        this.DB.close();
+        this.DB?.close();
     }
 }
 
@@ -85,38 +131,12 @@ module.exports = ServerDeployer;
 if (require.main === module) {
     const DB_PATH = path.resolve("./server/db/test_server.db");
     const DB_CONFIG = { filePath: DB_PATH };
-    let sd = new ServerDeployer();
-
-    /**
-     * @typedef  {import ("../../libs/db/Database")} DatabaseConstructor
-     */
     const DatabaseSingleton = require(path.normalize(
         __dirname + "/../../../services/libs/db/Database"
     ));
     let db = DatabaseSingleton("sqlite3", DB_CONFIG);
-    db.init()
-        .then(() => {
-            return db.test();
-        })
-        .then((e) => {
-            Log.info(`db.test() result: ${e}`);
-            sd.useDB(db).deploy();
-        })
-        .catch((err) => {
-            Log.error(`${err.message}\n${err.stack}`);
-        })
-        .finally(() => {
-            db.close(() => {
-                // TODO 这个从未触发，得研究一下
-                fs.unlink(DB_PATH, (err, data) => {
-                    if (err) {
-                        Log.error(
-                            `Failed to remove test database file: ${err.message}`
-                        );
-                        return;
-                    }
-                    Log.info("Test database file removed successfully: ", data);
-                });
-            });
-        });
+    db.init().then(() => {
+        let sd = new ServerDeployer({ db });
+        sd.deploy();
+    });
 }

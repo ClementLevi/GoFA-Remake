@@ -1,21 +1,15 @@
 const path = require("node:path");
+const fs = require("node:fs");
 const sqlite3 = require("sqlite3").verbose();
 const { ConfigError } = require(path.resolve(__dirname, "../error/Error"));
 const Log = require(path.resolve(__dirname, "../shared/logger.js"));
 const singleton = require(path.resolve(__dirname, "../shared/Singleton.js"));
 // Implementations of IDBConnector
-const IDBConnector = require(__dirname + "/IDBConnector");
+/** @typedef {import("./IDBConnector")} IDBConnector*/
+// const IDBConnector = require(path.resolve(__dirname, "./IDBConnector"));
 
-/**
- * 数据库类型枚举
- * @enum {string}
- * @readonly
- */
-const ENUM_DB_TYPE = {
-    SQLITE: "sqlite3",
-    //MYSQL: "mysql",
-    //POSTGRESQL: "postgresql",
-};
+/** @typedef {import("./ENUM_DB_TYPE.t")} ENUM_DB_TYPE */
+const ENUM_DB_TYPE = require(path.resolve(__dirname, "./ENUM_DB_TYPE.t"));
 
 /**
  * @typedef {object} DB_Config
@@ -44,10 +38,19 @@ class Database {
      * @throws {ConfigError} Database initialization arguments error. 数据库初始化参数错误
      */
     constructor(DB_Type, DB_Config) {
+        /** @type {boolean} */
+        this.isInitialized = false;
+        /** @type {IDBConnector?} */
         let DB_Impl = null;
+        /** @type {new DB_Impl() | null} */
+        this.db = null;
         switch (DB_Type) {
-            case ENUM_DB_TYPE.SQLITE: {
-                DB_Impl = require(__dirname + "/SqliteConnector.js");
+            case ENUM_DB_TYPE.SQLITE3: {
+                DB_Impl = require(__dirname + "/Sqlite3Connector.js");
+                break;
+            }
+            case ENUM_DB_TYPE.NODE_SQLITE: {
+                DB_Impl = require(__dirname + "/NodeSqliteConnector.js");
                 break;
             }
             default: {
@@ -58,19 +61,39 @@ class Database {
             this.db = new DB_Impl(DB_Config);
         } catch (e) {
             throw new ConfigError(
-                "Database initialization arguments error: " + e.message
+                `Database initialization arguments error: ${e}`
             );
         }
+        this.init();
     }
     test() {
         return this.db.test();
     }
+    /**
+     * @returns {Promise<this>}
+     */
     init() {
-        return this.db.init();
+        if (this.isInitialized) return Promise.resolve(this);
+        return this.db.init().then(() => {
+            this.isInitialized = true;
+            return this;
+        });
     }
+    /**
+     * @returns {Promise<void>}
+     */
     close() {
         return this.db.close();
     }
+
+    /**
+     *
+     * @param {string} sql
+     * @param {any[]} params
+     * @param {Function} cb
+     * @returns {Promise<any>}
+     * TODO 不要返回any，需要搞明白这玩意儿
+     */
     execute(sql, params, cb) {
         return this.db.execute(sql, params, cb);
     }
@@ -89,15 +112,39 @@ module.exports = __exports; // 需要参数的单例到调用者处实例化传�
 
 if (require.main === module) {
     Log.info("Database class definition");
-    const db = new Database("sqlite3", {
-        filePath: path.resolve(__dirname, "./test.db"),
-    });
+    const DB_PATH = path.resolve("./server/db/test_server.db");
+    // const DB_PATH = ":memory:";
+    const DB_CONFIG = { filePath: DB_PATH };
+    const db = new Database("sqlite3", DB_CONFIG);
     db.init()
         .then(() => {
             Log.info("Database instance created:\n", db);
+            Log.warn(
+                "db.db.db is a protected property, do not access it directly."
+            );
             Log.debug(db?.db?.db);
         })
+        .then(() => {
+            return db.test();
+        })
+        .then((result) => {
+            Log.info(`db.test() result: ${result}`);
+        })
         .catch((err) => {
-            Log.error(err);
+            Log.error(`${err.message} ${err.stack}`);
+        })
+        .finally(() => {
+            if (DB_PATH === ":memory:") return;
+            db.close().then(() => {
+                fs.unlink(DB_PATH, (err, data) => {
+                    if (err) {
+                        Log.error(
+                            `Failed to remove test database file: ${err.message}`
+                        );
+                        return;
+                    }
+                    Log.info("Test database file removed successfully: ", data);
+                });
+            });
         });
 }

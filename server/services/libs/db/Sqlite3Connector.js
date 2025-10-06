@@ -1,35 +1,22 @@
-const { get } = require("node:https");
 const path = require("node:path");
 const fs = require("node:fs");
 const sqlite3 = require("sqlite3").verbose();
+const { InitializationViolationError } = require(path.resolve(
+    __dirname,
+    "../error/Error"
+));
 const IDBConnector = require(__dirname + "/IDBConnector");
 const Log = require(path.resolve(__dirname, "../shared/logger.js"));
 
 /**
- * 数据库类型枚举
- * @enum {string}
- * @readonly
- */
-const ENUM_DB_TYPE = {
-    SQLITE: "sqlite3",
-    //MYSQL: "mysql",
-    //POSTGRESQL: "postgresql",
-};
-
-/**
- * @typedef {object} DB_Config
- * @property {string} [filePath] - 数据库文件路径，仅在使用SQLite时需要。
- * @property {string} [dbName] - 数据库名称，仅在使用SQLite时需要。
- * @property {string} [host] - 数据库主机地址，仅在使用MySQL或PostgreSQL时需要。
- * @property {number} [port] - 数据库端口号，仅在使用MySQL或PostgreSQL时需要。
- * @property {string} [user] - 数据库用户名，仅在使用MySQL或PostgreSQL时需要。
- * @property {string} [password] - 数据库密码，仅在使用MySQL或PostgreSQL时需要。
+ * @typedef {import("./ENUM_DB_TYPE.t")} ENUM_DB_TYPE
+ * @typedef {import("./DB_Config.t")} DB_Config
  */
 
 /**
  * @class
  * @description SQLite数据库连接器类，用于处理SQLite数据库连接。
- * @implements {IDBConnector}
+ * //@implements {IDBConnector}
  */
 class SqliteConnector extends IDBConnector {
     /**
@@ -59,13 +46,15 @@ class SqliteConnector extends IDBConnector {
             );
 
         // 初始化实例属性
+        /** @type {typeof sqlite3.Database | null} */
         this._db = null;
+        /** @type {string?} */
         this._db_path = DB_Config.filePath;
-        this._isInitialized = false;
-        this._initializationError = null;
+        /** @type {boolean} */
+        this.isInitialized = false;
     }
     /**
-     * @property {any} db - 被封装的数据库连接对象
+     * @property {typeof this._db} db - 被封装的数据库连接对象
      * @description 不建议访问该受封装属性，建议在被调用时展示调用堆栈以便追踪可能的扩展兼容性问题
      */
     get db() {
@@ -85,13 +74,20 @@ class SqliteConnector extends IDBConnector {
                 return reject(
                     new Error("Database connection is not initialized.")
                 );
-            this._db.get("SELECT 1", [], (err, row) => {
-                if (err) {
-                    Log.error(`Database test query error: ${err.message}`);
-                    return reject(err);
+            this._db.get(
+                "SELECT 1",
+                [],
+                (
+                    /** @type {{ message: any; }} */ err,
+                    /** @type {undefined} */ row
+                ) => {
+                    if (err) {
+                        Log.error(`Database test query error: ${err.message}`);
+                        return reject(err);
+                    }
+                    resolve(row !== undefined);
                 }
-                resolve(row !== undefined);
-            });
+            );
         });
     }
     /**
@@ -99,10 +95,10 @@ class SqliteConnector extends IDBConnector {
      * @returns {Promise<this>}
      */
     async init() {
-        if (this._isInitialized) {
+        if (this.isInitialized) {
             Log.warn("Database already initialized");
             return new Promise((resolve, reject) => {
-                reject();
+                resolve(this);
             });
         }
 
@@ -120,13 +116,12 @@ class SqliteConnector extends IDBConnector {
                         return;
                     }
                     Log.info(`Connected to the database '${this._db_path}'`);
-                    this._isInitialized = true;
+                    this.isInitialized = true;
                     resolve(this);
                 });
             });
         } catch (error) {
-            this._initializationError = error;
-            Log.error(`Database initialization failed: ${error.message}`);
+            Log.error(`Database initialization failed: ${error}`);
             throw error; // 重新抛出错误让调用者处理
         }
     }
@@ -136,8 +131,21 @@ class SqliteConnector extends IDBConnector {
      */
     async close() {
         if (!this._db)
-            throw new Error("Database connection is not initialized.");
-        return this._db.close();
+            throw new InitializationViolationError(
+                "Database connection is not initialized."
+            );
+        return new Promise((resolve, reject) => {
+            this._db?.close((/** @type {{ message: any; }} */ err) => {
+                if (err) {
+                    Log.error(
+                        `Database connection close error: ${err.message}`
+                    );
+                    reject();
+                    return;
+                }
+                resolve();
+            });
+        });
     }
     /**
      * @description 基于Sqlite3的“all” API执行查询。
@@ -145,7 +153,8 @@ class SqliteConnector extends IDBConnector {
      * @param {string} query
      * @param {any[]} [params]
      * @param {sqlite3Callback} [cb]
-     * @returns sqlite3.Database
+     * @returns {Promise<any>} sqlite3.Database.all
+     * TODO 给返回值加一层包装
      * ---
      * @callback sqlite3Callback
      * @param {Error} err - 错误对象，如果发生错误则不为null。
@@ -153,7 +162,9 @@ class SqliteConnector extends IDBConnector {
      */
     async execute(query, params, cb = (err, rows) => {}) {
         if (!this._db)
-            throw new Error("Database connection is not initialized.");
+            throw new InitializationViolationError(
+                "Database connection is not initialized."
+            );
         return this._db.all(query, params, cb);
     }
     /**
@@ -212,13 +223,13 @@ if (require.main === module) {
             Log.info("Database initialized successfully.");
             return sqliteConnector._db.each(
                 "SELECT sqlite_version();",
-                (info) => {
+                (/** @type {any} */ info) => {
                     Log.info(`info: ${info}`);
                 }
             ); // TODO: 查不出版本来
             // ! 使用受保护的属性 _db 仅用于测试目的
         })
-        .then(arg=> {
+        .then((arg) => {
             Log.info(`SQLite instance: `, arg);
             // ? 这里的arg是sqlite3的Database实例
         })
