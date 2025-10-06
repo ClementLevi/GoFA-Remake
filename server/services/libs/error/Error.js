@@ -69,3 +69,34 @@ module.exports = {
     ConfigError,
     InitializationViolationError,
 };
+
+if (require.main === module) {
+    /** @example */
+    // AbstractClassError example
+    try {
+        throw new AbstractClassError("Cannot instantiate abstract class");
+    } catch (e) {
+        console.error(`${e.name}: ${e.message}`);
+    }
+
+    // ValueError example
+    try {
+        throw new ValueError("Invalid value provided", 42);
+    } catch (e) {
+        console.error(`${e.name}: ${e.message} (value: ${e.value})`);
+    }
+
+    // ConfigError example
+    try {
+        throw new ConfigError("Missing required configuration");
+    } catch (e) {
+        console.error(`${e.name}: ${e.message}`);
+    }
+
+    // InitializationViolationError example
+    try {
+        throw new InitializationViolationError("Object used before initialization");
+    } catch (e) {
+        console.error(`${e.name}: ${e.message}`);
+    }
+}
