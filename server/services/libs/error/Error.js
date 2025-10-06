@@ -15,16 +15,30 @@ Note:JavaScript has built-in error types:
 - AggregateError (ES2021)
 */
 
-class AbstractClassError extends Error {
+/**
+ * @package
+ */
+class CustomBaseError extends Error {
+    constructor(message) {
+        super(message);
+        if ("captureStackTrace" in Error) {
+            // Avoid MyError itself in the stack trace
+            Error.captureStackTrace(this, CustomBaseError);
+        }
+        this.name = this.constructor.name;
+    }
+}
+
+class AbstractClassError extends CustomBaseError {
     constructor(message) {
         super(message);
     }
 }
 
 /**
- * @description A/Some value is/are not valid.
+ * @description A/Some value(s) is/are not valid.
  */
-class ValueError extends Error {
+class ValueError extends CustomBaseError {
     constructor(message, value) {
         super(message);
         this.value = value;
@@ -34,7 +48,7 @@ class ValueError extends Error {
 /**
  * @description Configuration is not valid during some initialization processes.
  */
-class ConfigError extends Error {
+class ConfigError extends CustomBaseError {
     constructor(message) {
         super(message);
     }
@@ -43,7 +57,7 @@ class ConfigError extends Error {
 /**
  * @description Improper use of an object before initialization.
  */
-class InitializationViolationError extends Error {
+class InitializationViolationError extends CustomBaseError {
     constructor(message) {
         super(message);
     }
