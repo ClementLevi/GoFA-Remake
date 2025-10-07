@@ -4,8 +4,8 @@
  */
 
 /**
- * @typedef {import("./ENUM_DB_TYPE.t")} ENUM_DB_TYPE
- * @typedef {import("./DB_Config.t")} DB_Config
+ * @typedef {import("./ENUM_DB_TYPE.d")} ENUM_DB_TYPE
+ * @typedef {import("./DB_Config.d")} DB_Config
  */
 
 /**
