@@ -1,7 +1,11 @@
-const path = require("path");
+const path = require("node:path");
 
-const IMask = require(__dirname + "/IMask");
-const ENUM_MASK_TYPE = require(__dirname + "/ENUM_MASK_TYPE");
+/**
+ * @typedef {import('../mask/IMask')} IMask
+ * @type {IMask}
+ */
+const IMask = require(path.resolve(__dirname, "./IMask"));
+const ENUM_MASK_TYPE = require(path.resolve(__dirname, "./ENUM_MASK_TYPE"));
 
 
 
