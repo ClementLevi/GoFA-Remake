@@ -9,7 +9,7 @@ const singleton = require(path.resolve(__dirname, "../shared/Singleton.js"));
 // const IDBConnector = require(path.resolve(__dirname, "./IDBConnector"));
 
 /** @typedef {import("./ENUM_DB_TYPE.d")} ENUM_DB_TYPE */
-const ENUM_DB_TYPE = require(path.resolve(__dirname, "./ENUM_DB_TYPE.t"));
+const ENUM_DB_TYPE = require(path.resolve(__dirname, "./ENUM_DB_TYPE.d"));
 
 /**
  * @typedef {object} DB_Config
