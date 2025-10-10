@@ -1,6 +1,7 @@
 /**
  * 数据库类型枚举
  * @enum {string}
+ * @todo 谔谔
  * @readonly
  */
 const ENUM_DB_TYPE = Object.freeze({
