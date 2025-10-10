@@ -1,7 +1,7 @@
 /**
  * 随机输出可迭代对象中的一个元素
  * Randomly choose an element from an iterable object
- * @param {Iterable} iterable - 可迭代对象
+ * @param {Iterable<*>} iterable - 可迭代对象
  * @returns {*} - 随机选择的元素
  */
 module.exports.ranchoice = function ranchoice(iterable) {
@@ -19,7 +19,7 @@ module.exports.ranchoice = function ranchoice(iterable) {
 /**
  * 随机弹出可迭代对象中的一个值
  * Randomly pop an element from an iterable object
- * @param {Iterable} iterable - 可迭代对象
+ * @param {Iterable<*>} iterable - 可迭代对象
  * @returns {*} - 随机弹出的值
  */
 module.exports.randomPop = function randomPop(iterable) {
@@ -43,8 +43,8 @@ module.exports.randomPop = function randomPop(iterable) {
 /**
  * 字符串首字母大写（标题化）
  * Uppercase the char after spaces (titlelization)
- * @param {String} str a string requires to uppercase the initial characters
- * @returns {String} titlelized string
+ * @param {string} str a string requires to uppercase the initial characters
+ * @returns {string} titlelized string
  */
 module.exports.titleCase = function titleCase(str) {
     return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
@@ -52,17 +52,21 @@ module.exports.titleCase = function titleCase(str) {
 /**
  *
  * 将二维字符串数组做笛卡尔积后拼接
- * @param {Array<Array<String>>} arrays 二维字符串数组
- * @return {Array<String>}
+ * @param {string[][]} arrays 二维字符串数组
+ * @return {string[]}
  */
 function cartesianProduct(arrays) {
     if (arrays.length === 0) return [];
     if (arrays.length === 1) return arrays[0];
 
-    function cartesianProductOfTwo(arr1, arr2) {
+    function cartesianProductOfTwo(
+        /** @type {Array<number|string>} */ arr1,
+        /** @type {Array<number|string>} */ arr2
+    ) {
         const result = [];
         for (let i = 0; i < arr1.length; i++) {
             for (let j = 0; j < arr2.length; j++) {
+                // @ts-ignore: 运算符“+”不能应用于类型“string | number”和“string | number”。ts(2365) 让它隐式转换吧
                 result.push(arr1[i] + arr2[j]);
             }
         }
@@ -79,8 +83,8 @@ function cartesianProduct(arrays) {
 module.exports.cartesianProduct = cartesianProduct;
 /**
  * 计算多个二维字符串数组之间做笛卡尔积时可能的结果数量
- * @param {Array<Array<String>>} arrays 二维字符串数组
- * @return {Number}
+ * @param {string[][]} arrays 二维字符串数组
+ * @return {number}
  */
 module.exports.cartesianProductCount = function cartesianProductCount(arrays) {
     return cartesianProduct(arrays).length;
@@ -88,9 +92,9 @@ module.exports.cartesianProductCount = function cartesianProductCount(arrays) {
 
 /**
  * 判断两数是否在同一个数量级
- * @param {Number} a
- * @param {Number} b
- * @returns {Boolean}
+ * @param {number} a
+ * @param {number} b
+ * @returns {boolean}
  */
 module.exports.compareLog10Integers = function compareLog10Integers(a, b) {
     // 将 a 和 b 转换为整数
