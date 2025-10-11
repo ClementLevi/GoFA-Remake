@@ -21,33 +21,30 @@ const NOISE_AMPLIFIER = 10;
 class INoiseGenerator {
     /**
      * @abstract
-     * @param {Number} [fineness=1] 噪声粒度，用于生成离散噪声时控制目标采样点间距，默认为1
-     * @param {Number|null} seed
+     * @param {number} [fineness=1] 噪声粒度，用于生成离散噪声时控制目标采样点间距，默认为1
+     * @param {number?} seed
      */
-    // @ts-ignore
     constructor(fineness = 1, seed = null) {}
 
     /**
      * @abstract
-     * @param {Number} x 需要生成的噪声图像的宽度
-     * @param {Number} y 需要生成的噪声图像的高度
-     * @param {Number|null} [seed] 种子
-     * @param {Number} [fineness=1] 噪声粒度，用于生成离散噪声时控制目标采样点间距，默认为1。位于[0,1]之间，值越大，噪声越离散。
+     * @param {number} x 需要生成的噪声图像的宽度
+     * @param {number} y 需要生成的噪声图像的高度
+     * @param {number?} seed 种子
+     * @param {number} [fineness=1] 噪声粒度，用于生成离散噪声时控制目标采样点间距，默认为1。位于[0,1]之间，值越大，噪声越离散。
      * //@returns {Array<Array<number>>>}
      */
-    // @ts-ignore
     generate2D(x, y, seed = null, fineness = 1) {}
 
     /**
      * @abstract
-     * @param {Number} x 需要生成的噪声图像的宽度
-     * @param {Number} y 需要生成的噪声图像的高度
-     * @param {Number} z 需要生成的噪声图像的深度
-     * @param {Number|null} [seed]
-     * @param {Number} [fineness=1] 噪声粒度，用于生成离散噪声时控制目标采样点间距，默认为1。位于[0,1]之间，值越大，噪声越离散。
+     * @param {number} x 需要生成的噪声图像的宽度
+     * @param {number} y 需要生成的噪声图像的高度
+     * @param {number} z 需要生成的噪声图像的深度
+     * @param {number?} seed
+     * @param {number} [fineness=1] 噪声粒度，用于生成离散噪声时控制目标采样点间距，默认为1。位于[0,1]之间，值越大，噪声越离散。
      * //@returns {Array<Array<Array<number>>>>}
      */
-    // @ts-ignore
     generate3D(x, y, z, seed = null, fineness = 1) {}
 }
 
@@ -60,12 +57,11 @@ class INoiseGenerator {
 class PerlinNoiseGenerator extends INoiseGenerator {
     /**
      * @override
-     * @param {Number} [fineness=1] 噪声粒度，用于生成离散噪声时控制目标采样点间距，默认为1
-     * @param {Number|null} [seed]
+     * @param {number} [fineness=1] 噪声粒度，用于生成离散噪声时控制目标采样点间距，默认为1
+     * @param {number?} seed
      */
     constructor(fineness = 1, seed = null) {
         super(fineness, seed);
-        // @ts-ignore
         this._Noise = new NOISEJS.Noise(seed ? seed : Math.random());
         this._Noise.seed(seed ? seed : Math.random());
     }
@@ -75,7 +71,7 @@ class PerlinNoiseGenerator extends INoiseGenerator {
      * @override
      * @param {number} x
      * @param {number} y
-     * @param {Number|null} [seed]
+     * @param {number?} seed
      * @returns {Array<Array<number>>}
      */
     generate2D(x, y, seed = null) {
@@ -98,10 +94,10 @@ class PerlinNoiseGenerator extends INoiseGenerator {
     /**
      * 按照柏林噪声生成3D噪声
      * @override
-     * @param {Number} x 数组宽度
-     * @param {Number} y
-     * @param {Number} z
-     * @param {Number|null} [seed]
+     * @param {number} x 数组宽度
+     * @param {number} y
+     * @param {number} z
+     * @param {number?} seed
      * @returns {Array<Array<Array<number>>>}
      */
     generate3D(x, y, z, seed = null) {
@@ -139,12 +135,11 @@ class PerlinNoiseGenerator extends INoiseGenerator {
 class SimplexNoiseGenerator extends INoiseGenerator {
     /**
      * @override
-     * @param {Number} [fineness=1] 噪声粒度，用于生成离散噪声时控制目标采样点间距，默认为1
-     * @param {Number|null} [seed]
+     * @param {number} [fineness=1] 噪声粒度，用于生成离散噪声时控制目标采样点间距，默认为1
+     * @param {number?} seed
      */
     constructor(fineness = 1, seed = null) {
         super(fineness, seed);
-        // @ts-ignore
         this._Noise = new NOISEJS.Noise(seed ? seed : Math.random());
         this._Noise.seed(seed ? seed : Math.random());
     }
@@ -154,11 +149,10 @@ class SimplexNoiseGenerator extends INoiseGenerator {
      * @override
      * @param {number} x
      * @param {number} y
-     * @param {Number|null} [seed]
+     * @param {number?} seed
      * @param {number} [fineness=1] 噪声粒度，用于生成离散噪声时控制目标采样点间距，默认为1。位于[0,1]之间，值越大，噪声越离散。
      * @returns {Array<Array<number>>}
      */
-    // @ts-ignore
     generate2D(x, y, seed = null, fineness = 1) {
         if (seed) {
             this._Noise.seed(seed ? seed : Math.random());
@@ -179,14 +173,13 @@ class SimplexNoiseGenerator extends INoiseGenerator {
     /**
      * 按照Simplex噪声生成3D噪声
      * @override
-     * @param {Number} x 数组宽度
-     * @param {Number} y
-     * @param {Number} z
-     * @param {Number|null} seed
-     * @param {Number} [fineness=1] 噪声粒度，用于生成离散噪声时控制目标采样点间距，默认为1。位于[0,1]之间，值越大，噪声越离散。
+     * @param {number} x 数组宽度
+     * @param {number} y
+     * @param {number} z
+     * @param {number?} seed
+     * @param {number} [fineness=1] 噪声粒度，用于生成离散噪声时控制目标采样点间距，默认为1。位于[0,1]之间，值越大，噪声越离散。
      * @returns {Array<Array<Array<number>>>}
      */
-    // @ts-ignore
     generate3D(x, y, z, seed = null, fineness = 1) {
         if (seed) {
             this._Noise.seed(seed ? seed : Math.random());
