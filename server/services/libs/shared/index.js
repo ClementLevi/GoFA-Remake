@@ -103,3 +103,44 @@ module.exports.compareLog10Integers = function compareLog10Integers(a, b) {
 
     return Math.floor(Math.log10(intA)) === Math.floor(Math.log10(intB));
 };
+
+/**
+ * 生成坐标网格
+ * @param {number} width
+ * @param {number} height
+ * @returns {number[][]}
+ * @typedef {import('../../GoFA-Remake/game_entities/atlas/pos/Pos2d')} Pos2d
+ * @sees {@link Pos2d}
+ */
+module.exports.newPositionedGrid = function newPositionedGrid(width, height) {
+    let ret = Array(width)
+        .fill(null)
+        .map(() => Array(height).fill(null));
+    ret = ret.map((row, x) => row.map((cell, y) => ({ x, y })));
+    return ret;
+};
+
+/**
+ * Remap a value from one range to another range, keeping the ratio.
+ * 将一个值从一个区间映射到另一个区间，保持比例不变。
+ * In terms of range and ratio, it refers to the relative position of the value in the old range to the new range are equal.
+ * 就范围和比例而言，它是指旧范围中值的相对位置与新范围中值的相对位置相同。
+ * @param {number} value any number, which {value | value ∈ [old_min, old_max]}
+ * @param {number} new_min
+ * @param {number} new_max
+ * @param {number} [old_min=0]
+ * @param {number} [old_max=1]
+ * @return {number}
+ */
+module.exports.linearRemap = function linearRemap(
+    value,
+    new_min,
+    new_max,
+    old_min = 0,
+    old_max = 1
+) {
+    return (
+        ((value - old_min) * (new_max - new_min)) / (old_max - old_min) +
+        new_min
+    );
+};
