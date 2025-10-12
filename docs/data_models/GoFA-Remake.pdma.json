@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.9.4",
   "createdTime": "2025-7-20 23:07:10",
-  "updatedTime": "2025-7-20 23:07:10",
+  "updatedTime": "2025-10-12 15:31:56",
   "profile": {
     "default": {
       "db": "6B68AFA0-C6B9-43FE-8B7E-66A7C570D95B",
@@ -2509,7 +2509,7 @@
         {
           "defKey": "planet_RSS_M",
           "defName": "金属产量",
-          "comment": "",
+          "comment": "1-10之间",
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
           "type": "",
           "len": "",
@@ -2527,7 +2527,7 @@
         {
           "defKey": "planet_RSS_G",
           "defName": "气体产量",
-          "comment": "",
+          "comment": "1-10之间",
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
           "type": "",
           "len": "",
@@ -2545,7 +2545,7 @@
         {
           "defKey": "planet_RSS_C",
           "defName": "晶体产量",
-          "comment": "",
+          "comment": "1-10之间",
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
           "type": "",
           "len": "",
@@ -2563,7 +2563,7 @@
         {
           "defKey": "planet_EFFICIENCY",
           "defName": "效率",
-          "comment": "",
+          "comment": "1-10之间",
           "type": "",
           "len": "",
           "scale": "",
@@ -2747,7 +2747,8 @@
       "type": "P",
       "sysProps": {
         "nameTemplate": "{defKey}[{defName}]"
-      }
+      },
+      "notes": {}
     },
     {
       "id": "F5759031-6803-48B7-ACEF-F20DCED6E294",
