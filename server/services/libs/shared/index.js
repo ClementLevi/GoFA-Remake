@@ -197,3 +197,15 @@ module.exports.flipArray2D = function flipArray2D(arr, axis = "y") {
         }
     }
 };
+
+/**
+ * Check if something is an array of arrays.
+ * @param {any} arr
+ * @returns {boolean}
+ */
+module.exports.isArray2D = function isArray2D(arr) {
+    if (!Array.isArray(arr)) {
+        return false;
+    }
+    return arr.every((subArray) => Array.isArray(subArray));
+};
