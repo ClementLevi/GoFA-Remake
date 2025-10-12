@@ -325,6 +325,11 @@
  */
 
 /**
+ * @typedef {{ min: number, max: number}} RanIntLimitation
+ * @exports
+ */
+
+/**
  * @template {string} S
  * @typedef {true extends StartWith<S, '#'>
  * ? (StringLength<ReplaceWith<S, '#', ''>> extends (6 | 8)
