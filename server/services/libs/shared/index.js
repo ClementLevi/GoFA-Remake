@@ -113,10 +113,10 @@ module.exports.compareLog10Integers = function compareLog10Integers(a, b) {
  * @sees {@link Pos2d}
  */
 module.exports.newPositionedGrid = function newPositionedGrid(width, height) {
-    let ret = Array(width)
+    let ret = Array(height)
         .fill(null)
-        .map(() => Array(height).fill(null));
-    ret = ret.map((row, x) => row.map((cell, y) => ({ x, y })));
+        .map(() => Array(width).fill(null));
+    ret = ret.map((row, y) => row.map((cell, x) => ({ x, y })));
     return ret;
 };
 
@@ -143,4 +143,57 @@ module.exports.linearRemap = function linearRemap(
         ((value - old_min) * (new_max - new_min)) / (old_max - old_min) +
         new_min
     );
+};
+
+/**
+ * Construct a 2D array with a given value filled in.
+ * @template {any} T
+ * @param {number} width
+ * @param {number} height
+ * @param {T} value
+ * @returns {T[][]} value
+ */
+module.exports.newArray2D = function newArray2D(width, height, value) {
+    return Array(height)
+        .fill(null)
+        .map(() => Array(width).fill(value));
+};
+
+/**
+ * Transpose a 2D array. 转置二维数组。
+ * @template {any} T
+ * @param {T[][]} arr
+ * @returns {T[][]}
+ */
+module.exports.transposeArray2D = function transposeArray2D(arr) {
+    if (!Array.isArray(arr) || !Array.isArray(arr[0])) {
+        throw new TypeError("输入必须是一个二维数组");
+    }
+    return arr[0].map((_, colIndex) => arr.map((row) => row[colIndex]));
+};
+
+/**
+ * Flip a 2D array. 翻转二维数组。
+ * @template {any} T
+ * @param {T[][]} arr
+ * @param {'x'|'y'} [axis='y'] Flip along the x-axis or y-axis. 翻转对称轴
+ * @returns {T[][]}
+ */
+module.exports.flipArray2D = function flipArray2D(arr, axis = "y") {
+    if (!Array.isArray(arr) || !Array.isArray(arr[0])) {
+        throw new TypeError(`arr (${typeof arr}) is not a 2D array.`);
+    }
+    switch (axis) {
+        case "y": {
+            // Flip along the y-axis (horizontal flip)
+            return arr.map((row) => row.slice().reverse());
+        }
+        case "x": {
+            // Flip along the x-axis (vertical flip)
+            return arr.slice().reverse();
+        }
+        default: {
+            throw new TypeError(`axis (${axis}) must be either "x" or "y".`);
+        }
+    }
 };
