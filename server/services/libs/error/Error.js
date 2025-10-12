@@ -34,6 +34,11 @@ class AbstractClassError extends CustomBaseError {
         super(message);
     }
 }
+class InterfaceClassError extends CustomBaseError {
+    constructor(message) {
+        super(message);
+    }
+}
 
 /**
  * @description A/Some value(s) is/are not valid.
@@ -62,12 +67,13 @@ class InitializationViolationError extends CustomBaseError {
         super(message);
     }
 }
-
+// In alphabetical order
 module.exports = {
     AbstractClassError,
-    ValueError,
     ConfigError,
     InitializationViolationError,
+    InterfaceClassError,
+    ValueError,
 };
 
 if (require.main === module) {
@@ -96,6 +102,13 @@ if (require.main === module) {
     // InitializationViolationError example
     try {
         throw new InitializationViolationError("Object used before initialization");
+    } catch (e) {
+        console.error(`${e.name}: ${e.message}`);
+    }
+
+    // InterfaceClassError example
+    try {
+        throw new InterfaceClassError("Cannot instantiate interface");
     } catch (e) {
         console.error(`${e.name}: ${e.message}`);
     }
