@@ -33,3 +33,4 @@ server/src/cpp_addons/CPP_ship_combat_calc/*.cmake
 /.idea
 /server/db/*
 /server/src/cpp_addons/CPP_ship_combat_calc/cmake-build-debug/
+*.cpuprofile
