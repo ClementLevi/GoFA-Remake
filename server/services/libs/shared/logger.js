@@ -26,11 +26,17 @@ const singleton = require(__dirname + "/Singleton");
  */
 
 // TODO: 为命令的说明文本留出空间
+// ! 与RegisterCommandBatch方法的实现不一致，需要加一层并修改方法签名
 /**
  * @description The command handler function. 命令注册表条目。
- * @typedef {Object.<string, Function[]>} CommandRegistry
+ * @typedef {Record<string, Function[]>} CommandRegistry
  * @property {string} command - The command name. 命令名称。
  * @property {Function[]} handlers - The command handler functions. 命令处理函数数组。
+ */
+
+/** 
+ * @typedef {typeof Logger} TypeLogger
+ * @typedef {InstanceType<Logger>} LoggerInstance
  */
 
 /**
@@ -39,9 +45,10 @@ const singleton = require(__dirname + "/Singleton");
  * Now includes command system functionality for console interaction.
  * 用于记录消息和显示加载动画的Logger类，现在包含控制台交互的命令系统功能。
  * @property {LoggerConfig} config - The logger configuration. 日志记录器配置。
- * @property {Object} logger - The log4js logger instance. 日志记录器实例。
+ * @property {any} logger - The log4js logger instance. 日志记录器实例。
  * @property {CommandRegistry} commands - The command system for the logger. 日志记录器的命令系统。
- * @property {Object} [rl] - The readline interface for the logger. Required to be initialized in the initTerminal() method. 日志记录器的readline接口。需要在initTerminal()方法中初始化。
+ * @property {typeof readline} [rl] - The readline interface for the logger. Required to be initialized in the initTerminal() method. 日志记录器的readline接口。需要在initTerminal()方法中初始化。
+ * @exports
  */
 class Logger extends events {
     static DEFAULT_CONFIG = {
@@ -76,6 +83,7 @@ class Logger extends events {
         this.logger = log4js.getLogger();
         this.commands = {};
         this.spinner = null;
+        this.rl = null;
         // Register built-in commands
         this.registerCommand("help", () => this._showHelp());
         this.registerCommand("exit", () => process.exit());
@@ -102,7 +110,7 @@ class Logger extends events {
      * 初始化readline接口以进行命令输入。
      * @memberof Logger
      * @public
-     * @returns {Logger} The logger instance.
+     * @returns {this} The logger instance.
      */
     initTerminal() {
         this.rl = readline.createInterface({
@@ -183,7 +191,7 @@ class Logger extends events {
      * 设置Logger的配置。
      * @memberof Logger
      * @public
-     * @param {Object} customConfig - Custom configuration object. 自定义配置对象。
+     * @param {LoggerConfig} customConfig - Custom configuration object. 自定义配置对象。
      * @returns {Logger} The logger instance.
      */
     setConfig(customConfig) {
