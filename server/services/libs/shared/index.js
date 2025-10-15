@@ -108,15 +108,38 @@ module.exports.compareLog10Integers = function compareLog10Integers(a, b) {
  * 生成坐标网格
  * @param {number} width
  * @param {number} height
- * @returns {number[][]}
+ * @returns {{x:number, y:number}[][]}
  * @typedef {import('../../GoFA-Remake/game_entities/atlas/pos/Pos2d')} Pos2d
  * @sees {@link Pos2d}
+ *  @example
+ * new2DNumberGrid(2,3)
+ * //[
+ * //    [ { x: 0, y: 0 }, { x: 1, y: 0 } ],
+ * //    [ { x: 0, y: 1 }, { x: 1, y: 1 } ],
+ * //    [ { x: 0, y: 2 }, { x: 1, y: 2 } ]
+ * //]
  */
 module.exports.newPositionedGrid = function newPositionedGrid(width, height) {
     let ret = Array(height)
         .fill(null)
         .map(() => Array(width).fill(null));
     ret = ret.map((row, y) => row.map((cell, x) => ({ x, y })));
+    return ret;
+};
+
+/**
+ * Create a 2D number grid. 生成二维序数网格
+ * @param {number} width
+ * @param {number} height
+ * @returns {number[][]}
+ * @example
+ * new2DNumberGrid(2,3)  // -> [[0,1],[2,3],[4,5]]
+ */
+module.exports.new2DNumberGrid = function new2DNumberGrid(width, height) {
+    let ret = Array(height)
+        .fill(null)
+        .map(() => Array(width).fill(0));
+    ret = ret.map((row, y) => row.map((cell, x) => x + y * width));
     return ret;
 };
 
@@ -146,7 +169,7 @@ module.exports.linearRemap = function linearRemap(
 };
 
 /**
- * Construct a 2D array with a given value filled in.
+ * Construct a 2D array with a given value filled in. 构造一个二维数组，用给定的值填充。
  * @template {any} T
  * @param {number} width
  * @param {number} height
