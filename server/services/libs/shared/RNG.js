@@ -19,6 +19,8 @@ class RNG {
         }
         /** @type {number} _generation */
         this._generation = 0;
+        /** @type {Generator<number, number, number>} @private*/
+        this._generator = this._wrapper();
     }
     /**
      * Sets the seed for the random number generator
@@ -81,7 +83,7 @@ class RNG {
      * @returns {number}
      */
     random() {
-        return this._wrapper().next().value;
+        return this._generator.next().value;
     }
     /**
      * @public
@@ -142,7 +144,7 @@ if (require.main === module) {
         }
     }
     console.log("testing if when generations run out, it resets");
-    for (let i = 0; i < 30; i++) {
+    for (let i = rng.generation; i < 30; i++) {
         console.log(
             `RNG result (${rng.random()}) with seed ${rng.seed} generation ${
                 rng.generation
