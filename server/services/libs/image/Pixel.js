@@ -1,5 +1,31 @@
+const path = require("node:path");
+const { ValueError } = require(path.resolve(__dirname + "/../error/Error"));
+/**
+ * @template {number} T
+ * @template {number} F
+ * @typedef {import('../types/types').IntRange<T,F>} IntRange
+ * @typedef {IntRange<0,255>} ColorValue
+ */
+
+/**
+ * @typedef {[ColorValue<0,255>,ColorValue<0,255>,ColorValue<0,255>,ColorValue<0,255>?]} PixelArgsOverload1
+ * @typedef {number} PixelArgsOverload2
+ * @typedef {string | number} PixelArgsOverload3
+ */
+
 class Pixel {
+    /**
+     * @type {new (arg0: PixelArgsOverload1 | PixelArgsOverload2 | PixelArgsOverload3)=> void}
+     */
     constructor() {
+        /** @type {ColorValue<0,255>} */
+        this.r = 255;
+        /** @type {ColorValue<0,255>} */
+        this.g = 255;
+        /** @type {ColorValue<0,255>} */
+        this.b = 255;
+        /** @type {ColorValue<0,255>} */
+        this.a = 255;
         switch (arguments.length) {
             case 4: {
                 this.r = arguments[0] ?? 255;
@@ -20,21 +46,29 @@ class Pixel {
                 if (typeof value === "string") {
                     value = parseInt(value.replace("#", ""), 16);
                 }
-                this.r = (value >> 24) & 0xff;
-                this.g = (value >> 16) & 0xff;
-                this.b = (value >> 8) & 0xff;
+                if (isNaN(value)) {
+                    throw new ValueError("Invalid color value");
+                }
+                // r, g, b, a 都必然是 0-255 的整数
+                // @ts-ignore
+                this.r = Math.min(value >> 24, 0xff);
+                // @ts-ignore
+                this.g = Math.min(value >> 16, 0xff);
+                // @ts-ignore
+                this.b = Math.min(value >> 8, 0xff);
+                // @ts-ignore
                 this.a = value & 0xff;
                 break;
             }
             default: {
-                throw new Error("Invalid arguments");
+                throw new ValueError("Invalid arguments");
             }
         }
     }
 
     /**
      *
-     * @returns {Number} 无符号整数
+     * @returns {number} 无符号整数
      */
     valueOf() {
         // 使用无符号的右移操作符
@@ -46,7 +80,7 @@ class Pixel {
     }
     /**
      *
-     * @param {Number} n
+     * @param {number} n
      * @returns {Pixel}
      */
     addNumber(n) {
@@ -57,6 +91,12 @@ class Pixel {
             this.a
         );
     }
+    /**
+     * @description 从平凡的三元或四元数组转换为像素
+     * @template {number[]} T
+     * @param {T extends {length: 3|4} ? T : never} arr
+     * @returns {this}
+     */
     fromSimpleArray(arr) {
         // 如果数组有 3 个元素，假设为 RGB
         if (arr.length === 3) {
@@ -77,17 +117,17 @@ class Pixel {
     /**
      *
      * @param {Pixel} other
-     * @returns {Boolean}
+     * @returns {boolean}
      */
     greaterThan(other) {
         return this.valueOf() > other.valueOf();
     }
     /**
      * flip the color of the pixel
-     * @param {null|"R"|"G"|"B"|"A"} [bit] 
+     * @param {("R"|"G"|"B"|"A")?} [bit]
      * @returns {Pixel}
      */
-    flip(bit=null) {
+    flip(bit = null) {
         switch (bit) {
             // Intentional fall through 故意依次执行
             case "R": {
@@ -110,11 +150,6 @@ class Pixel {
             }
         }
         return this;
-        // }
-        //     this.r = 255 - this.r;
-        //     this.g = 255 - this.g;
-        //     this.b = 255 - this.b;
-        //     return this;
     }
     flipAlpha() {
         this.a = 255 - this.a;
