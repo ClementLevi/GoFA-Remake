@@ -1,21 +1,24 @@
 const path = require("node:path");
 const fs = require("node:fs");
 const _ = require("lodash");
-const { InitializationViolationError } = require(path.resolve(
-    __dirname,
-    "../../../../libs/error/Error"
-));
+/**
+ * @typedef {import("../../../../libs/error/Error").InitializationViolationError} InitializationViolationError
+ */
+const {
+    /**@type {InitializationViolationError}*/ InitializationViolationError,
+} = require(path.resolve(__dirname, "../../../../libs/error/Error"));
+
+/**
+ * @typedef {import("../../../../libs/shared/index")} commonFunctions
+ * @type {commonFunctions}
+ */
 const commonFunctions = require(path.resolve(
     __dirname,
     "../../../../libs/shared/index"
 ));
 
 /**
- * @typedef {Object} NameRule
- * @property {string[]} head
- * @property {string[]} neck
- * @property {string[]} body
- * @property {string[]} end
+ * @typedef {import("./System.d").NameRule} NameRule
  */
 
 /**
@@ -24,37 +27,38 @@ const commonFunctions = require(path.resolve(
  */
 class NameGenerator {
     constructor() {
+        /**@type {Set<string>} */
         this.namePool = new Set();
         // 从“SystemNameLoader”类导入JSON里的数据
         /**
          * 词根可包含任意多部分
-         * @type {NameRule|null}
+         * @type {NameRule?}
          */
         this.dic = null;
         /**
-         * @type {Array<Array<String>>}
+         * @type {string[][]}
          */
         this.dic_2d = _.values(this.dic);
 
         /**
          * 最大可能数量，其值由SystemNameLoader类传入
-         * @type {Number}
+         * @type {number}
          */
         this.COUNT_CAPA = -1;
-
-        this._is_initialized = false;
+        /** @type {boolean} */
+        this.is_initialized = false;
     }
 
     /**
      * 执行星系名生成的方法
      * Start star-systems-names generating procedure.
-     * @param {Number} totalNumber=-1 - How many names you want to generate. Should
+     * @param {number} totalNumber=-1 - How many names you want to generate. Should
      *      be an integer. 0 or less for "as many as possible".
-     * @returns {Promise<Set<String>>} - all the names generated randomly
+     * @returns {Promise<Set<string>>} - all the names generated randomly
      */
     async generate(totalNumber = -1) {
         return new Promise((resolve, reject) => {
-            if (!this._is_initialized) {
+            if (!this.is_initialized) {
                 reject(
                     new InitializationViolationError(
                         "Use `use_name_template` method to load name template first."
@@ -87,7 +91,7 @@ class NameGenerator {
      * 使用的命名模板，必须是满足{@link NameRule}结构的JSON文件
      * @param {string | NameRule} template 要使用的JSON文件相对路径
      * @see NameRule
-     * @returns {Promise<NameGenerator>}
+     * @returns {Promise<this>}
      */
     async use_name_template(template) {
         return new Promise((resolve, reject) => {
@@ -110,7 +114,7 @@ class NameGenerator {
                     this.COUNT_CAPA = max;
                     this.dic = nameRule;
                     this.dic_2d = _.values(this.dic);
-                    this._is_initialized = true;
+                    this.is_initialized = true;
                     resolve(this);
                 });
             } else {
@@ -123,7 +127,7 @@ class NameGenerator {
      */
     pick() {
         if (this.namePool.size <= 0) {
-            this._is_initialized = false; // 需要重新初始化
+            this.is_initialized = false; // 需要重新初始化
             throw new InitializationViolationError(
                 "No unused name left. Use async `generate` method to generate names first."
             );
