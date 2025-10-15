@@ -134,7 +134,7 @@ class System {
      * @return {void} alliance interface to be designed, but should return something
      */
     calculateOccupier() {}
-    [Symbol.toString](){
+    toString(){
         return `[System @(${this.pos.x}, ${this.pos.y}) - size:${this.size}]`
     }
 }
