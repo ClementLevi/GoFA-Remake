@@ -1,152 +1,175 @@
-const path = require("path");
+const path = require("node:path");
+/**
+ * @deprecated
+ * TODO: use node:crypto.randomUUID() instead
+ */
 const uuid = require("uuid");
 const _ = require("lodash");
+
+/**
+ * @typedef {typeof import ("../pos/Pos")} Pos
+ * @type {Pos}
+ */
+const Pos = require(path.resolve(__dirname, "../pos/Pos.js"));
+/**
+ * @typedef {typeof import ("../pos/Pos2d")} Pos2d
+ * @type {Pos2d}
+ */
 const Pos2d = require(path.resolve(__dirname, "../Pos/Pos2d.js"));
+/**
+ * @typedef {import ("./System.d").ENUM_SYSTEM_COLOR} SystemColor
+ * @type {SystemColor}
+ */
+
+/**
+ * @typedef {typeof import ("../planet/Planet")} Planet
+ * @type {Planet}
+ */
+const Planet = require(path.resolve(__dirname, "../planet/Planet"));
+
+const ENUM_SYSTEM_COLOR = require(path.resolve(
+    __dirname,
+    "./System.d.js"
+)).ENUM_SYSTEM_COLOR;
+
+/**
+ * @typedef {import("./System.d").SystemOptions} SystemOptions
+ * @typedef {import ("./SystemNameGenerator.js")} INameGenerator
+ * @typedef {import ("./SystemNameGenerator.js").NameRule} NameRule
+ * @typedef {typeof import("./SystemNameGenerator.js")} SystemNameGenerator
+ */
 
 /**
  * @module System
+ * @class
+ * @classdesc 表示星系的类，作为地图基本元素保存。 Class representing a star system, as a basic element of the map.
  */
-
-/**
- * @typedef {Object} SystemColor
- * @enum {number}
- * @readonly
- */
-const ENUM_SYSTEM_COLOR = {
-    PINK: 0,
-    RED: 1,
-    ORANGE: 2,
-    YELLOW: 3,
-    LIME: 4,
-    GREEN: 5,
-    WATER: 6,
-    BLUE: 7,
-    PURPLE: 8,
-    /**@default */
-    WHITE: 9,
-    BLACK_HOLE: 10,
-};
-
-/**
- * @typedef {import ("../Pos/Pos2d.js")} Pos2d
- * ---
- * @typedef {Object} SystemOptions
- * @property {Pos2d} Pos
- * @property {string} [name]
- * @property {string} [appearance]
- * @property {number} [size]
- * @property {ENUM_SYSTEM_COLOR[keyof ENUM_SYSTEM_COLOR]} [color]
- */
-
 class System {
-    static generateNames(count) {}
-    static ATTR_RANGE_LIMIT = Object.freeze({});
     /**
-     * @overload
      * @param {SystemOptions} options 系统选项对象
      */
-    /**
-     * @overload
-     * @param {Pos2d} pos 系统位置
-     * @param {string} [name] 系统名称
-     * @param {string} [appearance] 系统外观
-     * @param {number} [size] 系统大小
-     * @param {ENUM_SYSTEM_COLOR[keyof ENUM_SYSTEM_COLOR]} [color] 系统颜色
-     */
-    constructor(options, name, appearance, size, color) {
-        // if more than one argument is passed, pack them into an object as options
-        if (arguments.length > 1) {
-            if (arguments.length > 5) {
-                throw new Error("Too many arguments");
-            }
-            options = {
-                Pos: arguments[0],
-                name: arguments[1],
-                appearance: arguments[2],
-                size: arguments[3],
-                color: arguments[4],
-            };
-        }
 
+    constructor(options) {
         // Constant properties 静态属性
-        // uuid
+        /** @type {string} */
         this.uuid = uuid.v4();
-        // Log generator options
-        this.options = JSON.stringify(options);
-        // Pos
-        this.Pos = options.Pos;
-        // Name
-        this.name = options.name ?? "System_" + this.uuid.slice(0, 4);
-        // appearance, for frontend rendering, no logic related to it.
-        // But it has to be static to store in db.
-        this.appearance = options.appearance ?? "";
-        // size
+        /** @type {InstanceType<Pos2d>} */
+        this.pos = options.Pos;
+        /** @type {string} */
+        this._name = options.name ?? "System_" + this.uuid.slice(0, 4);
+        /** @type {SystemOptions["seed"] } */
+        this.seed = options.seed ?? uuid.v4();
+        /** @type {string} */
+        this.appearance = options.appearance ?? ""; // Appearance, for frontend rendering, no logic related to it. But it has to be static to store in db.
+        /** @type {number} */
         this.size = options.size ?? 1;
+        /** @type {InstanceType<Planet>[]} */
+        this.planets = [];
+        for (let c = 0; c < this.size; c++) {
+            let p = new Planet(this, this.seed);
+            this.planets.push(p);
+        }
+        /** @type {ENUM_SYSTEM_COLOR} */
         this.color = options.color ?? ENUM_SYSTEM_COLOR.WHITE;
 
         // Dynamic properties 动态属性
-        // Combat relative amount
-        this.heat = 0; // calculated by recent combat activity
-        // Occupied by alliance
+
+        /** @type {number} */
+        this._heat = 0; // Combat relative amount. Calculated by recent combat activity
+
+        /** @type {boolean} */
         this.is_occupied = false;
-        this.controlled_by = null;
-        // Name can be modified when carnival is active
-        this.is_name_modified = false;
-        this.display_name = this.name;
+        /** @type {?} */
+        this.controlled_by = null; // TODO: Occupied by alliance
+
+        /** @type {boolean} */
+        this.is_name_modified = false; // Name can be modified when carnival is active
+        /** @type {string} */
+        this.display_name = this._name;
     }
-    get Name() {
-        return this.is_name_modified ? this.display_name : this.name;
+    get name() {
+        return this.is_name_modified ? this.display_name : this._name;
     }
 
-    set Name(name) {
+    set name(name) {
         this.display_name = name;
     }
 
-    get Heat() {
-        return this.heat;
-    }
-    getDistance(other_system) {
-        return this.Pos.distanceTo(other_system.Pos);
+    get heat() {
+        return this._heat;
     }
     /**
-     * @typedef {import ("./SystemNameGenerator.js")} InameGenerator
-     * ---
      *
-     * @param {InameGenerator} nameGenerator
+     * @param {{"pos":InstanceType<Pos2d>}} other_system
+     * @returns {number}
      */
-    randomizeName(nameGenerator) {
-        if (!nameGenerator) {
-            this.display_name = "System_" + uuid.v4().slice(0, 4);
-        }
-        debugger
-        this.display_name = nameGenerator.pick();
+    getDistance(other_system) {
+        return this.pos.distanceTo(other_system.pos);
     }
+    /**
+     * @param {INameGenerator} name_generator
+     */
+    randomizeName(name_generator) {
+        if (!name_generator) {
+            this.display_name = "System_" + uuid.v4().slice(0, 4);
+            return;
+        }
+        this.display_name = name_generator.pick();
+        this.planets.forEach((planet) => {
+            planet.name = planet.name.replace(this._name, this.display_name);
+        });
+    }
+    /**
+     * @description 随机偏移坐标
+     * @see {@link Pos.offset}
+     * @param {number} e
+     */
     offset(e) {
-        this.Pos.offset(e);
+        this.pos.offset(e);
+    }
+    /**
+     * Get the alliance that occupies this system.
+     * Which alliance holds more than any others in the system is the occupier.
+     * TODO: implement this
+     * @return {void} alliance interface to be designed, but should return something
+     */
+    calculateOccupier() {}
+    [Symbol.toString](){
+        return `[System @(${this.pos.x}, ${this.pos.y}) - size:${this.size}]`
     }
 }
 
 module.exports = System;
 
 if (require.main === module) {
-    const system = new System(
-        new Pos2d(1, 0),
-        "Test System",
-        "Test Apprearance",
-        2,
-        ENUM_SYSTEM_COLOR.PINK // TODO 类型推导有点问题，应该是枚举的值类型
-    );
-    const CLSSystemNameGenerator = require(path.resolve(__dirname, "./SystemNameGenerator.js"));
+    const system = new System({
+        Pos: new Pos2d(1, 0),
+        name: "Test System",
+        appearance: "Test Apprearance",
+        size: 2,
+        color: ENUM_SYSTEM_COLOR.PINK,
+        seed: "seed",
+    });
+    /**
+     * @type {SystemNameGenerator}
+     */
+    const CLSSystemNameGenerator = require(path.resolve(
+        __dirname,
+        "./SystemNameGenerator.js"
+    ));
+    /** @type {InstanceType<SystemNameGenerator>} */
     const nameGenerator = new CLSSystemNameGenerator();
     console.log(system);
     const system2 = new System({ Pos: new Pos2d(0, 1) });
     console.log(system2);
     console.log(system.getDistance(system2));
     system.offset(1);
-    nameGenerator.use_name_template("systemNameRule.json").then(() => {
-        nameGenerator.generate(10).then((names) => {
-            system.randomizeName(nameGenerator)
-            console.log(system);
+    nameGenerator
+        .use_name_template(/** @type {NameRule} */ "systemNameRule.json")
+        .then(() => {
+            nameGenerator.generate(10).then((names) => {
+                system.randomizeName(nameGenerator);
+                console.log(system);
+            });
         });
-    });
 }
