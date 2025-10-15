@@ -65,7 +65,7 @@ class Pos {
      * 在最大距离 e 范围内为位置给予随机偏移，无视位置的维度有多少。
      * 必须由子类实现。
      * @param {number} e offset value 偏移值
-     * @returns this
+     * @returns {this}
      * @abstract
      * @memberof Pos
      */
