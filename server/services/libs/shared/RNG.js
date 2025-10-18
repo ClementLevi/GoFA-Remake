@@ -49,7 +49,8 @@ class RNG {
      * @returns {number} - A random number between 0 and 1
      */
     _random() {
-        // Mulberry32
+        // Original Mulberry32: 
+        /*
         this._seed = Number.parseInt(this._seed) + 0x6d2b79f5;
         let for_bit32_mul = this._seed;
         let cast32_one = for_bit32_mul ^ (for_bit32_mul >>> 15);
@@ -62,6 +63,15 @@ class RNG {
                 for_bit32_mul | 61
             );
         return ((for_bit32_mul ^ (for_bit32_mul >>> 14)) >>> 0) / 4294967296;
+        */
+        // Mulberry32 with seed overflow protection
+        let t = (Number.parseInt(this._seed) + 0x6d2b79f5) >>> 0;
+        this._seed = t;
+        t ^= t >>> 15;
+        t = Math.imul(t, 0x85ebca6b); // 0x85ebca6b is t | 1 optimized
+        t ^= t >>> 13;
+        t = Math.imul(t, 0xc2b2ae35); // 0xc2b2ae35 is t | 61 optimized
+        return ((t ^ (t >>> 16)) >>> 0) / 4294967296;
     }
     /**
      * @private
@@ -144,7 +154,7 @@ if (require.main === module) {
         }
     }
     console.log("testing if when generations run out, it resets");
-    for (let i = rng.generation; i < 30; i++) {
+    for (let i = rng.generation; i < 300000; i++) {
         console.log(
             `RNG result (${rng.random()}) with seed ${rng.seed} generation ${
                 rng.generation
