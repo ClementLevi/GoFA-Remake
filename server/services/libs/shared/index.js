@@ -144,6 +144,7 @@ module.exports.new2DNumberGrid = function new2DNumberGrid(width, height) {
 };
 
 /**
+ * @description
  * Remap a value from one range to another range, keeping the ratio.
  * 将一个值从一个区间映射到另一个区间，保持比例不变。
  * In terms of range and ratio, it refers to the relative position of the value in the old range to the new range are equal.
@@ -154,6 +155,14 @@ module.exports.new2DNumberGrid = function new2DNumberGrid(width, height) {
  * @param {number} [old_min=0]
  * @param {number} [old_max=1]
  * @return {number}
+ * @example
+ * linearRemap(0.5, -1, 1);  // 0  // 0.5 is half of [0,1], and half of the range [-1, 1] is 0, so 0.5 is mapped to 0.
+ * linearRemap(0.5, 0, 1, 0, 1);  // 0.5
+ * linearRemap(0.5, 0, 1, 0, 2);  // 0.25
+ * linearRemap(0.5, 0, 2, 0, 1);  // 1
+ * linearRemap(0.5, 0, 1, -1, 1);  // 0.75
+ * linearRemap(0.5, -1, 1, 0, 1);  // 0
+ * linearRemap(0.5, Math.PI, 3*Math.PI,);   // 6.283185307179586 === 2 * Math.PI
  */
 module.exports.linearRemap = function linearRemap(
     value,
@@ -163,7 +172,7 @@ module.exports.linearRemap = function linearRemap(
     old_max = 1
 ) {
     return (
-        ((value - old_min) * (new_max - new_min)) / (old_max - old_min) +
+        ((value - old_min) / (old_max - old_min)) * (new_max - new_min) +
         new_min
     );
 };
