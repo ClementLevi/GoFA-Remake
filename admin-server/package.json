@@ -1,0 +1,20 @@
+{
+  "name": "admin-server",
+  "version": "1.0.0",
+  "description": "admin server for gofa game",
+  "license": "LGPL-3.0-or-later",
+  "author": "Clement_Levi <1090708360@qq.com>",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive",
+    "start": "node --env-file=.env index.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.8.1"
+  }
+}

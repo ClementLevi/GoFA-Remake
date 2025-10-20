@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>GoFA Admin Tool - Map Inspector</title>
+        <style>
+            body {
+                margin: 0;
+                overflow: hidden;
+            }
+            #svgContainer {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+            #exampleSvg {
+                cursor: move;
+            }
+            .system {
+                fill-opacity: ;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="svgContainer">
+            <svg id="exampleSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+
+        <script>
+            const svg = document.getElementById("exampleSvg");
+            const container = document.getElementById("svgContainer");
+
+            // 创建1000个随机圆形
+            const circleCount = 1000;
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const worldWidth = viewportWidth * 3;
+            const worldHeight = viewportHeight * 3;
+
+            svg.setAttribute("width", worldWidth);
+            svg.setAttribute("height", worldHeight);
+
+            for (let i = 0; i < circleCount; i++) {
+                const circle = document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "circle"
+                );
+                circle.setAttribute("id", `circle${i}`);
+                circle.setAttribute("class", "system");
+                circle.setAttribute("cx", Math.random() * worldWidth);
+                circle.setAttribute("cy", Math.random() * worldHeight);
+                circle.setAttribute("r", 5 + Math.random() * 10);
+                circle.setAttribute(
+                    "fill",
+                    `hsl(${Math.random() * 360}, 70%, 60%)`
+                );
+                svg.appendChild(circle);
+            }
+
+            // 拖拽逻辑
+            let isDragging = false;
+            let startX, startY;
+            let translateX = 0,
+                translateY = 0;
+
+            svg.addEventListener("mousedown", (e) => {
+                if (e.target.tagName === "circle") {
+                    console.log(`点击了圆形: ${e.target.id}`);
+                    return;
+                }
+
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                svg.style.cursor = "pointer";
+            });
+            svg.addEventListener("mouseup", (e) => {
+                isDragging = false;
+                svg.style.cursor = "move";
+            });
+
+            document.addEventListener("mousemove", (e) => {
+                if (!isDragging) return;
+
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+
+                container.style.transform = `translate(${translateX}px, ${translateY}px)`;
+            });
+
+            document.addEventListener("mouseup", () => {
+                isDragging = false;
+            });
+        </script>
+    </body>
+</html>
