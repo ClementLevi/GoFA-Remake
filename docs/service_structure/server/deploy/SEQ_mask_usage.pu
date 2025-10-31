@@ -1,0 +1,65 @@
+@startuml
+title Mask Usage
+hide unlinked
+' Participants definitions
+control "PGB:\nInstanceType<PrimitiveGalaxyBuilder>" as main
+database "n:\nInstanceType<Nebulae>[][]" as n
+database "s:\nInstanceType<System>[][]" as s #888888
+participant "mask\nextends IMask" as m
+queue "img:\nInstanceType<Image>" as i
+
+' Phase 1
+note across
+"Phase 1: create base universe using Nebula class"
+end note
+
+main --> main: PGB.generate_base_galaxy()
+activate main
+create n
+main -> n: this.nebulae = Nebula[][];
+n --> n: Random generation
+activate n
+
+' Phase 2
+note across
+"Phase 2: use Mask instances to manipulate random generation"
+end note
+
+== Create as many Masks as needed ==
+main --> main: PGB.add_mask(m: IMask)
+create m
+main -> m: let m = new IMask(...);
+m -> m: load_image(filePath:string);
+activate m
+create i
+m ->o i: i.load(filePath);  // async function
+i -> m: async m._mask_value = i.toRGBArray()
+deactivate m
+== ↑ Repeat adding masks==
+
+main --> main: PGB.apply_all_masks();
+main -> n
+n --> n: PGB.nebulae.map(row=>{n=>{...}});
+n -\ m: n => m.apply(n);
+note right of m
+masks will change the inner values
+with API like m._modify(n, keyof n, valueSettings)
+end note
+m -/ n
+n -> main
+
+' Phase 3
+note across
+"Phase 3: stabilize Nebula[][] and transform them into immutable System[][]"
+end note
+
+main --> main: PGB.finish_galaxy_generation();
+deactivate main
+main --x n
+create s
+n --> s: Nebulae is transformed into atlas: System[][]
+destroy n
+s ->o main: return Atlas: {atlas: System[][], ...}
+
+
+@enduml
