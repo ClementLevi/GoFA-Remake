@@ -212,7 +212,7 @@ module.exports = {
 
 if (require.main === module) {
     const test = require("node:test");
-    const { describe, it, afterEach } = test;
+    const { describe, it, afterEach, beforeEach } = test;
     const assert = require("node:assert");
 
     describe("Queue class", () => {
@@ -230,6 +230,9 @@ if (require.main === module) {
                 assert.strictEqual(q.dequeue(), 1);
                 assert.strictEqual(q.dequeue(), 2);
                 assert.strictEqual(q.dequeue(), 3);
+            });
+            it("should handle NaN value", () => {
+                q.enqueue(NaN);
             });
             it("should handle empty enqueue", () => {
                 q.enqueue();
@@ -357,6 +360,35 @@ if (require.main === module) {
                 assert.strictEqual(q.isEmpty(), true);
             });
         });
+
+        describe("can enumerate", () => {
+            let q = new Queue();
+            beforeEach(() => {
+                q = new Queue();
+                q.enqueue(0, 1, 2, 3);
+            });
+            it("forEach", () => {
+                q.forEach((item, index) => {
+                    assert.strictEqual(item, q[index]);
+                });
+            });
+            it("map", () => {
+                q.map((item, index) => {
+                    assert.strictEqual(item, q[index]);
+                    return item;
+                });
+            });
+            it("filter", () => {
+                let evens = q.filter((value) => value % 2 === 0);
+                assert.deepStrictEqual(evens, new Queue(0, 2));
+            });
+            it("reduce", () => {
+                q.reduce((acc, item, index) => {
+                    assert.strictEqual(item, q[index]);
+                    return acc;
+                }, 0);
+            });
+        });
     });
 
     describe("Stack class", () => {
@@ -482,6 +514,35 @@ if (require.main === module) {
                     assert.strictEqual(s.pop(), i);
                 }
                 assert.strictEqual(s.isEmpty(), true);
+            });
+        });
+
+        describe("can enumerate", () => {
+            let s = new Stack();
+            beforeEach(() => {
+                s = new Stack();
+                s.push(0, 1, 2, 3);
+            });
+            it("forEach", () => {
+                s.forEach((item, index) => {
+                    assert.strictEqual(item, s[index]);
+                });
+            });
+            it("map", () => {
+                s.map((item, index) => {
+                    assert.strictEqual(item, s[index]);
+                    return item;
+                });
+            });
+            it("filter", () => {
+                let evens = s.filter((value) => value % 2 === 0);
+                assert.deepStrictEqual(evens, new Stack(0, 2));
+            });
+            it("reduce", () => {
+                s.reduce((acc, item, index) => {
+                    assert.strictEqual(item, s[index]);
+                    return acc;
+                }, 0);
             });
         });
     });
