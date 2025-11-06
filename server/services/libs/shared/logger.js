@@ -34,7 +34,7 @@ const singleton = require(__dirname + "/Singleton");
  * @property {Function[]} handlers - The command handler functions. 命令处理函数数组。
  */
 
-/** 
+/**
  * @typedef {typeof Logger} TypeLogger
  * @typedef {InstanceType<Logger>} LoggerInstance
  */
@@ -124,6 +124,16 @@ class Logger extends events {
             this.onCommand(cmd, ...args);
             this.rl?.prompt();
         });
+        return this;
+    }
+    /**
+     * @description Bind the logger to a parent object.
+     * 将logger绑定到父对象。
+     * @param {any} parent
+     * @returns {this}
+     */
+    bindParent(parent) {
+        this.parent = parent;
         return this;
     }
 
@@ -299,7 +309,7 @@ class Logger extends events {
         readline.clearLine(process.stdout, 0);
 
         // Output message without newline
-        if (output.includes("console")) console.log(logMessage)  //process.stdout.write(logMessage + "\n");
+        if (output.includes("console")) console.log(logMessage); //process.stdout.write(logMessage + "\n");
         // @ts-ignore 内部保留方法说是
         this.rl?._refreshLine();
         // TODO 将有关日志记录的内容输出到文件，现在这种写法肯定不对。
@@ -383,7 +393,7 @@ if (require.main === module) {
         function (a) {
             return a + 1;
         },
-        [1,1,4,5,1,4],
+        [1, 1, 4, 5, 1, 4],
         {
             a: 1,
             b: 2,
@@ -393,7 +403,7 @@ if (require.main === module) {
                 },
             },
         },
-        new Error("test error"),
+        new Error("test error")
     );
     logger2.emit("debug", "logger2 debug event");
     logger2.emit("info", "logger2 info event");
