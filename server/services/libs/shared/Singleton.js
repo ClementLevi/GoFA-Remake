@@ -1,16 +1,21 @@
 /**
+ * @description 都几把啥，直接module.exports = new ClassDef() 就是单例
+ * @deprecated
+ */
+
+/**
  * 创建一个单例模式的实例管理器。
  * 单例模式确保一个类只有一个实例，并提供一个全局访问点。
  * 该函数返回一个代理对象，该代理对象控制类的实例化过程。
  * 如果尚未创建实例，则使用提供的初始化实例创建一个新的实例。
  * 如果已经存在实例，则直接返回该实例。
  *
+ * @template {object} ClassNameInstance - 类实例类型
  * @template {new (...args: any[]) => ClassNameInstance} ClassName - 类构造函数类型
- * @template ClassNameInstance - 类实例类型
  * @param {ClassNameInstance} initializedInstance - 已初始化的类实例
- * @returns {ClassName & {
- *   getInstance?: (...args: any[]) => ClassNameInstance
- * }} - 代理后的单例类
+ * @returns {(ClassName & {
+ *   getInstance: (...args: any[]) => ClassNameInstance
+ * })} - 代理后的单例类
  *
  * @example
  * // 定义一个类
@@ -61,6 +66,8 @@ function singleton(initializedInstance) {
 module.exports = singleton;
 
 if (require.main === module) {
+    const { describe, it, beforeEach, afterEach } = require("node:test");
+    const assert = require("node:assert");
     class TestClass {
         constructor(value) {
             this.value = value || Math.random();
@@ -68,24 +75,34 @@ if (require.main === module) {
     }
 
     // 测试1: 通过new创建实例
-    const TestClassSingletonInstance = singleton(new TestClass());
-    const instance1 = TestClassSingletonInstance;
-    const instance2 = TestClassSingletonInstance;
-
+    describe("测试1: 通过new创建实例", () => {
+        let instance1, instance2;
+        beforeEach(() => {
+            instance1 = new TestClass();
+            instance2 = new TestClass();
+        });
+        it("实例1应该与实例2不同", () => {
+            assert.notEqual(instance1, instance2);
+        });
+    });
     // 测试2: 通过getInstance获取/创建实例
-    const instance3 = TestClassSingletonInstance.getInstance();
-    const instance4 = TestClassSingletonInstance.getInstance(0.5); // 带参数创建
+    describe("测试2: 通过getInstance获取/创建实例", () => {
+        let instance1, instance2;
+        let tci = singleton(new TestClass());
+        beforeEach(() => {
+            instance1 = tci;
+            instance2 = tci.getInstance();
+        });
+        it("实例1应该与实例2相同", () => {
+            assert.strictEqual(instance1, instance2);
+        });
+    });
 
-    console.log("单例模式测试:");
-    console.log("instance1 === instance2:", instance1 === instance2);
-    console.log("instance1 === instance3:", instance1 === instance3);
-
-    // 测试3：稍复杂的类定义与实例化
     /**
      * @typedef config - 配置对象
      * @property {"mysql"|"sqlite"|"mongodb"} type - 数据库类型
-     * @property {(config["type"] extends "sqlite"? string: never)} [path] - 数据库路径
-     * @property {(config["type"] extends "mysql"? string: never)} [host] - 数据库主机名
+     * @property {(config["type"] extends "sqlite"? string: never)} path - 数据库路径
+     * @property {(config["type"] extends "mysql"? string: never)} host - 数据库主机名
      */
     class MockDB {
         /**
@@ -96,11 +113,4 @@ if (require.main === module) {
         }
     }
 
-    const MockDBCreator = (/** @type {any[]}*/ ...args) => {
-        return singleton(...args);
-    };
-    const MockDBSingletonInstance = MockDBCreator(
-        new MockDB({ type: "mysql", host: "localhost", path: "./test.db" })
-    );
-    console.log("MockDBSingletonInstance:", MockDBSingletonInstance);
 }
