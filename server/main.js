@@ -84,13 +84,13 @@ const ServerDeployer = require(path.resolve(
  * @description 主程序接口定义
  * @typedef IMain
  * @property {Config?} config - 配置模块实例
- * @property {InstanceType<Database>?} db - 数据库实例
+ * @property {Database?} db - 数据库实例
  * @property {Game?} game - 游戏实例
  * @property {Log?} logger - 日志模块实例
  * @property {ENUM_STAGE[keyof ENUM_STAGE]} stage - 主程序运行阶段枚举
  * @property {ServerDeployer?} server_deployer - 服务器部署器实例
  * @property {Time} time - 时间信息
- * @property {"init"|"running"|"exiting"} ENUM_STAGE - 主程序运行阶段枚举
+ * @property {EnumStage[keyof EnumStage]} ENUM_STAGE - 主程序运行阶段枚举
  * @property {() => Promise<this>} init - 初始化游戏
  * @property {() => void} run - 运行游戏
  * @property {() => void} loadConfig - 加载配置

@@ -78,11 +78,20 @@ const ENUM_SYSTEM_COLOR = {
  * @description 星系大小限制，指一个星系内允许生成的星球数量，为{x|x∈[min, max]}
  * @readonly
  * @type {RanIntLimitation}
+ * @exports
  */
 const SYSTEM_SIZE_LIMITATION = { min: 1, max: 9 };
+/**
+ * @description 星系颜色限制，指{@link ENUM_SYSTEM_COLOR}的取值范围，为{x|x∈[min, max]}
+ * @readonly
+ * @type {RanIntLimitation}
+ * @exports
+ */
+const SYSTEM_COLOR_LIMITATION = { min: 0, max: 10 };
 
 module.exports = {
     // SystemOptions,
     ENUM_SYSTEM_COLOR,
     SYSTEM_SIZE_LIMITATION,
+    SYSTEM_COLOR_LIMITATION,
 };

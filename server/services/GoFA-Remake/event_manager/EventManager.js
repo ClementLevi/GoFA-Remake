@@ -1,9 +1,8 @@
-//@ts-check
-
-const PriorityQueue = require(__dirname + "PriorityQueue");
-const singleton = require(__dirname + "/../shared/Singleton");
-class EventManager {
+const EventEmitter = require('node:events');
+const PriorityQueue = require(__dirname + "/PriorityQueue");
+class EventManager extends EventEmitter {
     constructor() {
+        super();
         // 一个优先队列，每一个元素的优先级都表示一个任务完成的剩余时间。
         this.pq = new PriorityQueue();
         this.sleptTime = 0;
@@ -18,19 +17,26 @@ class EventManager {
         for (let item of this.pq.queue) {
         }
     }
-    emit(event) {
+    /**
+     * 
+     * @param {string | symbol | number} eventName
+     * @param  {...any} args
+     * @returns {boolean}
+     */
+    emit(eventName, ...args) {
         /**
          * 1. 计算任务的优先级，优先级为任务的剩余时间。
          * 2. 将任务加入优先队列。
          */
-        const priority = event.getRemainingTime();
+        const priority = EventEmitter.getRemainingTime();
         this.pq.enqueue(event, priority);
+        return true;
     }
 }
-const SEventManager = singleton(EventManager);
-module.exports = SEventManager;
+
+module.exports = EventManager;
 
 if (require.main === module) {
-    const em = new SEventManager();
+    const em = new EventManager();
     console.log(em);
 }

@@ -1,21 +1,30 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-/** @typedef {import ("../../../services/libs/shared/logger")} Log */
+/**
+ * @typedef {import("../../../services/libs/shared/logger")} Log
+ * @type {Log}
+ */
 const Log = require(path.resolve(
     __dirname,
     "../../../services/libs/shared/logger"
 ));
-/** @typedef {import ("../../../services/libs/error/Error").ConfigError} ConfigError */
-const { ConfigError } = require(path.resolve(
+/**
+ * @typedef {import("../../../services/libs/error/Error").ConfigError} ConfigError
+ */
+const { /** @type {ConfigError}*/ ConfigError } = require(path.resolve(
     __dirname,
     "../../../services/libs/error/Error"
 ));
-/** @typedef {import ("../../libs/db/IDBConnector")} IDBConnector */
+/** @typedef {import("../../libs/db/IDBConnector")} IDBConnector */
 const IDBConnector = require(path.resolve(
     __dirname,
     "../../../services/libs/db/IDBConnector"
 ));
+/**
+ * @typedef {import("../game_entities/atlas/generator/PrimitiveGalaxyBuilder")} PrimitiveGalaxyBuilder
+ * @type {PrimitiveGalaxyBuilder}
+ */
 const PrimitiveGalaxyBuilder = require(path.resolve(
     __dirname,
     "../game_entities/atlas/generator/PrimitiveGalaxyBuilder.js"
@@ -28,7 +37,7 @@ const INSTALLATION_DDL = path.resolve(
 /**
  * @typedef {import ("../../libs/db/DB_Config.d")} DB_Config
  * @typedef {import ("../../libs/db/Database")} DatabaseConstructor
- * @typedef {import ("../../../main")} IMain
+ * @typedef {import ("../../../main").IMain} IMain
  */
 
 /**
@@ -57,6 +66,7 @@ class ServerDeployer {
      */
     init() {
         if (this.isInitialized) return this;
+        if(this.DB.isInitialized) return this;
         this.DB.init()
             .then(() => {
                 this.isInitialized = true;
@@ -109,7 +119,10 @@ class ServerDeployer {
     deploy() {
         Log.info("Deploying server...");
         // 1. 使用地图生成器创建地图
-        let map_builder = new PrimitiveGalaxyBuilder();
+        /**
+         * @type {import("../game_entities/atlas/generator/PrimitiveGalaxyBuilder")}
+         */
+        let map_builder = new PrimitiveGalaxyBuilder(120, 120);
         map_builder.generate_base_galaxy();
         // 2. 创建数据库
         let DDL_SCHEMA = fs.readFileSync(INSTALLATION_DDL, "utf8");

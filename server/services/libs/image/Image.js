@@ -4,15 +4,13 @@ const path = require("path");
 const { Jimp } = require("jimp");
 
 /**
- * @typedef {import('./Pixel')} Pixel
+ * @typedef {typeof import('./Pixel')} Pixel
  * @type {Pixel}
  */
 const Pixel = require("./Pixel");
 
 /**
- * @typedef ImageConfig
- * @property {BitMap} bitmap - 图像位图数据。
- * @property {string?} [filePath=null] - 图像文件路径，默认为null。
+ * @typedef {{bitmap:BitMap} | {filePath:string}} ImageConfig
  */
 
 /**
@@ -23,7 +21,9 @@ const Pixel = require("./Pixel");
  */
 
 /**
- * @description 强度图数据类型。和位图相同，但是语义上表示强度
+ * @description 强度图数据类型。和位图相同，但是语义上表示强度.
+ * 强度通过RGB三通道平均计算后归一化得出，反映单个像素的亮度。强度值越接近1，表示该像素的颜色越亮；越接近0，则表示颜色越暗。
+ * "Strength" refers to the degree of lightness or darkness of a color. A strength value of 1 indicates a bright color, while a value of 0 indicates a dark color.
  * @typedef {BitMap} StrengthMap
  */
 
@@ -32,7 +32,7 @@ const Pixel = require("./Pixel");
  * Image class for loading, converting, and saving images.
  * @requires Jimp
  * @class
- * @property {object?} bitmap - 图像位图数据。
+ * @property {BitMap?} bitmap - 图像位图数据。
  * @property {number[]} bitmap.data - 位图像素。
  * @property {number} bitmap.width - 图像宽度。
  * @property {number} bitmap.height - 图像高度。
@@ -43,6 +43,41 @@ const Pixel = require("./Pixel");
  * @property {Jimp} _data - 图像数据。
  */
 class Image {
+    /**
+     * @description 验证位图是否有效的bitmap对象。
+     * @param {any} bitmap
+     * @returns {boolean}
+     */
+    static isBitmapValid(bitmap) {
+        if (!bitmap) return false;
+        if (
+            bitmap.data == undefined ||
+            bitmap.width == undefined ||
+            bitmap.height == undefined
+        )
+            return false;
+        if (!Array.isArray(bitmap.data) || bitmap.data.length === 0)
+            return false;
+        if (bitmap.data.every((i) => !Number.isInteger(i))) return false;
+        if (
+            !Number.isSafeInteger(bitmap.width) ||
+            !Number.isSafeInteger(bitmap.height)
+        )
+            return false;
+        if (bitmap.width <= 0 || bitmap.height <= 0) return false;
+        return true;
+    }
+    /**
+     * @description 验证本地图片的 URL 是否有效。
+     * @param {string} url 一个本地图片URL
+     * @returns {boolean}
+     */
+    static isURLValid(url) {
+        // TODO: 增加访问权限、实际格式、后缀名等校验。
+        if (!fs.existsSync(url)) return false;
+        return true;
+    }
+
     /**
      * 创建一个新的Image实例。
      * Creates a new Image instance.
@@ -68,6 +103,8 @@ class Image {
     async load() {
         if (this.filePath !== null && this.filePath !== "") {
             this._data = await this._handler.read(this.filePath);
+            this.height = this._data.bitmap.height;
+            this.width = this._data.bitmap.width;
         } else if (this.bitmap?.data) {
             // TODO: 在 load 方法中增加对 this.bitmap.data 的类型检查，确保它是有效的数组。
             await this.fromBitmap(
@@ -75,8 +112,10 @@ class Image {
                 this.bitmap.width,
                 this.bitmap.height
             );
-            //@ts-expect-error "delete" 运算符的操作数必须是可选的
+            //  no@ts-expect-error "delete" 运算符的操作数必须是可选的
             delete this.bitmap; // 释放内存
+            this.height = this._data.bitmap.height;
+            this.width = this._data.bitmap.width;
         } else {
             throw new Error("No image file path nor bitmap provided");
         }
@@ -88,7 +127,7 @@ class Image {
      * Gets the pixel object at the specified coordinates.
      * @param {number} x - 像素的x坐标。
      * @param {number} y - 像素的y坐标。
-     * @returns {Pixel} - 返回Pixel对象。
+     * @returns {InstanceType<Pixel>} - 返回Pixel对象。
      */
     getPixel(x, y) {
         // TODO: 在 getPixel 方法中检查 (x, y) 坐标是否在合法范围内，避免越界访问。
@@ -104,7 +143,7 @@ class Image {
      * Resizes the image.
      * @param {number} width - 新的宽度。
      * @param {number} height - 新的高度。
-     * @returns {Image} - 返回当前Image实例。
+     * @returns {this} - 返回当前Image实例。
      */
     resize(width, height) {
         // TODO: 在 resize 方法中，增加对 this.data 的有效性检查。
@@ -113,7 +152,7 @@ class Image {
     }
 
     /**
-     * 将图片转为灰度图。
+     * 将图片原地转为灰度图。
      * Converts the image to grayscale.
      * @returns {Image} - 返回当前Image实例。
      */
@@ -128,11 +167,11 @@ class Image {
      * @param {number[]} bitmap - 位图数据数组。
      * @param {number} width - 图像宽度。
      * @param {number} height - 图像高度。
-     * @returns {Promise<Image>} - 返回当前Image实例。
+     * @returns {this} - 返回当前Image实例。
      */
-    async fromBitmap(bitmap, width, height) {
+    fromBitmap(bitmap, width, height) {
         // TODO: 在 fromBitmap 和 fromBuffer 方法中处理潜在的错误，添加异常捕获。
-        this._data = await this._handler.fromBitmap({
+        this._data = this._handler.fromBitmap({
             width,
             height,
             data: bitmap,
@@ -144,13 +183,13 @@ class Image {
      * 从缓冲区创建图像数据。
      * Creates image data from buffer.
      * @param {Buffer} buffer - 图像缓冲区。
-     * @returns {Promise<this>} - 返回当前Image实例。
+     * @returns {this} - 返回当前Image实例。
      */
-    async fromBuffer(buffer) {
+    fromBuffer(buffer) {
         // TODO: 在 fromBitmap 和 fromBuffer 方法中处理潜在的错误，添加异常捕获。
         // TODO: 基于事件回调或者异常+多次请求命中缓存方式消除异步传染性。
         // ? 好像不是非消不可
-        this._data = await this._handler.fromBuffer(buffer);
+        this._data = this._handler.fromBuffer(buffer);
         return this;
     }
 
@@ -177,6 +216,8 @@ class Image {
     /**
      * 生成强度图，包含颜色强度信息。
      * Generates a strength map containing color intensity information.
+     * 强度通过RGB三通道平均后归一化得出，反映单个像素的亮度。强度值越接近1，表示该像素的颜色越亮；越接近0，则表示颜色越暗。
+     * "Strength" refers to the degree of lightness or darkness of a color. A strength value of 1 indicates a bright color, while a value of 0 indicates a dark color.
      * @returns {StrengthMap} - 返回强度图对象。
      */
     toStrengthMap() {
@@ -199,25 +240,132 @@ class Image {
     }
 
     /**
+     * @descrption 将图像转为RGB数组，每个数字都是0xRRGGBB格式
+     * @returns {number[]} An array made by numbers in shape of 0xRRGGBB
+     */
+    toRGBArray() {
+        let ret = [];
+        let data = this.toBitmap().data;
+        for (let i = 0; i < data.length; i += 4) {
+            let r = data[i];
+            let g = data[i + 1];
+            let b = data[i + 2];
+            let value = (r << 16) | (g << 8) | b;
+            ret.push(value);
+        }
+        return ret;
+    }
+
+    /**
+     * @description 将图像转为RGBA数组，每个数字都是0xRRGGBBAA格式。注意常规number类型装不下RBGA，请特别使用bigint类型
+     * @returns {bigint[]}
+     */
+    toRGBAArray() {
+        let ret = [];
+        let data = this.toBitmap().data;
+        for (let i = 0; i < data.length; i += 4) {
+            let r = data[i];
+            let g = data[i + 1];
+            let b = data[i + 2];
+            let a = data[i + 3];
+            let value =
+                (BigInt(r) << 24n) |
+                (BigInt(g) << 16n) |
+                (BigInt(b) << 8n) |
+                BigInt(a);
+            ret.push(value);
+        }
+        return ret;
+    }
+
+    /**
+     *
+     * @returns {number[][]}
+     */
+    to2DRGBArray() {
+        let ret = [];
+        let RGB_array = this.toRGBArray();
+        for (let i = 0; i < this.height; i += 3) {
+            let row = [];
+            for (let j = 0; j < this.width; j++) {
+                row.push(RGB_array[i + j]);
+            }
+            ret.push(row);
+        }
+        return ret;
+    }
+
+    /**
+     *
+     * @returns {bigint[][]}
+     */
+    to2DRGBAArray() {
+        let ret = [];
+        let RGBA_array = this.toRGBAArray();
+        for (let i = 0; i < this.height; i += 4) {
+            let row = [];
+            for (let j = 0; j < this.width; j++) {
+                row.push(RGBA_array[i + j]);
+            }
+            ret.push(row);
+        }
+        return ret;
+    }
+    /**
+     * @param {'r'|'g'|'b'|'a'|'R'|'G'|'B'|'A'} channel
+     * @returns {number[]}
+     */
+    toChannelArray(channel = "r") {
+        switch (channel) {
+            case "r":
+            case "R":
+                return this.toRGBAArray().map((value) =>
+                    Number(value & 0xff000000n)
+                );
+            case "g":
+            case "G":
+                return this.toRGBAArray().map((value) =>
+                    Number(value & 0x00ff0000n)
+                );
+            case "b":
+            case "B":
+                return this.toRGBAArray().map((value) =>
+                    Number(value & 0x0000ff00n)
+                );
+            case "a":
+            case "A":
+                return this.toRGBAArray().map((value) =>
+                    Number(value & 0x000000ffn)
+                );
+            default:
+                throw new TypeError(
+                    `Invalid channel name: ${channel}. Expecting 'r', 'g', 'b', or 'a'.`
+                );
+        }
+    }
+
+    /**
+     * @see {@link Image.toStrengthMap}
+     */
+    toStrengthArray() {
+        return this.toStrengthMap().data;
+    }
+    /**
      * 将图像保存到指定路径。
      * Saves the image to the specified path.
-     * @param {String} filePath - 图像保存的文件路径。
+     * @param {string} filePath - 图像保存的文件路径。
      */
-    save(filePath) {
-        this._data.write(filePath);
+    async save(filePath) {
+        await this._data.write(filePath);
         return this;
     }
 }
 
 module.exports = Image;
 
-/**
- * 测试 Image 类功能的自执行异步函数。
- * Self-executing asynchronous function to test Image class functionality.
- */
 if (require.main === module) {
     (async () => {
-        let image = new Image({
+        let colored = {
             bitmap: {
                 data: [
                     0xff0000ff, 0xffff00ff, 0xffffffff, 0x00ff00ff, 0x00ffffff,
@@ -228,21 +376,48 @@ if (require.main === module) {
                 width: 4,
                 height: 4,
             },
-        });
-        image.load().then(() => {
-            image.save(
+        };
+        let image = new Image(colored);
+        image.load().then(async () => {
+            await image.save(
                 path.resolve(
-                    "server/build/images/libs/ImageClass/test-grayscale-colored.png"
+                    "server/build/images/libs/ImageClass/new-colored.png"
                 )
             );
-            let image2 = image.toGrayscale();
-            image2.save(
-                path.resolve(
-                    "server/build/images/libs/ImageClass/test-grayscale.png"
-                )
+            console.log(`image with 4x4: ${image.width} x ${image.height}`);
+            console.log(
+                image.toRGBAArray().map((v) => new Pixel(v).toObject())
             );
-            console.log(image2.toStrengthMap());
-            console.log(image.toStrengthMap());
+            console.log(image.toStrengthArray());
         });
+        // let image2 = new Image(colored);
+        // image2.load().then(async () => {
+        //     image2.toGrayscale();
+        //     await image2.save(
+        //         path.resolve(
+        //             "server/build/images/libs/ImageClass/test-grayscale.png"
+        //         )
+        //     );
+        //     console.log(image2.toStrengthMap());
+        // });
+        // let readable = new Image({
+        //     filePath: path.resolve(
+        //         "server/build/images/libs/ImageClass/test_readable.jpg"
+        //     ),
+        // });
+        // readable.load().then(() => {
+        //     console.log(readable._data.bitmap.data);
+        //     let RGBA_array = readable.toRGBAArray();
+        //     console.log(
+        //         "readable image loaded: ",
+        //         RGBA_array.map((i) => new Pixel(i).toObject())
+        //     );
+        //     console.log(
+        //         "2D array: ",
+        //         readable
+        //             .to2DRGBAArray()
+        //             .map((r) => r.map((v) => new Pixel(v).toObject()))
+        //     );
+        // });
     })();
 }

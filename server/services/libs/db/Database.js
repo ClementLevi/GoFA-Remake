@@ -1,8 +1,19 @@
 const path = require("node:path");
 const fs = require("node:fs");
-const sqlite3 = require("sqlite3").verbose();
+
+/**
+ * @type {{ConfigError: typeof import ("../error/Error").ConfigError}}
+ */
 const { ConfigError } = require(path.resolve(__dirname, "../error/Error"));
+/**
+ * @typedef {InstanceType<import("../shared/logger").TypeLogger>} Log
+ * @type {Log}
+ */
 const Log = require(path.resolve(__dirname, "../shared/logger.js"));
+/**
+ * @typedef {import("../shared/Singleton")} Singleton
+ * @type {Singleton}
+ */
 const singleton = require(path.resolve(__dirname, "../shared/Singleton.js"));
 // Implementations of IDBConnector
 /** @typedef {import("./IDBConnector")} IDBConnector*/
@@ -42,7 +53,7 @@ class Database {
         this.isInitialized = false;
         /** @type {IDBConnector?} */
         let DB_Impl = null;
-        /** @type {new DB_Impl() | null} */
+        /** @type {InstanceType<IDBConnector>} */
         this.db = null;
         switch (DB_Type) {
             case ENUM_DB_TYPE.SQLITE3: {
@@ -83,6 +94,7 @@ class Database {
      * @returns {Promise<void>}
      */
     close() {
+        Log.info("Closing database connection...");
         return this.db.close();
     }
 
@@ -97,6 +109,15 @@ class Database {
     execute(sql, params, cb) {
         return this.db.execute(sql, params, cb);
     }
+    /**
+     * @description 绑定父级引用
+     * @param {any} parent
+     * @returns {this}
+     */
+    bindParent(parent) {
+        this.parent = parent;
+        return this;
+    }
 }
 
 /**
@@ -105,9 +126,8 @@ class Database {
  * @param {DB_Config} arg_DB_Config
  * @returns {Database}
  */
-let __exports = (arg_DB_Type, arg_DB_Config) => {
-    return singleton(new Database(arg_DB_Type, arg_DB_Config));
-};
+let __exports = (arg_DB_Type, arg_DB_Config) => singleton(new Database(arg_DB_Type, arg_DB_Config));
+;
 module.exports = __exports; // 需要参数的单例到调用者处实例化传入
 
 if (require.main === module) {

@@ -1,11 +1,19 @@
 const path = require("node:path");
-/**
- * @deprecated
- * TODO: use node:crypto.randomUUID() instead
- */
-const uuid = require("uuid");
-const _ = require("lodash");
+const uuid = require("node:crypto").randomUUID;
 
+/**
+ * @typedef {typeof import("../../../../libs/shared/index").linearRemap} linearRemap
+ * @type {{linearRemap: linearRemap}}
+ */
+const { linearRemap } = require(path.resolve(
+    __dirname,
+    "../../../../libs/shared/index"
+));
+/**
+ * @typedef {typeof import("../../../../libs/shared/RNG")} RNG
+ * @type {RNG}
+ */
+const RNG = require(path.resolve(__dirname, "../../../../libs/shared/RNG"));
 /**
  * @typedef {typeof import ("../pos/Pos")} Pos
  * @type {Pos}
@@ -16,10 +24,6 @@ const Pos = require(path.resolve(__dirname, "../pos/Pos.js"));
  * @type {Pos2d}
  */
 const Pos2d = require(path.resolve(__dirname, "../Pos/Pos2d.js"));
-/**
- * @typedef {import ("./System.d").ENUM_SYSTEM_COLOR} SystemColor
- * @type {SystemColor}
- */
 
 /**
  * @typedef {typeof import ("../planet/Planet")} Planet
@@ -27,10 +31,16 @@ const Pos2d = require(path.resolve(__dirname, "../Pos/Pos2d.js"));
  */
 const Planet = require(path.resolve(__dirname, "../planet/Planet"));
 
-const ENUM_SYSTEM_COLOR = require(path.resolve(
-    __dirname,
-    "./System.d.js"
-)).ENUM_SYSTEM_COLOR;
+/**
+ * @typedef {import ("./System.d").ENUM_SYSTEM_COLOR} SystemColor
+ * @typedef {import ("./System.d").SYSTEM_SIZE_LIMITATION} SystemSizeLimitation
+ * @typedef {import ("./System.d").SYSTEM_COLOR_LIMITATION} SystemColorLimitation
+ */
+const {
+    /** @type {SystemColor}*/ ENUM_SYSTEM_COLOR,
+    /** @type {SystemSizeLimitation}*/ SYSTEM_SIZE_LIMITATION,
+    /** @type {SystemColorLimitation}*/ SYSTEM_COLOR_LIMITATION,
+} = require(path.resolve(__dirname, "./System.d"));
 
 /**
  * @typedef {import("./System.d").SystemOptions} SystemOptions
@@ -47,22 +57,31 @@ const ENUM_SYSTEM_COLOR = require(path.resolve(
 class System {
     /**
      * @param {SystemOptions} options 系统选项对象
+     * @param {InstanceType<RNG>?} [rng] 随机数生成器实例，用于生成星系名称
      */
 
-    constructor(options) {
+    constructor(options, rng) {
         // Constant properties 静态属性
         /** @type {string} */
-        this.uuid = uuid.v4();
+        this.uuid = uuid();
         /** @type {InstanceType<Pos2d>} */
         this.pos = options.Pos;
         /** @type {string} */
         this._name = options.name ?? "System_" + this.uuid.slice(0, 4);
         /** @type {SystemOptions["seed"] } */
-        this.seed = options.seed ?? uuid.v4();
-        /** @type {string} */
+        this.seed = options.seed ?? uuid();
+        /** @type {InstanceType<RNG>} */
+        this._rng = rng ?? new RNG(this.seed);
+        /** @type {SystemOptions["appearance"]} */
         this.appearance = options.appearance ?? ""; // Appearance, for frontend rendering, no logic related to it. But it has to be static to store in db.
         /** @type {number} */
-        this.size = options.size ?? 1;
+        this.size = options.size ?? Math.round(
+            linearRemap(
+                this._rng.random(),
+                SYSTEM_SIZE_LIMITATION.min,
+                SYSTEM_SIZE_LIMITATION.max
+            )
+        );
         /** @type {InstanceType<Planet>[]} */
         this.planets = [];
         for (let c = 0; c < this.size; c++) {
@@ -70,7 +89,13 @@ class System {
             this.planets.push(p);
         }
         /** @type {ENUM_SYSTEM_COLOR} */
-        this.color = options.color ?? ENUM_SYSTEM_COLOR.WHITE;
+        this.color = options.color ?? Math.round(
+            linearRemap(
+                this._rng.random(),
+                SYSTEM_COLOR_LIMITATION.min,
+                SYSTEM_COLOR_LIMITATION.max
+            )
+        );
 
         // Dynamic properties 动态属性
 
@@ -95,6 +120,8 @@ class System {
         this.display_name = name;
     }
 
+    get Pos(){return this.pos;}    //alias
+
     get heat() {
         return this._heat;
     }
@@ -111,7 +138,7 @@ class System {
      */
     randomizeName(name_generator) {
         if (!name_generator) {
-            this.display_name = "System_" + uuid.v4().slice(0, 4);
+            this.display_name = "System_" + uuid().slice(0, 4);
             return;
         }
         this.display_name = name_generator.pick();
@@ -131,11 +158,11 @@ class System {
      * Get the alliance that occupies this system.
      * Which alliance holds more than any others in the system is the occupier.
      * TODO: implement this
-     * @return {void} alliance interface to be designed, but should return something
+     * @return {?} alliance interface to be designed, but should return something
      */
     calculateOccupier() {}
-    toString(){
-        return `[System @(${this.pos.x}, ${this.pos.y}) - size:${this.size}]`
+    toString() {
+        return `[System(${this.size}) @(${this.pos.x}, ${this.pos.y})]`;
     }
 }
 
@@ -160,7 +187,7 @@ if (require.main === module) {
     /** @type {InstanceType<SystemNameGenerator>} */
     const nameGenerator = new CLSSystemNameGenerator();
     console.log(system);
-    const system2 = new System({ Pos: new Pos2d(0, 1) });
+    const system2 = new System({ Pos: new Pos2d(0, 1), name:"system2",appearance:"mock system",size:6,seed: "system2IsForU" });
     console.log(system2);
     console.log(system.getDistance(system2));
     system.offset(1);

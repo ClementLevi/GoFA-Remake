@@ -9,13 +9,18 @@ const { ValueError } = require(path.resolve(__dirname + "/../error/Error"));
 
 /**
  * @typedef {[ColorValue<0,255>,ColorValue<0,255>,ColorValue<0,255>,ColorValue<0,255>?]} PixelArgsOverload1
- * @typedef {number} PixelArgsOverload2
+ * @typedef {bigint} PixelArgsOverload2
  * @typedef {string | number} PixelArgsOverload3
  */
 
 class Pixel {
     /**
-     * @type {new (arg0: PixelArgsOverload1 | PixelArgsOverload2 | PixelArgsOverload3)=> void}
+     * @see {@link PixelArgsOverload1}
+     * @see {@link PixelArgsOverload2}
+     * @see {@link PixelArgsOverload3}
+     * @type {(new (r:ColorValue<0,255>,g:ColorValue<0,255>,b:ColorValue<0,255>,a:ColorValue<0,255>?)=>void) |
+     * (new (color:bigint)=>void) |
+     * (new (hex_color: string | number)=>void)}
      */
     constructor() {
         /** @type {ColorValue<0,255>} */
@@ -44,30 +49,49 @@ class Pixel {
             case 1: {
                 let value = arguments[0];
                 if (typeof value === "string") {
+                    if (!/^#([\da-fA-F]{3}|[\da-fA-F]{6})$/.test(value))
+                        throw new ValueError("Invalid arguments: ", arguments);
                     value = parseInt(value.replace("#", ""), 16);
                 }
-                if (isNaN(value)) {
-                    throw new ValueError("Invalid color value");
+                if (value.constructor.name === "BigInt") {
+                    // r, g, b, a 都必然是 0-255 的整数
+                    // @ts-ignore
+                    this.r = Number((value & 0xff000000n) >> 24n);
+                    // @ts-ignore
+                    this.g = Number((value & 0xff0000n) >> 16n);
+                    // @ts-ignore
+                    this.b = Number((value & 0xff00n) >> 8n);
+                    // @ts-ignore
+                    this.a = Number(value & 0xffn);
+                    break;
                 }
-                // r, g, b, a 都必然是 0-255 的整数
-                // @ts-ignore
-                this.r = Math.min(value >> 24, 0xff);
-                // @ts-ignore
-                this.g = Math.min(value >> 16, 0xff);
-                // @ts-ignore
-                this.b = Math.min(value >> 8, 0xff);
-                // @ts-ignore
-                this.a = value & 0xff;
+                if (Number.isInteger(value)) {
+                    // @ts-ignore
+                    this.r = Math.min((value & 0xff0000) >> 16, 0xff);
+                    // @ts-ignore
+                    this.g = Math.min((value & 0xff00) >> 8, 0xff);
+                    // @ts-ignore
+                    this.b = Math.min(value & 0xff, 0xff);
+                    // @ts-ignore
+                    this.a = 0xff;
+                    break;
+                }
+                throw new ValueError("Invalid arguments: ", arguments);
+            }
+            case 0: {
+                this.r = 0;
+                this.g = 0;
+                this.b = 0;
+                this.a = 0;
                 break;
             }
             default: {
-                throw new ValueError("Invalid arguments");
+                throw new ValueError("Invalid arguments: ", arguments);
             }
         }
     }
 
     /**
-     *
      * @returns {number} 无符号整数
      */
     valueOf() {
@@ -78,10 +102,14 @@ class Pixel {
     toString() {
         return `0x${this.valueOf().toString(16).padStart(8, "0")}`; // 格式化输出为 0xRRGGBBAA 形式
     }
+
+    toObject() {
+        return { r: this.r, g: this.g, b: this.b, a: this.a };
+    }
     /**
-     *
+     * @description 给R、G、B通道都加上指定数值，最终结果不会超过255.
      * @param {number} n
-     * @returns {Pixel}
+     * @returns {InstanceType<Pixel>}
      */
     addNumber(n) {
         return new Pixel(
@@ -99,18 +127,25 @@ class Pixel {
      */
     fromSimpleArray(arr) {
         // 如果数组有 3 个元素，假设为 RGB
-        if (arr.length === 3) {
-            this.r = arr[0];
-            this.g = arr[1];
-            this.b = arr[2];
-            this.a = 255;
-        }
-        // 如果数组有 4 个元素，假设为 RGBA
-        else if (arr.length === 4) {
-            this.r = arr[0];
-            this.g = arr[1];
-            this.b = arr[2];
-            this.a = arr[3];
+        switch (arr.length) {
+            case 3: {
+                this.r = arr[0];
+                this.g = arr[1];
+                this.b = arr[2];
+                this.a = 255;
+                break;
+            }
+            // 如果数组有 4 个元素，假设为 RGBA
+            case 4: {
+                this.r = arr[0];
+                this.g = arr[1];
+                this.b = arr[2];
+                this.a = arr[3];
+                break;
+            }
+            default: {
+                throw new ValueError("Invalid array length: ", arr.length);
+            }
         }
         return this;
     }
@@ -124,37 +159,29 @@ class Pixel {
     }
     /**
      * flip the color of the pixel
-     * @param {("R"|"G"|"B"|"A")?} [bit]
-     * @returns {Pixel}
+     * @param {("R"|"G"|"B"|"A")?} [bit='RGB']
+     * @returns {this}
      */
     flip(bit = null) {
-        switch (bit) {
-            // Intentional fall through 故意依次执行
-            case "R": {
-                this.r = 255 - this.r;
-            }
-            case "G": {
-                this.g = 255 - this.g;
-            }
-            case "B": {
-                this.b = 255 - this.b;
-            }
-            case "A": {
-                this.a = 255 - this.a;
-            }
-            default: {
-                this.r = 255 - this.r;
-                this.g = 255 - this.g;
-                this.b = 255 - this.b;
-                break;
-            }
-        }
+        if (!bit) return this.flip("RGB");
+        if (/R/i.test(bit.toUpperCase())) this.r = 255 - this.r;
+        if (/G/i.test(bit.toUpperCase())) this.g = 255 - this.g;
+        if (/B/i.test(bit.toUpperCase())) this.b = 255 - this.b;
+        if (/A/i.test(bit.toUpperCase())) this.a = 255 - this.a;
         return this;
     }
+    /**
+     *
+     * @returns {this}
+     */
     flipAlpha() {
         this.a = 255 - this.a;
         return this;
     }
+    /**
+     *
+     * @returns {this}
+     */
     flipAll() {
         this.r = 255 - this.r;
         this.g = 255 - this.g;
@@ -177,7 +204,7 @@ class Pixel {
     }
     /**
      *
-     * @param {Number} n
+     * @param {number} n
      * @returns {Pixel}
      */
     multiply(n) {
@@ -223,11 +250,177 @@ class Pixel {
 module.exports = Pixel;
 
 if (require.main === module) {
-    let testPixel = new Pixel(0, 0, 0, 255);
-    console.log(testPixel.valueOf()); // 预期输出:255
-    let anotherPixel = new Pixel(255, 128, 0, 255);
-    console.log(testPixel > anotherPixel); // 比较两个像素值的大小
-    let flippedPixel = new Pixel(255, 0, 0, 255);
-    console.log(flippedPixel.toString()); // 预期输出：0xff0000ff
-    console.log(flippedPixel.toString()); // 预期输出：0x00ffffff
+    const { describe, it, beforeEach, afterEach } = require("node:test");
+    const assert = require("node:assert");
+    describe("Pixel", () => {
+        /** @type {Pixel} */
+        let testPixel;
+        beforeEach(() => {
+            testPixel = new Pixel(0, 0, 0, 255);
+        });
+        afterEach(() => {
+            testPixel = new Pixel(0, 0, 0, 255);
+        });
+        describe("Pixel.constructor", () => {
+            it("create a pixel with 4 arguments", () => {
+                assert.strictEqual(testPixel.valueOf(), 255);
+            });
+            it("create a pixel with 3 arguments", () => {});
+            describe("create a pixel with 1 argument", () => {
+                it("with number", () => {
+                    let numberPixel = new Pixel(469762047);
+                    assert.strictEqual(numberPixel.r, 255);
+                    assert.strictEqual(numberPixel.g, 255);
+                    assert.strictEqual(numberPixel.b, 255);
+                });
+                it("with string", () => {
+                    let stringPixel = new Pixel("#ffffff");
+                    assert.strictEqual(stringPixel.r, 255);
+                    assert.strictEqual(stringPixel.g, 255);
+                    assert.strictEqual(stringPixel.b, 255);
+                });
+                it("with invalid string", () => {
+                    let err = new ValueError("Invalid arguments: ");
+                    assert.throws(() => {
+                        new Pixel("bad_argument");
+                    });
+                });
+            });
+            it("create a pixel with invalid arguments", () => {
+                assert.throws(() => {
+                    new Pixel("invalid");
+                });
+            });
+            it("with bigint", () => {
+                let numberPixel = new Pixel(BigInt(0xff0000ffn));
+                assert.strictEqual(numberPixel.r, 255);
+                assert.strictEqual(numberPixel.g, 0);
+                assert.strictEqual(numberPixel.b, 0);
+                assert.strictEqual(numberPixel.a, 255);
+            });
+        });
+        describe("Pixel.addNumber", () => {
+            it("add 1 to all channels", () => {
+                let res = testPixel.addNumber(1);
+                assert.strictEqual(res.r, 1);
+                assert.strictEqual(res.g, 1);
+                assert.strictEqual(res.b, 1);
+                assert.strictEqual(res.a, 255);
+            });
+            it("add 255 to all channels", () => {
+                let res = testPixel.addNumber(255);
+                assert.strictEqual(res.r, 255);
+                assert.strictEqual(res.g, 255);
+                assert.strictEqual(res.b, 255);
+                assert.strictEqual(res.a, 255);
+            });
+            it("add 0 to all channels", () => {
+                let res = testPixel.addNumber(0);
+                assert.strictEqual(res.r, 0);
+                assert.strictEqual(res.g, 0);
+                assert.strictEqual(res.b, 0);
+                assert.strictEqual(res.a, 255);
+            });
+        });
+        describe("Pixel.fromSimpleArray", () => {
+            it("create a pixel from an array with 3 elements", () => {
+                let arr = [255, 255, 255];
+                let pixel = new Pixel(0, 0, 0, 0).fromSimpleArray(arr);
+                assert.deepStrictEqual(pixel.toObject(), {
+                    r: 255,
+                    g: 255,
+                    b: 255,
+                    a: 255,
+                });
+            });
+            it("create a pixel from an array with 4 elements", () => {
+                let arr = [255, 255, 255, 255];
+                let pixel = new Pixel(0, 0, 0, 0).fromSimpleArray(arr);
+                assert.deepStrictEqual(pixel.toObject(), {
+                    r: 255,
+                    g: 255,
+                    b: 255,
+                    a: 255,
+                });
+            });
+        });
+        describe("Pixel.greaterThan", () => {
+            let testPixel = new Pixel(0, 0, 0, 255);
+            let anotherPixel = new Pixel(255, 128, 0, 255);
+            assert.strictEqual(testPixel.greaterThan(anotherPixel), false);
+            assert.strictEqual(anotherPixel.greaterThan(testPixel), true);
+        });
+        describe("Pixel.flip", () => {
+            it("flip R channel", () => {
+                let testPixel = new Pixel(0, 0, 0, 255);
+                let res = testPixel.flip("R");
+                assert.strictEqual(res.r, 255);
+                assert.strictEqual(res.g, 0);
+                assert.strictEqual(res.b, 0);
+                assert.strictEqual(res.a, 255);
+            });
+        });
+
+        describe("Pixel.flipAlpha", () => {
+            let testPixel = new Pixel(0, 0, 0, 255);
+            let res = testPixel.flipAlpha();
+            assert.strictEqual(res.r, 0);
+            assert.strictEqual(res.g, 0);
+            assert.strictEqual(res.b, 0);
+            assert.strictEqual(res.a, 0);
+        });
+
+        describe("Pixel.flipAll", () => {
+            it("flip all channels", () => {
+                let testPixel = new Pixel(0, 0, 0, 255);
+                let res = testPixel.flipAll();
+                assert.strictEqual(res.r, 255);
+                assert.strictEqual(res.g, 255);
+                assert.strictEqual(res.b, 255);
+                assert.strictEqual(res.a, 0);
+            });
+        });
+
+        describe("Pixel.mix", () => {
+            it("mix two pixels", () => {
+                let testPixel = new Pixel(0, 0, 0, 255);
+                let anotherPixel = new Pixel(254, 128, 0, 255);
+                let res = testPixel.mix(anotherPixel);
+                assert.strictEqual(res.r, 127);
+                assert.strictEqual(res.g, 64);
+                assert.strictEqual(res.b, 0);
+                assert.strictEqual(res.a, 255);
+            });
+        });
+
+        describe("Pixel.multiply", () => {});
+        describe("Pixel.subtract", () => {});
+        describe("Pixel.add", () => {});
+        describe("Pixel.toString", () => {
+            it("output as 0xRRGGBBAA", () => {
+                assert.strictEqual(testPixel.toString(), "0x000000ff");
+            });
+            it("output as 0xRRGGBBAA 2", () => {
+                let flippedPixel = new Pixel(255, 0, 0, 255);
+                assert.strictEqual(flippedPixel.toString(), "0xff0000ff");
+            });
+            it("can also flip", () => {
+                let flippedPixel = new Pixel(255, 0, 0, 255);
+                assert.strictEqual(flippedPixel.toString(), "0xff0000ff");
+                let res = flippedPixel.flip();
+                assert.strictEqual(res.toString(), "0x00ffffff");
+            });
+        });
+        describe("Pixel.toObject", () => {
+            it("output as object", () => {
+                let numberPixel = new Pixel(469762047);
+                assert.deepStrictEqual(numberPixel.toObject(), {
+                    r: 255,
+                    g: 255,
+                    b: 255,
+                    a: 255,
+                });
+            });
+        });
+    });
 }
