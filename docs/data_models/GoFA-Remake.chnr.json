@@ -2,9 +2,9 @@
   "name": "GoFA-Remake",
   "describe": "GoFA-Remake",
   "avatar": "",
-  "version": "4.9.4",
+  "version": "4.7.0",
   "createdTime": "2022-9-9 13:19:30",
-  "updatedTime": "2025-7-20 23:04:06",
+  "updatedTime": "2026-3-24 00:00:21",
   "profile": {
     "default": {
       "db": "6B68AFA0-C6B9-43FE-8B7E-66A7C570D95B",
@@ -26,24 +26,6 @@
           "refDict": "",
           "uiHint": "",
           "id": "101E4739-545D-4962-8AC6-B5A22EE08EE8",
-          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
-        },
-        {
-          "defKey": "REVISION",
-          "defName": "乐观锁",
-          "comment": "",
-          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
-          "type": "",
-          "len": 32,
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": true,
-          "refDict": "",
-          "uiHint": "",
-          "id": "C2E7DF4D-0A58-40D8-A9E4-D5B68B324842",
           "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
@@ -81,6 +63,24 @@
           "uiHint": "",
           "id": "D0543A1A-5AC7-47B0-A229-F93CB04B7647",
           "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        },
+        {
+          "defKey": "REVISION",
+          "defName": "乐观锁",
+          "comment": "",
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "C2E7DF4D-0A58-40D8-A9E4-D5B68B324842",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         }
       ],
       "entityInitProperties": {}
@@ -513,7 +513,8 @@
         "optionsData": "",
         "optionsFetcher": ""
       }
-    }
+    },
+    "navEmptyHide": false
   },
   "entities": [
     {
@@ -1038,7 +1039,7 @@
           "defKey": "role_exp",
           "defName": "经验值",
           "comment": "",
-          "type": "LONG",
+          "type": "",
           "len": "",
           "scale": "",
           "primaryKey": false,
@@ -1047,8 +1048,8 @@
           "defaultValue": "0",
           "hideInGraph": false,
           "id": "0A382DF6-61BE-449B-BB33-FE9D5035FAB8",
-          "domain": "",
-          "baseType": ""
+          "domain": "5E9EED17-455F-4EFC-AB81-10A931AB0BCA",
+          "baseType": "E76FDAC6-5D39-43F2-9185-2E77DC8A7E04"
         },
         {
           "defKey": "role_lv",
@@ -1161,7 +1162,8 @@
       "type": "P",
       "sysProps": {
         "nameTemplate": "{defKey}[{defName}]"
-      }
+      },
+      "notes": {}
     },
     {
       "id": "6838774E-6815-4333-B4B9-78A348D6FE48",
@@ -2268,6 +2270,42 @@
           "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
           "id": "B497F63C-A3E1-433E-9B14-2D31E0B2A178",
           "baseType": "E18619EC-AA0C-4410-B07A-604546E06464"
+        },
+        {
+          "defKey": "system_COLOR",
+          "defName": "颜色",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A",
+          "extProps": {},
+          "domain": "C142CA2E-E4A4-47AA-8A41-813E5F27BF67",
+          "id": "C444AE07-06C6-46CD-A54E-6DA65CFA76BB"
+        },
+        {
+          "defKey": "system_SEED",
+          "defName": "星系生成种子",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A",
+          "extProps": {},
+          "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
+          "id": "A977DE17-C04E-4D0C-A2E7-2005F458666F"
         }
       ],
       "correlations": [],
@@ -2275,7 +2313,8 @@
       "type": "P",
       "sysProps": {
         "nameTemplate": "{defKey}[{defName}]"
-      }
+      },
+      "notes": {}
     },
     {
       "id": "869E7926-0380-43DE-9D3E-E04B86A0E0D6",
@@ -2619,8 +2658,8 @@
           "defKey": "planet_structure",
           "defName": "建筑设施",
           "comment": "",
-          "type": "json",
-          "len": 255,
+          "type": "",
+          "len": "",
           "scale": "",
           "primaryKey": false,
           "notNull": false,
@@ -2629,7 +2668,7 @@
           "hideInGraph": true,
           "refDict": "",
           "extProps": {},
-          "domain": "",
+          "domain": "32F75D8F-CDA0-44E7-8666-B646F070884F",
           "id": "0850A289-BB55-4209-8152-A473099210E9",
           "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2"
         },
@@ -2637,8 +2676,8 @@
           "defKey": "planet_storage",
           "defName": "资源储量",
           "comment": "资源、步兵、侦察机、舰载机",
-          "type": "json",
-          "len": 255,
+          "type": "",
+          "len": "",
           "scale": "",
           "primaryKey": false,
           "notNull": false,
@@ -2647,7 +2686,7 @@
           "hideInGraph": true,
           "refDict": "",
           "extProps": {},
-          "domain": "",
+          "domain": "32F75D8F-CDA0-44E7-8666-B646F070884F",
           "id": "E13B691D-E4C1-42E5-8BEE-E04DB972F141",
           "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2"
         },
@@ -2724,6 +2763,24 @@
           "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
         },
         {
+          "defKey": "planet_modifiers",
+          "defName": "数值补正",
+          "comment": "TODO",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A",
+          "extProps": {},
+          "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
+          "id": "A8E9B447-33DB-4D68-9384-E04068301027"
+        },
+        {
           "defKey": "REVISION",
           "defName": "乐观锁",
           "comment": "",
@@ -2747,7 +2804,8 @@
       "type": "P",
       "sysProps": {
         "nameTemplate": "{defKey}[{defName}]"
-      }
+      },
+      "notes": {}
     },
     {
       "id": "F5759031-6803-48B7-ACEF-F20DCED6E294",
@@ -6299,6 +6357,1586 @@
       "sysProps": {
         "nameTemplate": "{defKey}[{defName}]"
       }
+    },
+    {
+      "id": "F593929E-D5CB-4DC7-AC51-EAA54D9EAED8",
+      "env": {
+        "base": {
+          "nameSpace": "",
+          "codeRoot": ""
+        }
+      },
+      "defKey": "events_combat",
+      "defName": "战斗事件",
+      "comment": "",
+      "properties": {},
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      },
+      "notes": {},
+      "headers": [
+        {
+          "refKey": "hideInGraph",
+          "hideInGraph": true
+        },
+        {
+          "refKey": "defKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defName",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "primaryKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "notNull",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "autoIncrement",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "domain",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "type",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "len",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "scale",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "comment",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "refDict",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defaultValue",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "isStandard",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "uiHint",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "extProps",
+          "freeze": false,
+          "hideInGraph": true
+        }
+      ],
+      "fields": [
+        {
+          "defKey": "EV_B_ID",
+          "defName": "ID",
+          "comment": "",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": true,
+          "notNull": true,
+          "autoIncrement": true,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "refDict": "",
+          "uiHint": "",
+          "id": "0D6F6F6D-20E2-4373-A8D9-5E81FDB50F1D",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "EV_B_CREATED_TIME",
+          "defName": "创建时间",
+          "comment": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "360CC498-CF0B-4F55-BEB9-15B57A20C331",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        },
+        {
+          "defKey": "EV_B_LOCATION",
+          "defName": "地点",
+          "comment": "planet_ID或坐标",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A",
+          "extProps": {},
+          "domain": "C56A9E88-6970-446D-B117-9C21E5FBA4BD",
+          "id": "780CE9B2-F546-4E18-A06F-4971C03810E6"
+        },
+        {
+          "defKey": "EV_B_CNT_PARTICIPANTS",
+          "defName": "参与者数量",
+          "comment": "影响接下来要读取多少条数据",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "E18619EC-AA0C-4410-B07A-604546E06464",
+          "extProps": {},
+          "domain": "40F028AE-3728-4ED6-A273-5631BA8220AC",
+          "id": "513AB764-28A0-4DEC-9280-544A0CB7B4A1"
+        },
+        {
+          "defKey": "EV_B_DID_ATTACKER_WIN",
+          "defName": "攻击者是否获胜",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A",
+          "extProps": {},
+          "domain": "0DB5AEF0-4F3C-47F8-A26B-BB0A6BD8065B",
+          "id": "8F088CF2-6CCD-423A-8667-6A5317806ACC"
+        },
+        {
+          "defKey": "EV_B_IS_LOCATION_SEIZED",
+          "defName": "战斗地点是否易手",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A",
+          "extProps": {},
+          "domain": "0DB5AEF0-4F3C-47F8-A26B-BB0A6BD8065B",
+          "id": "E4C254F9-1746-4EFE-8599-ED8A599B3EC3"
+        },
+        {
+          "defKey": "EV_B_ATTACKER",
+          "defName": "攻击者ID",
+          "comment": "role_ID组成的列表，使用“,”分隔，至多支持200人，再多就要分列",
+          "type": "VARCHAR",
+          "len": 6400,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A",
+          "extProps": {},
+          "domain": "",
+          "id": "7A6A0DDD-6BA9-4AAD-BCE3-9BE92560D127"
+        },
+        {
+          "defKey": "EV_B_DEFENDER",
+          "defName": "防御者ID",
+          "comment": "role_ID组成的列表，使用“,”分隔，至多支持200人，再多就要分列",
+          "type": "VARCHAR",
+          "len": 6400,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A",
+          "extProps": {},
+          "domain": "",
+          "id": "834227D1-7022-477A-945D-9B70239D3306"
+        },
+        {
+          "defKey": "EV_B_ATK_FORCES",
+          "defName": "攻击者部队组成",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2",
+          "extProps": {},
+          "domain": "32F75D8F-CDA0-44E7-8666-B646F070884F",
+          "id": "C96F7617-AAC0-471E-B369-71E3ED1F471D"
+        },
+        {
+          "defKey": "EV_B_DEF_FORCES",
+          "defName": "防御者部队组成",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2",
+          "extProps": {},
+          "domain": "32F75D8F-CDA0-44E7-8666-B646F070884F",
+          "id": "7C4F144B-1FDC-48ED-B215-E194C21F9E97"
+        },
+        {
+          "defKey": "EV_B_ATK_MODIFIER",
+          "defName": "攻击者修正",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2",
+          "extProps": {},
+          "domain": "32F75D8F-CDA0-44E7-8666-B646F070884F",
+          "id": "A797675C-6819-41B3-ABF3-024243205FB3"
+        },
+        {
+          "defKey": "EV_B_DEF_MODIFIER",
+          "defName": "",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2",
+          "extProps": {},
+          "domain": "32F75D8F-CDA0-44E7-8666-B646F070884F",
+          "id": "53A0252F-F400-4CB5-AE79-670EB75A2F54"
+        },
+        {
+          "defKey": "EV_B_ATK_FORCES_REMAIN",
+          "defName": "攻击者剩余部队",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2",
+          "extProps": {},
+          "domain": "32F75D8F-CDA0-44E7-8666-B646F070884F",
+          "id": "661593B4-EDF3-4855-BE0B-382C301DB84E"
+        },
+        {
+          "defKey": "EV_B_DEF_FORCES_REMAIN",
+          "defName": "",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2",
+          "extProps": {},
+          "domain": "32F75D8F-CDA0-44E7-8666-B646F070884F",
+          "id": "0D41D0D2-2C14-4246-9A05-C3A0117CB0FE"
+        },
+        {
+          "defKey": "EV_B_ATK_LOOT",
+          "defName": "攻击者战利品",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2",
+          "extProps": {},
+          "domain": "32F75D8F-CDA0-44E7-8666-B646F070884F",
+          "id": "9C1EBB80-E4AC-40E3-8720-9F6760EBD9D7"
+        },
+        {
+          "defKey": "EV_B_DEF_LOOT",
+          "defName": "",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2",
+          "extProps": {},
+          "domain": "32F75D8F-CDA0-44E7-8666-B646F070884F",
+          "id": "F893C5B7-F605-4FAA-8878-B1E936A796D7"
+        }
+      ],
+      "correlations": [],
+      "indexes": [],
+      "type": "P"
+    },
+    {
+      "id": "BFEA89C6-6E8D-4BEA-AE7C-11E805EA7290",
+      "env": {
+        "base": {
+          "nameSpace": "",
+          "codeRoot": ""
+        }
+      },
+      "defKey": "events_admin_ops",
+      "defName": "管理员操作记录",
+      "comment": "",
+      "properties": {},
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      },
+      "notes": {},
+      "headers": [
+        {
+          "refKey": "hideInGraph",
+          "hideInGraph": true
+        },
+        {
+          "refKey": "defKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defName",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "primaryKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "notNull",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "autoIncrement",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "domain",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "type",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "len",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "scale",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "comment",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "refDict",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defaultValue",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "isStandard",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "uiHint",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "extProps",
+          "freeze": false,
+          "hideInGraph": true
+        }
+      ],
+      "fields": [
+        {
+          "defKey": "EV_OP_ID",
+          "defName": "事件ID",
+          "comment": "",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "refDict": "",
+          "uiHint": "",
+          "id": "DDC41620-EB14-4D44-9162-932DAE20FB70",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "CREATED_TIME",
+          "defName": "创建时间",
+          "comment": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "63BDF19E-D214-4D3C-A860-695F54C15AF8",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        }
+      ],
+      "correlations": [],
+      "indexes": [],
+      "type": "P"
+    },
+    {
+      "id": "55FEEE2F-36E2-401E-8B76-7EB193FFABA7",
+      "env": {
+        "base": {
+          "nameSpace": "",
+          "codeRoot": ""
+        }
+      },
+      "defKey": "events_player_growth",
+      "defName": "玩家成长",
+      "comment": "",
+      "properties": {},
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      },
+      "notes": {},
+      "headers": [
+        {
+          "refKey": "hideInGraph",
+          "hideInGraph": true
+        },
+        {
+          "refKey": "defKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defName",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "primaryKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "notNull",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "autoIncrement",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "domain",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "type",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "len",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "scale",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "comment",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "refDict",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defaultValue",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "isStandard",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "uiHint",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "extProps",
+          "freeze": false,
+          "hideInGraph": true
+        }
+      ],
+      "fields": [
+        {
+          "defKey": "_ID",
+          "defName": "ID",
+          "comment": "",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "refDict": "",
+          "uiHint": "",
+          "id": "ECA9F1A9-C88D-46CD-97BD-0022EC88910F",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "REVISION",
+          "defName": "乐观锁",
+          "comment": "",
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "3FC44E71-84AC-4846-B999-A9BB63175885",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "CREATED_TIME",
+          "defName": "创建时间",
+          "comment": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "74FA5E71-9514-42F7-A4FD-FE97A8E4B385",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        },
+        {
+          "defKey": "UPDATED_TIME",
+          "defName": "更新时间",
+          "comment": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "C321BBF5-F446-4EDA-9893-7CFEDA2CC18C",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        }
+      ],
+      "correlations": [],
+      "indexes": [],
+      "type": "P"
+    },
+    {
+      "id": "067A7A90-C7F1-4AC2-B0D8-EF54BDEA2028",
+      "env": {
+        "base": {
+          "nameSpace": "",
+          "codeRoot": ""
+        }
+      },
+      "defKey": "events_client_ops",
+      "defName": "客户端事件",
+      "comment": "",
+      "properties": {},
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      },
+      "notes": {},
+      "headers": [
+        {
+          "refKey": "hideInGraph",
+          "hideInGraph": true
+        },
+        {
+          "refKey": "defKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defName",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "primaryKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "notNull",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "autoIncrement",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "domain",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "type",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "len",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "scale",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "comment",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "refDict",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defaultValue",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "isStandard",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "uiHint",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "extProps",
+          "freeze": false,
+          "hideInGraph": true
+        }
+      ],
+      "fields": [
+        {
+          "defKey": "_ID",
+          "defName": "ID",
+          "comment": "",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "refDict": "",
+          "uiHint": "",
+          "id": "9EFA1A8D-73D1-4639-96A2-9AAD754040F8",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "REVISION",
+          "defName": "乐观锁",
+          "comment": "",
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "66B5DBB3-352F-4DE3-9F46-507287B3028F",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "CREATED_TIME",
+          "defName": "创建时间",
+          "comment": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "249F1C19-F27B-439F-B958-0843239ACDB7",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        },
+        {
+          "defKey": "UPDATED_TIME",
+          "defName": "更新时间",
+          "comment": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "C1E3942C-F596-423F-8858-5D20CFCB837F",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        }
+      ],
+      "correlations": [],
+      "indexes": [],
+      "type": "P"
+    },
+    {
+      "id": "4F698A78-A2E4-4783-9723-F9C29B38E0E8",
+      "env": {
+        "base": {
+          "nameSpace": "",
+          "codeRoot": ""
+        }
+      },
+      "defKey": "events_alliance_management",
+      "defName": "联盟管理",
+      "comment": "",
+      "properties": {},
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      },
+      "notes": {},
+      "headers": [
+        {
+          "refKey": "hideInGraph",
+          "hideInGraph": true
+        },
+        {
+          "refKey": "defKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defName",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "primaryKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "notNull",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "autoIncrement",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "domain",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "type",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "len",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "scale",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "comment",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "refDict",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defaultValue",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "isStandard",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "uiHint",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "extProps",
+          "freeze": false,
+          "hideInGraph": true
+        }
+      ],
+      "fields": [
+        {
+          "defKey": "_ID",
+          "defName": "ID",
+          "comment": "",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "refDict": "",
+          "uiHint": "",
+          "id": "B46F1D4E-C59E-472F-A229-B8418DEF4163",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "REVISION",
+          "defName": "乐观锁",
+          "comment": "",
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "A4260115-87AD-4094-B901-FC8F8734A813",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "CREATED_TIME",
+          "defName": "创建时间",
+          "comment": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "2CB3FA2F-A38D-4C8C-AAFC-9D8E35C12604",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        },
+        {
+          "defKey": "UPDATED_TIME",
+          "defName": "更新时间",
+          "comment": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "F4F5D983-A4ED-4AA0-ABA0-B12C3EBA375C",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        }
+      ],
+      "correlations": [],
+      "indexes": [],
+      "type": "P"
+    },
+    {
+      "id": "B697BC5B-D08F-40FE-B7C4-A378B8FA468D",
+      "env": {
+        "base": {
+          "nameSpace": "",
+          "codeRoot": ""
+        }
+      },
+      "defKey": "events_purchases",
+      "defName": "游戏内购买",
+      "comment": "",
+      "properties": {},
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      },
+      "notes": {},
+      "headers": [
+        {
+          "refKey": "hideInGraph",
+          "hideInGraph": true
+        },
+        {
+          "refKey": "defKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defName",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "primaryKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "notNull",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "autoIncrement",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "domain",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "type",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "len",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "scale",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "comment",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "refDict",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defaultValue",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "isStandard",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "uiHint",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "extProps",
+          "freeze": false,
+          "hideInGraph": true
+        }
+      ],
+      "fields": [
+        {
+          "defKey": "_ID",
+          "defName": "ID",
+          "comment": "",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "refDict": "",
+          "uiHint": "",
+          "id": "3047177F-3DA5-4A81-B354-4E67BF4B8603",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "REVISION",
+          "defName": "乐观锁",
+          "comment": "",
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "DDDE90DE-4B15-41AB-A39A-D73F83F9FCD7",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "CREATED_TIME",
+          "defName": "创建时间",
+          "comment": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "8856EFA1-FCB8-4800-BA0E-6CD6F696C271",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        },
+        {
+          "defKey": "UPDATED_TIME",
+          "defName": "更新时间",
+          "comment": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "15530E9A-E1F3-4CB1-8DE7-A0ABCFD73239",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        }
+      ],
+      "correlations": [],
+      "indexes": [],
+      "type": "P"
+    },
+    {
+      "id": "C7E17953-0BA0-4C79-BA1B-FC921126BA6A",
+      "env": {
+        "base": {
+          "nameSpace": "",
+          "codeRoot": ""
+        }
+      },
+      "defKey": "events_construction",
+      "defName": "建设事件",
+      "comment": "",
+      "properties": {},
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      },
+      "notes": {},
+      "headers": [
+        {
+          "refKey": "hideInGraph",
+          "hideInGraph": true
+        },
+        {
+          "refKey": "defKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defName",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "primaryKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "notNull",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "autoIncrement",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "domain",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "type",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "len",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "scale",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "comment",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "refDict",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defaultValue",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "isStandard",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "uiHint",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "extProps",
+          "freeze": false,
+          "hideInGraph": true
+        }
+      ],
+      "fields": [
+        {
+          "defKey": "_ID",
+          "defName": "ID",
+          "comment": "",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "refDict": "",
+          "uiHint": "",
+          "id": "95FD369B-1512-4601-AE07-5146E5B91AD5",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "REVISION",
+          "defName": "乐观锁",
+          "comment": "",
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "285D18D8-4AB0-422C-9CE4-C4085E1387E2",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "CREATED_TIME",
+          "defName": "创建时间",
+          "comment": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "DF528EB6-38FD-47F6-AEE2-AD6CB79C7ED1",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        },
+        {
+          "defKey": "UPDATED_TIME",
+          "defName": "更新时间",
+          "comment": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "C8656E5B-E0B9-4EB7-ABC9-0E9A86863D57",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        }
+      ],
+      "correlations": [],
+      "indexes": [],
+      "type": "P"
+    },
+    {
+      "id": "8D313272-D864-43DF-A45D-51CD5736035A",
+      "env": {
+        "base": {
+          "nameSpace": "",
+          "codeRoot": ""
+        }
+      },
+      "defKey": "relation_system_planet_ownership",
+      "defName": "星系-星球所有权关系",
+      "comment": "",
+      "properties": {},
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      },
+      "notes": {},
+      "headers": [
+        {
+          "refKey": "hideInGraph",
+          "hideInGraph": true
+        },
+        {
+          "refKey": "defKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defName",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "primaryKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "notNull",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "autoIncrement",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "domain",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "type",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "len",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "scale",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "comment",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "refDict",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defaultValue",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "isStandard",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "uiHint",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "extProps",
+          "freeze": false,
+          "hideInGraph": true
+        }
+      ],
+      "fields": [
+        {
+          "defKey": "_ID",
+          "defName": "ID",
+          "comment": "",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "refDict": "",
+          "uiHint": "",
+          "id": "FB8ADC9B-6643-488B-B51C-80DF6010482B",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "REVISION",
+          "defName": "乐观锁",
+          "comment": "",
+          "domain": "2D779121-9F78-4594-BBC8-3E1487E95ECA",
+          "type": "",
+          "len": 32,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "1DCCB047-403C-4B35-9B74-BBA17986D392",
+          "baseType": "589B6215-1AA2-473F-90E5-E49A1C04C30A"
+        },
+        {
+          "defKey": "CREATED_TIME",
+          "defName": "创建时间",
+          "comment": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "0BB64282-5BB2-4964-BC64-078CE09E7840",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        },
+        {
+          "defKey": "UPDATED_TIME",
+          "defName": "更新时间",
+          "comment": "",
+          "domain": "2E05FCA7-FF29-459F-80E1-A4D6545E105E",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "2C631A2F-0294-4942-914B-7014C4E79F8A",
+          "baseType": "5487BF87-449B-48CC-AFA0-5312E0E9A8C5"
+        }
+      ],
+      "correlations": [],
+      "indexes": [],
+      "type": "P"
     }
   ],
   "views": [
@@ -8253,6 +9891,740 @@
           "id": "4CD80701-0E6F-4875-BE5F-5A0FEC58256F"
         }
       ]
+    },
+    {
+      "defKey": "EVENTS_OPS",
+      "defName": "事件操作",
+      "sort": "",
+      "intro": "",
+      "id": "86FA61CE-DD6C-4F53-9F08-50562B6D81B1",
+      "items": [
+        {
+          "defKey": "SERVER_READY",
+          "defName": "服务器启动",
+          "sort": "",
+          "parentKey": "SERVER",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "24BF1B92-2662-409C-A2A0-5DAC2522C665"
+        },
+        {
+          "defKey": "SERVER_SHUTDOWN",
+          "defName": "服务器关闭",
+          "sort": "",
+          "parentKey": "SERVER",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "EA89E982-1434-471F-9F92-CEB68A2E36CE"
+        },
+        {
+          "defKey": "SERVER_COMPONENT_ONLINE",
+          "defName": "组件上线",
+          "sort": "",
+          "parentKey": "SERVER",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "5D249173-384B-47B5-A75C-3CD1D8B8F107"
+        },
+        {
+          "defKey": "SERVER_COMPONENT_OFFLINE",
+          "defName": "组件离线",
+          "sort": "",
+          "parentKey": "SERVER",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "1285131E-11C0-471B-908A-7C52E19951C8"
+        },
+        {
+          "defKey": "SERVER_COMMAND",
+          "defName": "收到控制台命令",
+          "sort": "",
+          "parentKey": "SERVER",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "4B21F3E2-DE55-4CC1-8EC8-F8CCD009635B"
+        },
+        {
+          "defKey": "SERVER_INTEGRITY_FAILED",
+          "defName": "完整性校验失败",
+          "sort": "",
+          "parentKey": "SERVER",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "6810901F-4F58-49E2-8056-CE4EDF85BAEC"
+        },
+        {
+          "defKey": "SERVER_DEPLOYMENT_INITIATE",
+          "defName": "部署开始",
+          "sort": "",
+          "parentKey": "SERVER",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "41D7FBC7-1EFF-46C0-8856-7BD72AC6B304"
+        },
+        {
+          "defKey": "SERVER_DEPLOYED",
+          "defName": "部署完成",
+          "sort": "",
+          "parentKey": "SERVER",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "2C43AC7D-E478-4ED3-AFE8-04AB10441689"
+        },
+        {
+          "defKey": "SERVER_CREATE_CLIENT_INTEGRITY_CHALLENGE",
+          "defName": "发起客户端完整性校验挑战",
+          "sort": "",
+          "parentKey": "SERVER",
+          "intro": "所有在线客户端每gt各有千分之一概率(1/500 每秒)触发",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "4510B845-F278-4320-9585-74DA29B9DE75"
+        },
+        {
+          "defKey": "SERVER_FOUND_CLIENT_FAILING_CHALLENGE",
+          "defName": "发现客户端未通过完整性校验挑战",
+          "sort": "",
+          "parentKey": "SERVER",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "0CCAE8BE-433B-45AD-A1F2-49F7994936C0"
+        },
+        {
+          "defKey": "SERVER_DISCONNECT_CLIENT",
+          "defName": "服务器认为客户端掉线",
+          "sort": "",
+          "parentKey": "SERVER",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "CFBBDCEB-03A9-4C03-97A9-77D16D9F1445"
+        },
+        {
+          "defKey": "SERVER_REROUTE_CLIENT",
+          "defName": "连接到子服务器",
+          "sort": "",
+          "parentKey": "SERVER",
+          "intro": "将客户端从大厅重定向到子服务器",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "86419C12-6679-49AF-A9DE-8984EED7678A"
+        },
+        {
+          "defKey": "ROLE_CHANGE_NAME_COMPLETE",
+          "defName": "修改名称成功",
+          "sort": "",
+          "parentKey": "ROLE",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "69389FA3-AD86-402C-BA77-8FBBD99291B6"
+        },
+        {
+          "defKey": "ROLE_UPGRADE_SKILL_COMPLETE",
+          "defName": "使用技能点成功",
+          "sort": "",
+          "parentKey": "ROLE",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "9937C4E4-FB62-4A22-91DE-3E646F9067C2"
+        },
+        {
+          "defKey": "ROLE_USE_ITEM_COMPLETE",
+          "defName": "使用道具成功",
+          "sort": "",
+          "parentKey": "ROLE",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "5888486E-A151-4BD7-9B76-885C5218A7F6"
+        },
+        {
+          "defKey": "ROLE_PURCHASE_ITEM_COMPLETE",
+          "defName": "购买道具成功",
+          "sort": "",
+          "parentKey": "ROLE",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "3FC334EE-FF28-45CC-92CB-036D5A572EB6"
+        },
+        {
+          "defKey": "ROLE_CHANGE_NAME_FAILED",
+          "defName": "修改名称失败",
+          "sort": "",
+          "parentKey": "ROLE",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "755344C4-D670-457E-A170-3103B345C278"
+        },
+        {
+          "defKey": "ROLE_UPGRADE_SKILL_FAILED",
+          "defName": "使用技能点失败",
+          "sort": "",
+          "parentKey": "ROLE",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "CEDAFFF7-84C8-42DE-A13D-479A21F833C8"
+        },
+        {
+          "defKey": "ROLE_USE_ITEM_FAILED",
+          "defName": "使用道具失败",
+          "sort": "",
+          "parentKey": "ROLE",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "EF7A5EDB-10F6-4A06-8235-E029406C1B85"
+        },
+        {
+          "defKey": "ROLE_PURCHASE_ITEM_FAILED",
+          "defName": "购买道具失败",
+          "sort": "",
+          "parentKey": "ROLE",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "A75FA275-3E6E-4230-802F-62F984FDCD42"
+        },
+        {
+          "defKey": "PLANET_TRANSFER",
+          "defName": "星球更改所有权",
+          "sort": "",
+          "parentKey": "PLANET",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "A5297B0B-1367-4372-9ACB-41C9CA6C8CBA"
+        },
+        {
+          "defKey": "PLANET_BECOMES_GATE",
+          "defName": "星球成为某人的星门",
+          "sort": "",
+          "parentKey": "PLANET",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "54CFC5D6-D097-4466-8E34-FE7820243008"
+        },
+        {
+          "defKey": "BUILDING_BUILT",
+          "defName": "开始建造",
+          "sort": "",
+          "parentKey": "BUILDING",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "1004B90B-F225-42E8-BB80-B2FB21BF7EFC"
+        },
+        {
+          "defKey": "BUILDING_DESTROYED",
+          "defName": "已摧毁",
+          "sort": "",
+          "parentKey": "BUILDING",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "2500D713-2C86-4626-9E40-4AD199C1612A"
+        },
+        {
+          "defKey": "BUILDING_UPGRADED",
+          "defName": "开始升级",
+          "sort": "",
+          "parentKey": "BUILDING",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "5601A3D2-B025-49A6-8035-A06C0711D9D4"
+        },
+        {
+          "defKey": "BUILDING_FINISHED",
+          "defName": "建筑完成",
+          "sort": "",
+          "parentKey": "BUILDING",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "A43A3FCE-B5F8-4333-A106-498D658DAE25"
+        },
+        {
+          "defKey": "BUILDING_PRODUCTION_ENQUEUED",
+          "defName": "已启动生产队列",
+          "sort": "",
+          "parentKey": "BUILDING",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "AAC7E9CA-DC7F-42B6-A241-512C29EAB267"
+        },
+        {
+          "defKey": "BUILDING_EQUIPPED",
+          "defName": "已选择装备",
+          "sort": "",
+          "parentKey": "BUILDING",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "0AE20F0D-EE7D-486B-89F1-2F12D8EC701C"
+        },
+        {
+          "defKey": "BUILDING_SPEEDED_UP_PRODUCTION",
+          "defName": "已加速生产",
+          "sort": "",
+          "parentKey": "BUILDING",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "91699D76-C6CC-4D04-BE66-51FA240C215A"
+        },
+        {
+          "defKey": "BUILDING_CANCELLED",
+          "defName": "已取消生产",
+          "sort": "",
+          "parentKey": "BUILDING",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "DACC8ABD-2195-47F8-9213-4170CE6506C7"
+        },
+        {
+          "defKey": "BUILDING_REJECTED",
+          "defName": "已拒绝操作",
+          "sort": "",
+          "parentKey": "BUILDING",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "AF4E8452-5A39-4F64-B6BF-6EC2F897425F"
+        },
+        {
+          "defKey": "",
+          "defName": "",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "B9D864A9-0ADD-48CA-A3C6-DE0A8E787F7A"
+        },
+        {
+          "defKey": "",
+          "defName": "",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "44FD56FA-6B3B-4247-950F-14C7E1E674F7"
+        },
+        {
+          "defKey": "",
+          "defName": "",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "CF5B56DF-94DD-480E-917D-CE72812F03E7"
+        },
+        {
+          "defKey": "",
+          "defName": "",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "C936A9B7-83F8-41D5-AA87-C2A96BBA1041"
+        },
+        {
+          "defKey": "",
+          "defName": "",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "408DB6D8-F9B1-4571-9D3E-CB22A6C75A73"
+        },
+        {
+          "defKey": "",
+          "defName": "",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "F3C887E7-C607-4680-AD14-8B35A2D54F67"
+        },
+        {
+          "defKey": "",
+          "defName": "",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "07C67B91-C159-41FA-B023-E9AB9C55C0BF"
+        },
+        {
+          "defKey": "",
+          "defName": "",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "C483CDF7-8186-43E4-8E85-16DC2BCDFC4A"
+        },
+        {
+          "defKey": "",
+          "defName": "",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "A9897990-E4FC-4FE0-BE99-D424072558FF"
+        }
+      ]
+    },
+    {
+      "defKey": "TYPE_SYSTEM_COLOR",
+      "defName": "星系颜色",
+      "sort": "",
+      "intro": "",
+      "id": "C20EC949-081B-4019-A1F3-A86CC5F6BF93",
+      "items": []
+    },
+    {
+      "defKey": "EVENTS_CLIENT",
+      "defName": "客户端请求事件",
+      "sort": "",
+      "intro": "",
+      "id": "1EC67636-67F2-439B-BBF0-1EC7BEF2A6C1",
+      "items": [
+        {
+          "defKey": "CLIENT_CONNECTED",
+          "defName": "连接到大厅",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "348D2E17-967B-487B-82E4-1818466DDA4C",
+          "baseType": ""
+        },
+        {
+          "defKey": "CLIENT_REROUTED",
+          "defName": "重定向到子服务器",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "EF1FE711-9B66-4A66-8148-91E13CCC7A8B",
+          "baseType": ""
+        },
+        {
+          "defKey": "CLIENT_ANSWER_INTEGRITY_CHALLENGE",
+          "defName": "答复完整性挑战",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "5206234A-AF30-421A-9325-E1ACEC0E12E5",
+          "baseType": ""
+        },
+        {
+          "defKey": "CLIENT_HEARTBEAT",
+          "defName": "心跳",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "7021773A-65AE-49EE-98C9-1E764DCFF2D8",
+          "baseType": ""
+        },
+        {
+          "defKey": "CLIENT_LOAD_MAP",
+          "defName": "加载指定范围地图",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "52699E0D-B9A4-4F82-BE1A-D3E7C45E906A",
+          "baseType": ""
+        },
+        {
+          "defKey": "PLAYER_REGISTER",
+          "defName": "注册",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "3313D0A3-1C97-408C-ACF6-C84FCBEE2E83",
+          "baseType": ""
+        },
+        {
+          "defKey": "PLAYER_LOGIN",
+          "defName": "登录",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "561032CB-7765-4B6F-8D8A-95DC4F90845E",
+          "baseType": ""
+        },
+        {
+          "defKey": "PLAYER_LOGOUT",
+          "defName": "登出",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "30FB9567-AACC-4588-A717-0FF8B2F5271B",
+          "baseType": ""
+        },
+        {
+          "defKey": "PLAYER_CHANGE_PASSWORD",
+          "defName": "修改密码",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "066738C6-7B49-4EF8-B3C0-064BF9C0ED2E",
+          "baseType": ""
+        },
+        {
+          "defKey": "PLAYER_CHANGE_EMAIL",
+          "defName": "修改邮箱",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "99E94F93-6EF0-4593-996E-4ED68D0F903C",
+          "baseType": ""
+        },
+        {
+          "defKey": "PLAYER_CREATE_ROLE",
+          "defName": "创建角色",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "16FD65FC-31ED-4422-BC93-867D16797CAB",
+          "baseType": ""
+        },
+        {
+          "defKey": "PLAYER_USE_ROLE",
+          "defName": "使用角色",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "885ABB06-C11E-40DD-B3A3-4C7FB2E1AEF0",
+          "baseType": ""
+        },
+        {
+          "defKey": "PLAYER_DELETE_ROLE",
+          "defName": "删除角色",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "C3677187-8F70-4A29-8185-374BC5141DDD",
+          "baseType": ""
+        },
+        {
+          "defKey": "PLAYER_NEW_GATE",
+          "defName": "新选择星门",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "633E1B19-2E08-4C26-85E2-6DD2B8F1E314",
+          "baseType": ""
+        },
+        {
+          "defKey": "ROLE_CHANGE_NAME",
+          "defName": "修改名称",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "CE1753D4-2869-44CC-9CD9-8A5E34302844",
+          "baseType": ""
+        },
+        {
+          "defKey": "ROLE_UPGRADE_SKILL",
+          "id": "34D16C80-FFFE-4CE9-A92C-ED8F1C962067",
+          "baseType": "",
+          "defName": "使用技能点",
+          "enabled": true
+        },
+        {
+          "defKey": "ROLE_USE_ITEM",
+          "defName": "使用道具",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "9C8A3D10-F714-41D7-97DD-912D368BDD27",
+          "baseType": ""
+        },
+        {
+          "defKey": "ROLE_PURCHASE_ITEM",
+          "defName": "购买道具",
+          "sort": "",
+          "parentKey": "",
+          "intro": "",
+          "enabled": true,
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "id": "9B4FC925-61C1-462E-A106-99389E89E1F2",
+          "baseType": ""
+        }
+      ]
     }
   ],
   "viewGroups": [
@@ -8295,21 +10667,24 @@
         "FAB5DAF9-F71E-41D8-9F06-893E93A8A534",
         "179405FA-8EAF-4B5D-9EF5-F525DFA09257",
         "869E7926-0380-43DE-9D3E-E04B86A0E0D6",
-        "6EDB7DC8-C6CA-40DB-BC90-52573769A064"
+        "6EDB7DC8-C6CA-40DB-BC90-52573769A064",
+        "8D313272-D864-43DF-A45D-51CD5736035A"
       ],
       "refViews": [
         "FBB7F0B7-0F9B-4B1C-B252-86F5E35594BE"
       ],
       "refDiagrams": [
-        "8BC9A815-D98D-44BE-AED1-0FDEA9542574",
-        "72ADA7F0-0119-47B0-A044-B7B2DCF757C8"
+        "72ADA7F0-0119-47B0-A044-B7B2DCF757C8",
+        "8BC9A815-D98D-44BE-AED1-0FDEA9542574"
       ],
       "refDicts": [
         "50E98E1B-B6CF-466C-A7E2-0A8789EB6A4A",
         "A0A9039F-B267-4EE6-81A1-22EB7848C075",
-        "AD6B1D47-AA5A-4B1C-A500-42D4FF40D236"
+        "AD6B1D47-AA5A-4B1C-A500-42D4FF40D236",
+        "C20EC949-081B-4019-A1F3-A86CC5F6BF93"
       ],
-      "id": "13A954A2-597D-47D9-AA64-54ADD67A31C8"
+      "id": "13A954A2-597D-47D9-AA64-54ADD67A31C8",
+      "refLogicEntities": []
     },
     {
       "defKey": "fleet",
@@ -8333,7 +10708,8 @@
         "A1184B03-69E1-4CCD-90FB-18D51AACCBA3",
         "9F750544-6126-4D77-91E6-68824FA10626"
       ],
-      "id": "0047BB64-19F9-4398-8EEB-9989C6EB3775"
+      "id": "0047BB64-19F9-4398-8EEB-9989C6EB3775",
+      "refLogicEntities": []
     },
     {
       "defKey": "alliance",
@@ -8355,7 +10731,8 @@
         "6A20CB7E-5F7D-4A30-89AE-18EFB470B475",
         "8769E815-5A9E-4AF2-BAC8-2FC5E4B03DC0"
       ],
-      "id": "0CF96FFB-0A6F-440C-B43A-077E90D9D3A0"
+      "id": "0CF96FFB-0A6F-440C-B43A-077E90D9D3A0",
+      "refLogicEntities": []
     },
     {
       "defKey": "chat",
@@ -8372,7 +10749,29 @@
       "refDicts": [
         "B97324AD-7FA3-49F6-858B-791902356186"
       ],
-      "id": "20604EF6-ADD0-4D22-BD7B-304C0B7FE886"
+      "id": "20604EF6-ADD0-4D22-BD7B-304C0B7FE886",
+      "refLogicEntities": []
+    },
+    {
+      "defKey": "events",
+      "defName": "事件",
+      "refEntities": [
+        "F593929E-D5CB-4DC7-AC51-EAA54D9EAED8",
+        "BFEA89C6-6E8D-4BEA-AE7C-11E805EA7290",
+        "55FEEE2F-36E2-401E-8B76-7EB193FFABA7",
+        "067A7A90-C7F1-4AC2-B0D8-EF54BDEA2028",
+        "4F698A78-A2E4-4783-9723-F9C29B38E0E8",
+        "B697BC5B-D08F-40FE-B7C4-A378B8FA468D",
+        "C7E17953-0BA0-4C79-BA1B-FC921126BA6A"
+      ],
+      "refViews": [],
+      "refDiagrams": [],
+      "refDicts": [
+        "86FA61CE-DD6C-4F53-9F08-50562B6D81B1",
+        "1EC67636-67F2-439B-BBF0-1EC7BEF2A6C1"
+      ],
+      "id": "E8FFFC19-0C4A-4BCA-9962-4DBDF9DF9D4F",
+      "refLogicEntities": []
     }
   ],
   "dataTypeMapping": {
@@ -8432,7 +10831,10 @@
       {
         "defKey": "Long",
         "defName": "长整型",
-        "id": "E76FDAC6-5D39-43F2-9185-2E77DC8A7E04"
+        "id": "E76FDAC6-5D39-43F2-9185-2E77DC8A7E04",
+        "6B68AFA0-C6B9-43FE-8B7E-66A7C570D95B": "BigInt",
+        "70655858-21B4-453E-90C0-DD12DF09BEF4": "bigint",
+        "048C1ED9-CBC7-499D-891C-453C8B3FF3E6": "BIGINT"
       },
       {
         "defKey": "date",
@@ -8490,7 +10892,9 @@
         "defName": "JSON",
         "id": "E2BD716B-5B4D-4DD7-BAB8-2EAD9F27CFB2",
         "6B68AFA0-C6B9-43FE-8B7E-66A7C570D95B": "JSON",
-        "2F62B92B-4D4E-4EF6-A282-2461FD214BFA": "JSONObject"
+        "2F62B92B-4D4E-4EF6-A282-2461FD214BFA": "JSONObject",
+        "191CD01D-62AA-4481-AE1B-65373E885327": "VARCHAR",
+        "70655858-21B4-453E-90C0-DD12DF09BEF4": "varchar"
       },
       {
         "defKey": "IP",
@@ -8547,6 +10951,15 @@
       "scale": "",
       "uiHint": "",
       "id": "40F028AE-3728-4ED6-A273-5631BA8220AC"
+    },
+    {
+      "defKey": "长整数",
+      "defName": "",
+      "applyFor": "E76FDAC6-5D39-43F2-9185-2E77DC8A7E04",
+      "len": "",
+      "scale": "",
+      "uiHint": "",
+      "id": "5E9EED17-455F-4EFC-AB81-10A931AB0BCA"
     },
     {
       "defKey": "Double",
@@ -8985,7 +11398,7 @@
       "id": "72ADA7F0-0119-47B0-A044-B7B2DCF757C8"
     },
     {
-      "defKey": "1-m_map_system-planet",
+      "defKey": "1-m_map_system_planet",
       "defName": "星系-星球映射",
       "relationType": "field",
       "canvasData": {
