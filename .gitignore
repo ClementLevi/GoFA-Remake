@@ -1,14 +1,33 @@
+# IDE Environment
 .vscode/*
+server/.vscode/*
 .idea/*
 .sourcetrail/*
+
+# AI Agents Toolchains
+.workbuddy/*
+.openclaw-autoclaw/*
+.openclaw
+.playwright-cli/
+
+# Dependencies
 server/node_modules/*
-server/build/*
-server/.env
-server/.vscode/*
-server/db/*
-admin-server/node_modules/*
 client/node_modules/*
+admin-server/node_modules/*
+
+# Credentials and Configs
+server/.env
+server/db/*
+
+# Experiments
 playground/*
+
+# Test results
+*.cpuprofile
+*.future
+
+# Compiles
+server/build/*
 server/docs/JsDoc/out/*
 server/src/cpp_addons/CPP_ship_combat_calc/CMakeFiles
 server/src/cpp_addons/CPP_ship_combat_calc/CMakeCache.txt
@@ -32,5 +51,3 @@ server/src/cpp_addons/CPP_ship_combat_calc/tests/ALL_BUILD.vcxproj.filters
 server/src/cpp_addons/CPP_ship_combat_calc/tests/CPP_Combat_Calculate_Tests.sln
 server/src/cpp_addons/CPP_ship_combat_calc/tests/CPP_Combat_Calculate_Tests.vcxproj
 server/src/cpp_addons/CPP_ship_combat_calc/tests/CPP_Combat_Calculate_Tests.vcxproj.filters
-*.cpuprofile
-*.future
