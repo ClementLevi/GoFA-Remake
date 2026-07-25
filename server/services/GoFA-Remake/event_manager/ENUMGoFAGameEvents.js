@@ -21,6 +21,10 @@ const GameEvent = Object.freeze({
     SERVER_READY: "server_ready",
     // 服务器关闭
     SERVER_SHUTDOWN: "server_shutdown",
+    // 组件上线
+    SERVER_COMPONENT_ONLINE: "server_component_online",
+    // 组件离线
+    SERVER_COMPONENT_OFFLINE: "server_component_offline",
     // 服务器收到控制台命令
     SERVER_COMMAND: "server_command",
     // 服务器完整性校验失败
@@ -32,13 +36,64 @@ const GameEvent = Object.freeze({
     // 该校验客户端完整性了，所有在线客户端每gt各有千分之一概率触发
     SERVER_CREATE_CLIENT_INTEGRITY_CHALLENGE:
         "server_create_client_integrity_challenge",
+    // 发现客户端未通过完整性校验挑战
+    SERVER_FOUND_CLIENT_FAILING_CHALLENGE:
+        "server_found_client_failing_challenge",
+    // 服务器认为客户端掉线
+    SERVER_DISCONNECT_CLIENT: "server_disconnect_client",
+    // 服务器将客户端从大厅重定向到子服务器
+    SERVER_REROUTE_CLIENT: "server_reroute_client",
+
 
     // # 服务端内部业务逻辑事件
+
+    // ## 子服务器角色
+    // 角色修改名称成功
+    ROLE_CHANGE_NAME_COMPLETE: "role_change_name_complete",
+    // 角色使用技能点成功
+    ROLE_UPGRADE_SKILL_COMPLETE: "role_upgrade_skill_complete",
+    // 角色使用道具成功
+    ROLE_USE_ITEM_COMPLETE: "role_use_item_complete",
+    // 角色购买道具成功
+    ROLE_PURCHASE_ITEM_COMPLETE: "role_purchase_item_complete",
+    // 角色修改名称失败
+    ROLE_CHANGE_NAME_FAILED: "role_change_name_failed",
+    // 角色使用技能点失败
+    ROLE_UPGRADE_SKILL_FAILED: "role_upgrade_skill_failed",
+    // 角色使用道具失败
+    ROLE_USE_ITEM_FAILED: "role_use_item_failed",
+    // 角色购买道具失败
+    ROLE_PURCHASE_ITEM_FAILED: "role_purchase_item_failed",
+
     // ## 星球
     // 星球更改所有权，作战结束（TASKFORCE_COMBAT）或占据无主星球（TASKFORCE_MOVE或PLAYER_NEW_GATE）触发
     PLANET_TRANSFER: "planet_transfer",
+    // 星球成为某人的星门
+    PLANET_BECOMES_GATE: "planet_becomes_gate",
+
+    // ## 地表建筑
+    // 建筑开始建造
+    BUILDING_BUILT: "building_built",
+    // 建筑已摧毁
+    BUILDING_DESTROYED: "building_destroyed",
+    // 建筑开始升级
+    BUILDING_UPGRADED: "building_upgraded",
+    // 建筑完成，包括升级、生产序列的完成
+    BUILDING_FINISHED: "building_finished",
+    // 建筑已启动生产队列，如生产探测器、飞船、地面部队和升级可装备项目等
+    BUILDING_PRODUCTION_ENQUEUED: "building_production_enqueued",
+    // 建筑已选择装备，指蓝图、增幅器等
+    BUILDING_EQUIPPED: "building_equipped",
+    // 建筑已加速生产
+    BUILDING_SPEEDED_UP_PRODUCTION: "building_speeded_up_production",
+    // 建筑已取消生产
+    BUILDING_CANCELLED: "building_cancelled",
+    // 建筑已拒绝操作，服务器认为该操作不合法，如建造或升级时资源不足、生产队列已满等
+    BUILDING_REJECTED: "building_rejected",
 
     // ## 舰队
+    // 舰队开始移动
+    TASKFORCE_DEPARTED: "taskforce_departed",
     // 舰队到达，触发舰队移动结算事件
     TASKFORCE_ARRIVE: "taskforce_arrive",
     // 舰队失踪，一定时间后造成随机损伤并返回（TASKFORCE_MOVE）
@@ -49,6 +104,8 @@ const GameEvent = Object.freeze({
     // ## 联盟
     // 联盟创建成功
     ALLIANCE_CREATE_CONFIRM: "alliance_create_confirm",
+    // 联盟创建失败
+    ALLIANCE_CREATE_FAILED: "alliance_create_failed",
     // 联盟日志，包括基本信息、成员、小队、管理层级、外交关系、公告创建与删除等修改
     ALLIANCE_LOG: "alliance_log",
 
@@ -57,7 +114,7 @@ const GameEvent = Object.freeze({
     // ! 注意所有参数需要服务端内部校验
 
     // ## 客户端非业务逻辑事件
-    // 客户端连接
+    // 客户端连接到大厅
     CLIENT_CONNECTED: "client_connected",
     // 客户端重定向，指从大厅转到子服务器
     CLIENT_REROUTED: "client_rerouted",
@@ -105,8 +162,6 @@ const GameEvent = Object.freeze({
     PLANET_INSPECT: "planet_inspect",
     // 星球侦察，由间谍卫星阵列发送探测器
     PLANET_SPY: "planet_spy",
-    // 星球战斗，只能由星球地面战触发
-    PLANET_COMBAT: "planet_combat",
     // 标记收藏
     PLANET_PIN_SET: "planet_pin_set",
     // 取消收藏
