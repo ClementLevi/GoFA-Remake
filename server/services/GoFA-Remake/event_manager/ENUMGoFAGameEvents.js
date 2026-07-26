@@ -104,7 +104,11 @@ const GameEvent = Object.freeze({
     FLEET_RECOMPOSE_FAILED: "fleet_recomposed_failed",
     // 航母重命名
     FLEET_RENAMED: "fleet_renamed",
-        // 航母重命名
+    // 航母已诞生
+    FLEET_CREATED: "fleet_created",
+    // 航母拆除
+    FLEET_DESTROYED: "fleet_destroyed",
+    // 航母重命名
     FLEET_RENAME_FAILED: "fleet_rename_failed",
 
     // ## 舰队

@@ -1,6 +1,6 @@
 # GoFA-Remake 设计决策文档
 
-> 版本: v1.1 | 日期: 2026-07-26 | 作者: 小小CL + CL
+> 版本: v1.2.1 | 日期: 2026-07-26 | 作者: 小小CL + CL
 > 前置文档: `server/use_case/use_cases.pu` (用例图)、`ENUMGoFAGameEvents.js` (事件枚举)
 
 ---
@@ -77,9 +77,10 @@ TASKFORCE_INTERCEPT_TRIGGER: "taskforce_intercept_trigger"  // 舰队被拦截�
 **新增事件**:
 
 ```
-TASKFORCE_COMBAT_PREP_START:  "taskforce_combat_prep_start"    // 舰队进入战斗预备阶段，将导致服务器重算战斗结果缓存
-TASKFORCE_COMBAT_PREP_WITHDRAW: "taskforce_combat_prep_withdraw"     // 预备阶段撤回，将导致服务器重算战斗结果缓存，并触发TASKFORCE_DEPARTED
+TASKFORCE_COMBAT_PREP:  "taskforce_combat_prep"    // 舰队进入战斗预备阶段，等待00/15/30/45分触发结算
 ```
+
+> 预备阶段撤回舰队触发 `TASKFORCE_DEPARTED`（舰队返航），同时使战斗缓存失效。不需要单独的 WITHDRAW 事件。
 
 ---
 
@@ -120,7 +121,7 @@ TASKFORCE_COMBAT_PREP_WITHDRAW: "taskforce_combat_prep_withdraw"     // 预备�
 **新增事件**:
 
 ```
-TASKFORCE_COMBAT_RESULT:   "taskforce_combat_result"      // 舰队战斗结算完成。触发下一行的事件以推送战报
+TASKFORCE_COMBAT: "taskforce_combat"  // 舰队战斗结算完成，触发 MAIL_BATTLE_REPORT 以推送战报
 MAIL_BATTLE_REPORT: "mail_battle_report"  // 战报以邮件形式发送给玩家
 ```
 
@@ -128,12 +129,17 @@ MAIL_BATTLE_REPORT: "mail_battle_report"  // 战报以邮件形式发送给玩�
 
 ### 1.3 机群操作合法性规则 (P0-③)
 
-| 操作 | 条件                     | 约束                                                                                 | S2C 响应(需新增)                                       |
-| ---- | ------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------ |
-| 创建 | 造船厂建造完成后自动触发 | 初始属性通过查数据表确定                                                             | `FLEET_CREATE_COMPLETE`                              |
-| 重组 | 仅停泊于玩家拥有星球上时 | 每艘航母可单独重组自身的机群和载荷                                                   | `FLEET_RECOMPOSE_COMPLETE` / `FLEET_ACTION_FAILED` |
-| 升级 | 需增幅器道具             | 不可降级、不可换色；无升级=0级，升到p级需p-1个道具；上限20级；绿道具仅拦截者航母可用 | `FLEET_UPGRADE_COMPLETE` / `FLEET_ACTION_FAILED`   |
-| 摧毁 | 无需时间或消耗           | 编队中的航母不允许摧毁；无资源回收                                                   | `FLEET_DESTROY_COMPLETE` / `FLEET_ACTION_FAILED`   |
+**设计方法**: 机群的创建/摧毁/增减通过**编队成员变更**事件统一处理，而非单独的 FLEET_CREATE/DESTROY S2C。
+
+| 操作 | 条件                     | 约束                                                                                 | C2S 请求                    | S2C 响应                              |
+| ---- | ------------------------ | ------------------------------------------------------------------------------------ | --------------------------- | -------------------------------------- |
+| 创建 | 造船厂建造完成后自动触发 | 初始属性通过查数据表确定；航母自动加入驻扎星球默认编队                               | `BUILDING_FINISH`, `FLEET_CREATE`    | `FLEET_CREATED`, `TASKFORCE_MEMBER_CHANGED`            |
+| 重组 | 仅停泊于玩家拥有星球上时 | 每艘航母可单独重组自身的机群和载荷                                                   | `FLEET_RECOMPOSE`          | `FLEET_RECOMPOSED` / `FLEET_RECOMPOSE_FAILED` |
+| 升级 | 需增幅器道具             | 不可降级、不可换色；无升级=0级，升到p级需p-1个道具；上限20级；绿道具仅拦截者航母可用 | `FLEET_UPGRADE`            | (需新增) `FLEET_UPGRADED` / `FLEET_UPGRADE_FAILED` |
+| 摧毁 | 无需时间或消耗           | 编队中的航母不允许摧毁；无资源回收                                                   | `FLEET_DESTROY` | `FLEET_DESTROYED`            |
+| 命名 | —                        | 航母可重命名                                                                         | `FLEET_RENAME`             | `FLEET_RENAMED` / `FLEET_RENAME_FAILED` |
+
+> `TASKFORCE_ADD_MEMBER` 和 `TASKFORCE_REMOVE_MEMBER` 也可用于编队固定编队的航母成员变更（玩家主动调整编队构成），不限于新建/摧毁。
 
 **四色增幅器道具**:
 
@@ -144,7 +150,9 @@ MAIL_BATTLE_REPORT: "mail_battle_report"  // 战报以邮件形式发送给玩�
 | 黄色 | 增加航母超空间航行速度      | 所有航母               | 查表确定     |
 | 绿色 | 增加拦截者航母重力井半径    | 仅 gravity_interceptor | 查表确定     |
 
-**升级公式**: 从0级升到第p级，需要消耗 p-1 个同色道具（升到第20级需要19个道具）
+**升级公式**: 从p-1级升到第p级，需要消耗 p-1 个同色道具（升到第20级需要19个道具）
+
+**数据模型**: `carrier_upgrade_item` 字段改为 JSON 存储 `{ color: "red"|"blue"|"yellow"|"green", level: 0~20 }`，颜色和等级一并存储，无需单独字段。
 
 ---
 
@@ -221,91 +229,152 @@ MAIL_BATTLE_REPORT: "mail_battle_report"  // 战报以邮件形式发送给玩�
 
 ### 3.1 核心闭环 (P1~P8)
 
-| 板块      | C2S 状态 | S2C 状态                     | Internal 状态 | 断裂点                  |
-| --------- | -------- | ---------------------------- | ------------- | ----------------------- |
-| P1 账号   | ✓ 5个   | 🔴 大厅职责                  | —            | 不在游戏服范围          |
-| P2 角色   | ✓ 8个   | ✓ 8对 COMPLETE/FAILED       | —            | ✓ 闭环                 |
-| P3 客户端 | ✓ 5个   | ⚠️ REROUTED/LOAD_MAP       | ✓ DISCONNECT | —                      |
-| P4 星球   | ✓ 6个   | 🔴 仅 TRANSFER+BECOMES_GATE  | —            | 缺各请求的成功/失败响应 |
-| P5 建筑   | ✓ 8个   | ⚠️ FINISHED+REJECTED       | —            | REJECTED笼统，缺细分    |
-| P6 机群   | ✓ 4个   | 🔴 无                        | —            | 全缺 COMPLETE/FAILED    |
-| P7 编队   | ✓ 6个   | ⚠️ DEPARTED/ARRIVE/MISSING | ✓ COMBAT     | ARRIVE缺分支细分        |
-| P8 战斗   | —       | 🔴 无                        | ✓ COMBAT触发 | 缺 COMBAT_RESULT        |
+| 板块      | C2S 状态 | S2C 状态                                          | Internal 状态 | 断裂点                          |
+| --------- | -------- | ------------------------------------------------- | ------------- | ------------------------------- |
+| P1 账号   | ✓ 5个   | 🔴 大厅职责                                       | —            | 不在游戏服范围                  |
+| P2 角色   | ✓ 4个   | ✓ 8对 COMPLETE/FAILED                            | —            | ✓ 闭环                         |
+| P3 客户端 | ✓ 5个   | ⚠️ REROUTED/LOAD_MAP                            | ✓ DISCONNECT | —                              |
+| P4 星球   | ✓ 6个   | ⚠️ TRANSFER+BECOMES_GATE+RESOURCE_UPDATE+INCOMING_DETECTED+INCOMING_RELIEVED | —            | 缺 ABANDON/SPY 等请求的响应    |
+| P5 建筑   | ✓ 8个   | ⚠️ BUILT/DESTROYED/UPGRADED/FINISHED/ENQUEUED/EQUIPPED/SPEEDED_UP/CANCELLED + REJECTED | —            | REJECTED笼统，缺细分           |
+| P6 机群   | ✓ 5个 (含FLEET_RENAME) | ⚠️ RECOMPOSED/RECOMPOSE_FAILED+RENAMED/RENAME_FAILED | —            | 缺 TASKFORCE_MEMBER_CHANGED + FLEET_UPGRADED |
+| P7 编队   | ✓ 6个   | ⚠️ DEPARTED/ARRIVE/MISSING+COMBAT_PREP+INTERCEPT_TRIGGER+DOCKED/DOCKED_DEPLETED | ✓ COMBAT     | 缺 TASKFORCE_ADD/REMOVE_MEMBER (C2S) |
+| P8 战斗   | —       | ⚠️ MAIL_BATTLE_REPORT (战报→邮件)                | ✓ COMBAT     | 缺 COMBAT_RESULT                |
 
 ### 3.2 次级板块 (P9~P12)
 
-| 板块         | C2S 状态 | S2C 状态          | Internal 状态 | 断裂点                |
-| ------------ | -------- | ----------------- | ------------- | --------------------- |
-| P9 联盟      | ✓ 20+个 | 🔴 仅 CREATE 成对 | ✓ LOG        | 外交/成员响应全缺     |
-| P10 通信     | ✓ 6个   | 🔴 无             | ❌            | 聊天广播+邮件送达全缺 |
-| P11 侦察科研 | ❌ 全空  | ❌ 全空           | ❌ 全空       | 事件枚举空白          |
-| P12 运维     | ✓ 5个   | ✓                | ✓ 9个        | ✓ 基本完备           |
+| 板块         | C2S 状态         | S2C 状态                                    | Internal 状态 | 断裂点                      |
+| ------------ | ---------------- | ------------------------------------------- | ------------- | --------------------------- |
+| P9 联盟      | ✓ 20+个         | ⚠️ CREATE_CONFIRM/FAILED+DISBAND+RELATION_CHANGED | ✓ LOG        | 缺成员变更S2C              |
+| P10 通信     | ✓ 6个(含SPY 3个) | ⚠️ MAIL_ALREADY_READ+MAIL_SPY_REPORT+MAIL_ESPIONAGE_ALERT | ❌            | 缺聊天广播推送              |
+| P11 侦察 | ✓ 3个(SPY_*系)  | ⚠️ MAIL_SPY_REPORT+MAIL_ESPIONAGE_ALERT     | ❌            |                   |
+| P12 运维     | ✓ 5个           | ✓                                           | ✓ 9个        | ✓ 基本完备                 |
 
 
 
-# ！从这里以后的我都没看，也没有改
+## 四、事件补完进度与路线图
 
-## 四、补完路线图
+### 已补完事件（CL commit 5fe92b1c 已写入枚举）
 
-### 优先级排序
+| 板块 | 新增事件 | 状态 |
+|------|----------|------|
+| P4 星球 S2C | `PLANET_RESOURCE_UPDATE` / `PLANET_INCOMING_DETECTED` / `PLANET_INCOMING_RELIEVED` | ✅ 已写入 |
+| P6 机群 S2C | `FLEET_RENAMED` / `FLEET_RENAME_FAILED` / `FLEET_RECOMPOSE_FAILED` | ✅ 已写入 |
+| P7 编队 S2C | `TASKFORCE_COMBAT_PREP` / `TASKFORCE_INTERCEPT_TRIGGER` / `TASKFORCE_DOCKED` / `TASKFORCE_DOCKED_DEPLETED` | ✅ 已写入 |
+| P8 战斗 S2C | `MAIL_BATTLE_REPORT` (战报→邮件) | ✅ 已写入 |
+| P9 联盟 S2C | `ALLIANCE_DISBAND` / `ALLIANCE_RELATION_CHANGED` | ✅ 已写入 |
+| P11 侦察 C2S | `SPY_INCOMING_COUNTER` / `SPY_PLANET_ESPIONAGE` / `SPY_BOUNTY_DISCOVER` | ✅ 已写入 |
+| P11 侦察 S2C | `MAIL_SPY_REPORT` / `MAIL_ESPIONAGE_ALERT` | ✅ 已写入 |
+| P10 邮件 S2C | `MAIL_ALREADY_READ` | ✅ 已写入 |
+
+### 待补完事件（尚未写入枚举）
+
+| 板块 | 待新增事件 | 优先级 | 说明 |
+|------|-----------|--------|------|
+| P6 机群 | `TASKFORCE_ADD_MEMBER` (C2S) / `TASKFORCE_REMOVE_MEMBER` (C2S) / `TASKFORCE_MEMBER_CHANGED` (S2C) | P0 | 机群创建/摧毁/编队成员变更统一走此事件 |
+| P6 机群 | `FLEET_UPGRADED` (S2C) / `FLEET_UPGRADE_FAILED` (S2C) | P0 | 机群升级响应，配合已有的 C2S `FLEET_UPGRADE` |
+| P5 建筑 | `BUILDING_BUILD_FAILED` / `BUILDING_UPGRADE_FAILED` / `BUILDING_PRODUCTION_FAILED` | P1 | 当前 REJECTED 过笼统，细分失败原因 |
+| P9 联盟 | 联盟成员变更 S2C (成员加入/退出/踢出/邀请接受/邀请拒绝) | P2 | 当前仅 CREATE 有成对响应 |
+
+### 路线图优先级
 
 ```
 P0 (阻断级) ─────────────────────────────────────
-  ① 编队到达结算分支事件 (6+1个新增)
-  ② 战斗预备+结算事件 (5个新增)
-  ③ 机群操作响应事件 (5个新增)
+  ① 编队到达结算 → CL已补完大部分S2C事件，剩余：TASKFORCE_ADD/REMOVE_MEMBER
+  ② 战斗预备+结算 → CL已补完 COMBAT_PREP/INTERCEPT_TRIGGER/MAIL_BATTLE_REPORT
+  ③ 机群升级响应 → 待补 FLEET_UPGRADED/FLEET_UPGRADE_FAILED
   → 补完后：核心玩法闭环可完整推演
 
 P1 (增强级) ─────────────────────────────────────
-  ④ 星球请求响应事件 (6个新增)
-  ⑤ 建筑失败细分事件 (3个新增)
-  ⑥ 侦察科研事件 (4个新增)
-  → 补完后：星球/建筑/侦察玩法闭环
+  ④ 建筑失败细分 → 3个BUILDING_*_FAILED事件
+  → 补完后：建筑玩法闭环
 
 P2 (社交级) ─────────────────────────────────────
-  ⑦ 联盟外交响应事件 (6个新增)
-  ⑧ 通信推送事件 (2个新增)
+  ⑤ 联盟成员变更S2C → 成员加入/退出/踢出/邀请
+  ⑥ 通信推送 → 聊天消息广播 (可暂用轮询替代)
   → 补完后：联盟/通信闭环
 
 全局前置 ──────────────────────────────────────────
-  A API约定 (JWT+统一壳+camelCase) ← 已决策，待写入规范
-  B S2C推送 (先轮询) ← 已决策，待设计轮询接口
-  C 数据库 (SQLite先跑) ← 已决策，沿用现有抽象层
+  A API约定 ← 已决策 (JWT+统一壳+camelCase)
+  B S2C推送 ← 已决策 (先轮询)
+  C 数据库 ← 已决策 (SQLite+迁移接口)
 ```
 
 ### 执行顺序建议
 
-1. **全局前置 A/B/C** → 先确定 API 约定规范文档 + 轮询接口设计
-2. **P0 事件补完** → 更新 `ENUMGoFAGameEvents.js` + 用例图注释
-3. **P0 → API 端点推导** → 从补完的事件推导出 31 个接口的请求/响应体
-4. **P1 事件补完** → 星球/建筑/侦察科研
-5. **P2 事件补完** → 联盟/通信
+1. **P0 剩余事件补完** → `TASKFORCE_ADD/REMOVE_MEMBER` + `FLEET_UPGRADED/UPGRADE_FAILED` → 更新枚举 + 用例图
+2. **P0 → API 端点推导** → 从补完的事件推导核心闭环的 REST 端点请求/响应体
+3. **P1 建筑失败细分** → 3 个 BUILDING_*_FAILED
+4. **P2 联盟/通信** → 成员变更 S2C + 聊天广播
 
 ---
 
-## 六、待定/待讨论事项
+## 五、待定/待讨论事项（CL已反馈部分讨论）
 
 1. **Tick 循环必要性** — CL 考虑用定时器+事件队列替代传统游戏 tick 循环。需确认：
-
    - 1秒 tick 的必要性（资源产出更新、星球状态刷新等需要周期性计算）
+     - A: 资源产出更新、星球状态更新等，可以使用懒计算方式，仅在有玩家的操作导致需要时才计算；建筑建造、舰队动向等事件，则因速度和事件发生时间确定，而可以通过设置定时任务触发计算。
    - 定时器方案能否满足"按 tick 判定到达先后"的需求
+     - A: 即将到达星球的所有舰队可以设置列表，遍历列表即可找出先后到达者。
+
 2. **战斗算法** — `fleet_combat.pu` 和 `planetary_combat.pu` 仍为空壳，需要设计：
-
    - 战斗回合内每一步的算法
+     - A: 待实现和平衡优化，可先简单地以减法运算占位：`受击方战损数量 = 攻击方数量`。
    - 舰载机 vs 舰载机 / 航母 vs 航母 / 航母战阶段的流程
+     - A: 分为三个阶段：
+       - 战机战：每回合内防守方先攻，进攻方再攻。按拦截机、战斗机、轰炸机三款机型顺序组织回合。
+       - 航母战：双方同时计算伤害，造成伤害/单舰血量=数量的损失。尚有存活战机的航母只计算伤害，不计算受伤。
+       - 地面战：进攻方按`伤害=轰炸机数量*每架轰炸机伤害*(1-星球防御水平)`计算造成步兵伤亡，然后再计算`进攻方步兵数量-防守方步兵数量`。
    - 逃逸百分比的精确触发时机
-3. **增幅器属性查表** — 四色道具的每级属性增量、升级消耗公式需要设计数值表
+     - A: 每回合后计算是否触发。
+
+3. **增幅器属性查表** — 四色道具的每级属性增量需要设计数值表。`ATTR_carrier` 和 `ATTR_ship` 已有基本结构，但缺：
+   - 每级红色道具增加多少 atk？
+   - 每级蓝色道具增加多少 def/hp？
+   - 每级黄色道具增加多少速度？
+   - 每级绿色道具增加多少重力井半径？
+   - 需新增一张字典/表定义增量
+   - A: 可先创建数据表，均设为5%，后续进行数值平衡调整。
+
 4. **殖民后星球初始状态** — 殖民成功后：
-
    - 星球的初始建筑如何确定？（HQ自动出现？其他建筑为空？）
+     - A: HQ自动出现且为1级，其余建筑根据星球遗弃前的状态保留，但是清空实验室的蓝图。如果星球从未被占领过，则只有HQ1级。
    - 星球的初始资源储备？
+     - A: 保留星球遗弃前的资源，不得超过上限。
    - 星球的初始防御值（0？还是有基础防御？）
-   - 舰队殖民后自动停泊于该星球
-5. **编队解散规则** — `TASKFORCE_DISBAND` 的具体条件（是否需要所有航母都停泊？是否需要编队不在航行中？）
-6. **拦截机制实现复杂度** — 实时操作+服务端精确位置计算+气体资源消耗管理是全新系统，需要单独设计：
+     - A：初始防御值为10%。当且仅当星球上有建筑“行星防御设施”时才有更多防御值。该建筑每级提供累加的5%防御值。（例：拥有3级行星防御设施的星球防御值为25%）
 
-   - 舰队航行位置实时计算引擎（服务端每tick更新所有航行舰队位置）
+5. **编队解散规则** — `TASKFORCE_DISBAND` 的具体条件：
+   - 是否需要所有航母都停泊？
+     - A：是
+   - 航行中是否允许解散？
+     - A：不允许
+
+6. **拦截机制实现复杂度** — 实时操作+服务端精确位置计算+气体资源消耗管理是全新系统，需要单独设计：
+   - 舰队航行位置实时计算引擎
+     - A: 同样使用懒计算和定时任务策略。
    - 抛锚请求合法性验证（时间窗口+位置合理性+气体资源检查）
+     - A: 只要舰队（TASKFORCE）处于移动状态，且载有资源，即可抛锚。
    - 拦截圈几何判定（航线与圆的相交检测）
+     - A: 使用几何算法，如直线与圆的相交检测。
    - 气体资源消耗管理（每分钟消耗速率、耗尽后的状态切换）
+     - A：需要写数据表，计算该舰队总消耗速率后进行除算得出可抛锚时长，设置定时任务以前进。
    - 位置同步频率（HTTP请求频率 vs tick频率的差异如何调和）
+     - A：收到HTTP请求的那一tick即时处理请求
+
+7. **数据模型命名冲突** — `CARRIER_UPGRADE_ITEM` 字典中 `gravity_well_amplifier`（道具）和 `PLANET_STRUCTURE` 字典中 `Gravity Well Amplifier`（建筑类型12）同名，需区分：
+   - 建议：道具改名（如 `green_stone` 或 `interceptor_amplifier`），建筑保持原名（语境不同）
+     - A：拟采用`green_stone`命名，计划在后续数据库定义中修改
+     - TODO
+
+8. **planet_storage / planet_structure JSON Schema** — 两个核心字段用 JSON 存储但未定义内部结构。需明确 JSON Schema：
+   - `planet_structure`：`{ buildingTypeId: buildingInstance }` 还是 `{ slotIndex: buildingId }`？
+   - `planet_storage`：`{ metal: number, gas: number, crystal: number }` 还是更复杂的结构？
+   - 殖民后初始值？
+   - TODO
+
+9. **PDMan 缺失表** — 数据模型中缺少以下表：
+   - 战报内容表（MAIL_BATTLE_REPORT 需存储初态+终态+战利品）
+   - 联盟小队结构表（C2S 有 CREATE/JOIN/LEAVE_TEAM 但模型缺表）
+   - 侦察报告表（MAIL_SPY_REPORT 需存储星球数据快照）
+   - 拦截状态追踪表（TASKFORCE_DOCKED 需记录锚定位置+气体消耗速率+剩余时长）
+   - TODO
