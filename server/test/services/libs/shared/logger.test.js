@@ -1,12 +1,14 @@
 const assert = require('assert');
 const path = require("path")
-const { Logger } = require(path.resolve('services/libs/shared/logger'));
+// logger 模块导出的是单例实例（module.exports = singleton(new Logger())），
+// 其 Proxy 目标为实例而非类，不能 `new`，直接复用该实例即可。
+const Logger = require(path.resolve('services/libs/shared/logger'));
 
 describe('Logger', function() {
     let logger;
 
     beforeEach(function() {
-        logger = new Logger();
+        logger = Logger;
     });
 
     it('setConfig should update the configuration correctly', function() {
@@ -61,7 +63,7 @@ describe('Logger', function() {
         assert.strictEqual(logger.spinner.isSpinning, false);
     });
 
-    it('log should output to console and file when configured', function() {
+    it('info should output to console and file when configured', function() {
         const customConfig = {
             info: {
                 color: "green",
@@ -76,13 +78,17 @@ describe('Logger', function() {
             assert.strictEqual(message.includes("Test log message"), true);
         };
 
-        // Mock logger method for file output
+        // Mock logger method for file output（_log 以数组形式透传消息参数）
+        const originalLoggerInfo = logger.logger.info;
         logger.logger.info = function(message) {
-            assert.strictEqual(message, "Test log message");
+            assert.strictEqual(message[0], "Test log message");
         };
 
-        logger.log("info", "Test log message");
-
-        console.log = consoleLog;
+        try {
+            logger.info("Test log message");
+        } finally {
+            console.log = consoleLog;
+            logger.logger.info = originalLoggerInfo;
+        }
     });
 });

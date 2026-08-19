@@ -23,7 +23,7 @@ const Pos = require(path.resolve(__dirname, "../pos/Pos.js"));
  * @typedef {typeof import ("../pos/Pos2d")} Pos2d
  * @type {Pos2d}
  */
-const Pos2d = require(path.resolve(__dirname, "../Pos/Pos2d.js"));
+const Pos2d = require(path.resolve(__dirname, "../pos/Pos2d.js"));
 
 /**
  * @typedef {typeof import ("../planet/Planet")} Planet

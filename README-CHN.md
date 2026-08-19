@@ -29,6 +29,31 @@
 
 项目API文档会在项目完成后发布（在做了.jpg），在此特别鸣谢[ApiFox](https://www.apifox.cn/)创造的开发工具。目前API文档仅供开发团队阅读，如果您想了解并加入，请联系我们。
 
+# 开发环境
+
+> 版本要求：Node.js 22 LTS（`.nvmrc` 已固定，使用 [nvm](https://github.com/nvm-sh/nvm) 时执行 `nvm use` 自动切换）
+
+```bash
+# 1. 安装依赖（server 与 admin-server 各自安装）
+cd server && npm install
+cd admin-server && npm install
+
+# 2. 运行测试（server）
+cd server && npm test
+
+# 3. 启动
+# 管理后台（端口 3000）
+cd admin-server && node index.js
+# 游戏服务器（需要先配置 server/.env，参照 .env.example）
+cd server && node main.js
+```
+
+注意事项：
+
+- 若 npm 缓存目录不可写（例如在只读文件系统/沙箱环境中报 `EROFS`），可指定临时缓存：`npm install --cache /tmp/npm-cache`
+- 测试框架为 mocha（`npm test` → `mocha --recursive`），测试文件位于 `server/test/`
+- 本项目当前依赖树基于 Node 22 锁定；使用更新的 Node 主版本（如 26）可能遇到旧依赖兼容问题（如 yargs）
+
 # 开发进度
 
 很遗憾，由于缺乏人手和大型项目开发经验，本项目仍然进展缓慢，但我们仍然在缓步向前爬行。

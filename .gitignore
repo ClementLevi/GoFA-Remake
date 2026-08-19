@@ -15,6 +15,9 @@ server/node_modules/*
 client/node_modules/*
 admin-server/node_modules/*
 
+# Local Toolchains (本机下载的 Node 运行时等，不入库)
+.tools/*
+
 # Credentials and Configs
 server/.env
 server/db/*
