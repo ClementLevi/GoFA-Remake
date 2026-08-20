@@ -29,6 +29,36 @@
 
 项目API文档会在项目完成后发布（在做了.jpg），在此特别鸣谢[ApiFox](https://www.apifox.cn/)创造的开发工具。目前API文档仅供开发团队阅读，如果您想了解并加入，请联系我们。
 
+# 开发环境
+
+> 工具链约定：**nvm**（Node.js）、**uv**（Python 包/工具）、**conan**（C++ 包）、cmake（C++ 构建）、git。
+> Node 版本要求：22 LTS（`.nvmrc` 已固定，`nvm use` 自动切换）。
+
+```bash
+# 1. 安装 Node 22（nvm）
+nvm install 22.23.2 && nvm use
+
+# 2. 安装 conan（uv，任选其一）
+uv tool install conan
+
+# 3. 安装依赖（server 与 admin-server 各自安装）
+cd server && npm install
+cd admin-server && npm install
+
+# 4. 运行测试（server）
+cd server && npm test
+
+# 5. 启动
+cd admin-server && node index.js     # 管理后台（端口 3000）
+cd server && node main.js            # 游戏服务器（需先配置 server/.env）
+```
+
+注意事项：
+
+- 若 npm 缓存目录不可写（只读文件系统/沙箱环境报 `EROFS`），可指定临时缓存：`npm install --cache /tmp/npm-cache`
+- 测试框架为 mocha（`npm test` → `mocha --recursive`），测试文件位于 `server/test/`
+- 使用更新的 Node 主版本（如 26）可能遇到旧依赖兼容问题（如 yargs），请以 22 LTS 为准
+
 # 开发进度
 
 很遗憾，由于缺乏人手和大型项目开发经验，本项目仍然进展缓慢，但我们仍然在缓步向前爬行。
