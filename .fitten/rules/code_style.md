@@ -4,7 +4,7 @@
 
 1. 每个模块/类单独一个文件
 2. 文件名使用大驼峰命名法(如 GameManager.js)
-3. 目录名使用小驼峰命名法(如 game_entities)
+3. 目录名使用下划线命名法 snake_case(如 game_entities)
 7. 为类使用 jsdoc 实现类似 TypeScript 的类型定义，将定义文件放在同目录下，文件名为`类名.d.ts`
 
 ## 代码风格

@@ -1,0 +1,34 @@
+@startuml 一事件多消费者
+
+' 一个事件多个消费者：每个消费者各自更新各自的领域状态，
+' 各归各的查询接口——「多消费者」不是抢一个 HTTP 响应，
+' 而是「多领域副作用分散写各自状态」。
+
+control "Event Bus" as Bus
+participant "殖民消费者" as C1
+participant "停泊消费者" as C2
+participant "战斗消费者" as C3
+participant "邮件消费者" as C4
+database "Planet 状态" as S1
+database "Fleet 状态" as S2
+database "结果事件(taskId)" as S3
+database "Mail 状态" as S4
+
+Bus -> C1: TASKFORCE_ARRIVE(taskId)
+Bus -> C2: TASKFORCE_ARRIVE(taskId)
+Bus -> C3: TASKFORCE_ARRIVE(taskId)
+Bus -> C4: TASKFORCE_ARRIVE(taskId)
+
+C1 -> S1: planet.colonize() 归属变更
+C2 -> S2: fleet.arrive() 停泊状态
+C3 -> S3: 发 COMBAT_RESULT(taskId)
+C4 -> S4: 写战报邮件
+
+note right of S4
+    各副作用分散在各资源域，各归各的查询接口：
+    GET /planet/:id
+    GET /fleet/:id
+    GET /combat/report/{taskId}
+    GET /mail/unread
+end note
+@enduml

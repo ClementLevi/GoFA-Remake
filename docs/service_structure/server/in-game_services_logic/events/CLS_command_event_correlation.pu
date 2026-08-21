@@ -1,0 +1,56 @@
+@startuml 命令-事件-结果关联
+
+' 命令 → 事件 → 消费者 → 领域操作 → 持久化 的类关系。
+' taskId（correlation id）是命令受理与结果获取之间唯一的显式关联点。
+' 「统一数据模型接口」粒度定在领域操作层（fleet.arrive()），
+' 而非持久化层（通用表读写），否则绕过领域规则。
+
+class CommandRequest {
+    + String taskId
+    + String route
+    + Object params
+    + dispatch()
+}
+
+class EventBus {
+    + publish(event)
+    + subscribe(consumer)
+}
+
+class GameEvent {
+    + String type
+    + String taskId
+    + Object payload
+}
+
+class Consumer {
+    + onEvent(event)
+}
+
+class ResultEvent {
+    + String taskId
+    + Object result
+}
+
+class DomainOperation {
+    + fleet_arrive()
+    + planet_colonize()
+    + carrier_destroy()
+}
+
+class Persistence {
+    + write(entity)
+}
+
+CommandRequest --> EventBus : dispatch(event, taskId)
+EventBus "1" --> "N" GameEvent : 发布
+GameEvent --> Consumer : 订阅消费
+Consumer --> DomainOperation : 调用领域操作
+DomainOperation --> Persistence : 落库（下游副作用）
+Consumer ..> ResultEvent : 产生（携带 taskId）
+
+note right of DomainOperation
+    领域操作是事件消费者的唯一入口，
+    持久化是领域操作的下游副作用，不可被 API 直连。
+end note
+@enduml

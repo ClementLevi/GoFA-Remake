@@ -1,0 +1,44 @@
+@startuml API-Event-Domain 三层架构
+skinparam componentStyle uml1
+
+' 依赖方向单向向下：API → 事件 → 领域 → 读模型；
+' 查询反向读读模型；taskId 贯穿命令受理与结果获取。
+' 事件层不感知 HTTP 的存在（反馈走读模型，而非回调）。
+
+package "客户端" {
+    [Game Client]
+}
+
+package "API 层 (HTTP)" {
+    [Router /api/v1 + /admin]
+    [JWT 鉴权中间件（占位）]
+    [统一响应壳 {code,data}]
+}
+
+package "事件层" {
+    [Event Bus (1:N 广播)]
+    [Tick 队列（异步结算）]
+    [结果事件（携带 taskId）]
+}
+
+package "领域层（统一数据模型接口）" {
+    [fleet.arrive()]
+    [planet.colonize()]
+    [carrier.destroy()]
+}
+
+package "读模型" {
+    database "内存实体"
+    database "SQLite"
+}
+
+[Game Client] --> [Router /api/v1 + /admin] : 命令 / 查询
+[Router /api/v1 + /admin] --> [JWT 鉴权中间件（占位）]
+[Router /api/v1 + /admin] --> [统一响应壳 {code,data}]
+[统一响应壳 {code,data}] --> [Event Bus (1:N 广播)] : dispatch(event, taskId)
+[Event Bus (1:N 广播)] --> [Tick 队列（异步结算）]
+[Tick 队列（异步结算）] --> [领域层（统一数据模型接口）]
+[领域层（统一数据模型接口）] --> [读模型] : 写状态
+[结果事件（携带 taskId）] ..> [读模型] : 写入
+[Router /api/v1 + /admin] --> [读模型] : 读状态（查询/轮询）
+@enduml

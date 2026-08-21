@@ -1,0 +1,39 @@
+@startuml Command-Event-Query 全流程
+
+' GoFA-Remake 命令-事件-查询三层模型的完整时序。
+' 核心原则：命令 API 只做「鉴权 + dispatch(event) + 受理回执」；
+' 事件消费者写状态而非回写 HTTP；
+' 结果由服务端结算后写入已完成事务缓存，客户端通过心跳响应自动拉取（按 taskId 关联）。
+
+participant "Client" as C
+participant "API 层\n(Router + JWT 鉴权 + 响应壳)" as API
+control "Event Bus\n(1:N 广播 + tick 队列)" as Bus
+participant "事件消费者\n(领域逻辑)" as Consumer
+database "缓存 DB\n(已完成事务)" as Cache
+
+== 1. 命令受理（同步，1:1） ==
+C -> API: POST /api/v1/taskforce/move\n(Authorization: Bearer <JWT>)
+activate API
+API -> API: 鉴权校验 + 生成 taskId
+API -> Bus: dispatch(TASKFORCE_MOVE, taskId)
+API --> C: 受理回执 {code:0, data:{taskId, accepted:true, estimatedAt}}
+deactivate API
+note right of API: 命令只返回受理回执，\n不等待业务结果（异步语义）
+
+== 2. 异步结算（事件驱动，1:N） ==
+Bus -> Consumer: TASKFORCE_MOVE 入 tick 队列\n(延迟到结算窗口执行)
+activate Consumer
+Consumer -> Consumer: 规则判定 rules.judgement
+Consumer -> Cache: 领域操作 fleet.arrive()\n事务完结时写入已完成事务缓存(携带 taskId)
+deactivate Consumer
+note right of Consumer: 消费者不碰 HTTP，\n只将已完成事务写入缓存；\n战斗报告由服务端自动触发
+
+== 3. 结果获取（心跳承载事务下发，taskId 关联） ==
+C -> API: 心跳请求 GET /api/v1/client/heartbeat
+activate API
+API -> Cache: 读缓存（已完成事务，单次数据库读）
+API --> C: 心跳响应 {code:0, data:{transactions:[...]}}
+deactivate API
+note over C, API: 事务完结由服务端结算后写入缓存，\n客户端下次心跳自动拉取（无需手动刷新）；\n事务也可由客户端另发请求或服务端自行终止。
+
+@enduml

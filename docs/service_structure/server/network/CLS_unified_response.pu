@@ -1,0 +1,42 @@
+@startuml 统一响应结构
+
+' API 统一响应壳：成功 / 命令受理回执 / 错误 / 分页。
+' 全局约定：字段 camelCase；成功 code=0；业务错误码分段 10xxx~90xxx。
+
+class ResponseEnvelope {
+    + int code
+    + Object data
+}
+
+class CommandAck {
+    + String taskId
+    + boolean accepted
+    + String estimatedAt
+}
+
+class ErrorResponse {
+    + int code
+    + String message
+    + String detail
+}
+
+class Pagination {
+    + String cursor
+    + int offset
+    + int limit
+}
+
+ResponseEnvelope *-- CommandAck : data（命令受理回执）
+ResponseEnvelope *-- ErrorResponse : 错误壳（code!=0）
+ResponseEnvelope *-- Pagination : data（查询分页）
+
+note right of CommandAck
+    命令接口的响应是受理回执而非最终结果，
+    后续结果经查询/轮询按 taskId 获取。
+end note
+
+note right of ErrorResponse
+    错误响应：{ code, message, detail }，
+    业务码按模块分段（10xxx~90xxx，见设计决策）。
+end note
+@enduml
