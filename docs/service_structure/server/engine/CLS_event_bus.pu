@@ -1,0 +1,110 @@
+@startuml CLS_event_bus
+' 事件机制架构设计子代理（Phase 2）
+' 事件总线类图：EventBus / GoFAGameEvent / Schedule / PriorityQueue / Consumer 关系
+' 关联设计：CLS_command_event_correlation.pu（命令-事件-结果）、SEQ_event_multiconsumer.pu（多消费者）
+
+enum ENUMGoFAGameEvents {
+  TASKFORCE_ARRIVE
+  TASKFORCE_COMBAT
+  BUILDING_FINISHED
+  MAIL_BATTLE_REPORT
+  ...
+  ' 356 个事件，topic 的权威来源（key 为逻辑 topic，value 为协议字符串）
+}
+
+interface IGoFAEvent {
+  - boolean _isInstantEvent
+  - Schedule schedule
+  - Object data
+  + isInstantEvent() : boolean
+  + isInstant : boolean
+}
+
+class GoFAGameEvent {
+  + String type
+  + String taskId
+  + Object payload
+  + String id
+  + Number createdAt
+  + Number dueTick
+  + Number priority
+}
+
+class Schedule {
+  + Number startTick
+  + Number length
+  + Number dueTick
+  + remaining(currentTick) : Number
+}
+
+class PriorityQueue {
+  - GoFAGameEvent[] _heap
+  + push(event) : void
+  + pop() : GoFAGameEvent
+  + peek() : GoFAGameEvent
+  + isEmpty() : boolean
+  + size() : Number
+  + popDue(currentTick) : GoFAGameEvent[]
+}
+
+class EventBus {
+  - Map subscribers
+  - PriorityQueue delayed
+  - Number currentTick
+  + publish(event) : void
+  + subscribe(topic, consumer) : unsubscribe
+  + unsubscribe(topic, consumer) : void
+  + tick(currentTick) : void
+  + dispatch(event) : void
+}
+
+interface Consumer {
+  + onEvent(event) : void
+}
+
+interface DomainOperation {
+  + fleet_arrive(payload)
+  + planet_colonize(payload)
+  + carrier_destroy(payload)
+  + building_finish(payload)
+}
+
+class ResultEvent {
+  + String taskId
+  + Object result
+}
+
+class ResultStore {
+  + Map results
+  + put(taskId, result) : void
+  + get(taskId) : Object
+}
+
+class Main {
+  + Time time
+  + tick(deltaTime) : void
+}
+
+' 关系
+GoFAGameEvent -|> IGoFAEvent : 继承（即时/延时语义）
+GoFAGameEvent *-- "0..1" Schedule : 延时事件可选
+GoFAGameEvent ..> ENUMGoFAGameEvents : type 取自枚举 key
+ResultEvent -|> GoFAGameEvent : 结果事件特化
+EventBus "1" --> "*" Consumer : 订阅表（topic → 多消费者）
+EventBus "1" --> "1" PriorityQueue : 延时事件入队
+PriorityQueue "1" o-- "*" GoFAGameEvent : 按 dueTick 排序
+Consumer ..> DomainOperation : 领域操作唯一入口
+Consumer ..> ResultEvent : 产出（携带 taskId）
+EventBus --> ResultStore : 写入结果
+Main ..> EventBus : 每 tick 驱动 tick(TICK)
+
+note right of EventBus
+  即时事件 publish 时同步/本 tick 分发；
+  延时事件入 PriorityQueue，由 tick 到期弹出分发。
+end note
+
+note right of Consumer
+  多消费者语义：同一事件驱动多个领域副作用，
+  各自写各自资源域状态（见 SEQ_event_multiconsumer.pu）。
+end note
+@enduml

@@ -1,0 +1,58 @@
+@startuml SEQ_event_dispatch
+' 事件机制架构设计子代理（Phase 2）
+' 完整链路：HTTP 命令 → publish → 调度 → 到期消费 → 领域操作 → 结果回执（tick 驱动）
+' 关联设计：SEQ_event_S2C_C2S_paradigms.pu（S2C 范式已改为 HTTP 轮询）、SEQ_combat_calculation.pu
+
+actor "Client" as C
+participant "HTTP Handler" as H
+participant "EventBus" as B
+queue "PriorityQueue\n(延时事件)" as Q
+participant "Consumer\n(领域消费者)" as CN
+participant "Domain\n(fleet/planet/...)" as D
+database "DB" as DB
+database "ResultStore\n(keyed by taskId)" as RS
+participant "Main\n(tick 循环)" as M
+
+== C2S：HTTP 命令受理（异步 fire-and-forget） ==
+C -> H : POST /api/v1/fleet/move {fleetId, destPlanetId}
+activate H
+H -> H : 校验 JWT + 参数（非法即返回错误壳）
+H -> B : publish(GameEvent{type=TASKFORCE_MOVE,\n taskId, payload})
+B -> Q : 延时事件入队（dueTick = now + 时长）
+B --> H : 受理完成
+H --> C : { code:0, data:{taskId} } 受理回执
+deactivate H
+
+== tick 驱动：消费到期事件 ==
+M -> B : tick(currentTick)（每 tick 递增）
+B -> B : currentTick = currentTick
+B -> Q : popDue(currentTick)
+Q --> B : 到期 GameEvent（dueTick <= currentTick）
+B -> CN : dispatch(event)
+activate CN
+CN -> D : fleet_arrive(payload)
+D -> DB : 写领域状态（下游副作用）
+CN -> B : publish(ResultEvent{taskId, result})
+B -> RS : put(taskId, result)
+deactivate CN
+
+== S2C：结果轮询（决策 B：HTTP 轮询） ==
+C -> H : GET /api/v1/fleet/result/{taskId}
+activate H
+H -> RS : get(taskId)
+RS --> H : result
+H --> C : { code:0, data:{result} }
+deactivate H
+
+note over C, RS
+  多消费者：TASKFORCE_ARRIVE 同 tick 还可驱动
+  planet.colonize() / COMBAT_RESULT / mail_battle_report
+  各写各资源域（见 SEQ_event_multiconsumer.pu）。
+end note
+
+note over M, B
+  懒计算 vs 定时任务边界：资源产出等可推导状态走懒计算
+  （读时按 lastUpdatedTick 现算），状态跃迁（到达/建造完成）
+  走定时事件入 PriorityQueue。
+end note
+@enduml
