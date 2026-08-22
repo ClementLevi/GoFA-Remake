@@ -49,12 +49,28 @@ class Pixel {
             case 1: {
                 let value = arguments[0];
                 if (typeof value === "string") {
-                    if (!/^#([\da-fA-F]{3}|[\da-fA-F]{6})$/.test(value))
+                    if (
+                        !/^#([\da-fA-F]{3}|[\da-fA-F]{6}|[\da-fA-F]{8})$/.test(
+                            value
+                        )
+                    )
                         throw new ValueError("Invalid arguments: ", arguments);
-                    value = parseInt(value.replace("#", ""), 16);
+                    let hex = value.replace("#", "");
+                    if (hex.length === 3) {
+                        // #RGB → #RRGGBBAA（每 nibble 翻倍，alpha 取 255）
+                        hex =
+                            hex
+                                .split("")
+                                .map((c) => c + c)
+                                .join("") + "ff";
+                    } else if (hex.length === 6) {
+                        // #RRGGBB → #RRGGBBAA（alpha 取 255）
+                        hex = hex + "ff";
+                    }
+                    value = parseInt(hex, 16); // 0xRRGGBBAA
                 }
                 if (value.constructor.name === "BigInt") {
-                    // r, g, b, a 都必然是 0-255 的整数
+                    // r, g, b, a 都必然是 0-255 的整数（0xRRGGBBAA 布局）
                     // @ts-ignore
                     this.r = Number((value & 0xff000000n) >> 24n);
                     // @ts-ignore
@@ -66,14 +82,12 @@ class Pixel {
                     break;
                 }
                 if (Number.isInteger(value)) {
-                    // @ts-ignore
-                    this.r = Math.min((value & 0xff0000) >> 16, 0xff);
-                    // @ts-ignore
-                    this.g = Math.min((value & 0xff00) >> 8, 0xff);
-                    // @ts-ignore
-                    this.b = Math.min(value & 0xff, 0xff);
-                    // @ts-ignore
-                    this.a = 0xff;
+                    // 0xRRGGBBAA 布局，与 BigInt 分支、valueOf、toString 保持一致。
+                    // 使用无符号右移，兼容 >= 2^31 的颜色值（如 0xff0000ff）。
+                    this.r = (value >>> 24) & 0xff;
+                    this.g = (value >>> 16) & 0xff;
+                    this.b = (value >>> 8) & 0xff;
+                    this.a = value & 0xff;
                     break;
                 }
                 throw new ValueError("Invalid arguments: ", arguments);
@@ -268,10 +282,11 @@ if (require.main === module) {
             it("create a pixel with 3 arguments", () => {});
             describe("create a pixel with 1 argument", () => {
                 it("with number", () => {
-                    let numberPixel = new Pixel(469762047);
-                    assert.strictEqual(numberPixel.r, 255);
-                    assert.strictEqual(numberPixel.g, 255);
-                    assert.strictEqual(numberPixel.b, 255);
+                    let numberPixel = new Pixel(0x12345678);
+                    assert.strictEqual(numberPixel.r, 0x12);
+                    assert.strictEqual(numberPixel.g, 0x34);
+                    assert.strictEqual(numberPixel.b, 0x56);
+                    assert.strictEqual(numberPixel.a, 0x78);
                 });
                 it("with string", () => {
                     let stringPixel = new Pixel("#ffffff");
@@ -297,6 +312,38 @@ if (require.main === module) {
                 assert.strictEqual(numberPixel.g, 0);
                 assert.strictEqual(numberPixel.b, 0);
                 assert.strictEqual(numberPixel.a, 255);
+            });
+            it("number, bigint and string constructors agree on 0xRRGGBBAA", () => {
+                // 三种构造方式对同一颜色值必须解析一致（0xRRGGBBAA 布局）
+                const pixels = [
+                    new Pixel(0x12345678),
+                    new Pixel(0x12345678n),
+                    new Pixel("#12345678"),
+                ];
+                for (const p of pixels) {
+                    assert.strictEqual(p.r, 0x12);
+                    assert.strictEqual(p.g, 0x34);
+                    assert.strictEqual(p.b, 0x56);
+                    assert.strictEqual(p.a, 0x78);
+                }
+            });
+            it("shorthand hex strings expand to #RRGGBBAA", () => {
+                // #RGB → #RRGGBBAA、#RRGGBB → #RRGGBBAA（alpha 取 255）
+                const short3 = new Pixel("#f00");
+                assert.strictEqual(short3.r, 255);
+                assert.strictEqual(short3.g, 0);
+                assert.strictEqual(short3.b, 0);
+                assert.strictEqual(short3.a, 255);
+                const short6 = new Pixel("#00ff00");
+                assert.strictEqual(short6.r, 0);
+                assert.strictEqual(short6.g, 255);
+                assert.strictEqual(short6.b, 0);
+                assert.strictEqual(short6.a, 255);
+                const full8 = new Pixel("#ff000080");
+                assert.strictEqual(full8.r, 255);
+                assert.strictEqual(full8.g, 0);
+                assert.strictEqual(full8.b, 0);
+                assert.strictEqual(full8.a, 0x80);
             });
         });
         describe("Pixel.addNumber", () => {
@@ -413,7 +460,7 @@ if (require.main === module) {
         });
         describe("Pixel.toObject", () => {
             it("output as object", () => {
-                let numberPixel = new Pixel(469762047);
+                let numberPixel = new Pixel(0xffffffff);
                 assert.deepStrictEqual(numberPixel.toObject(), {
                     r: 255,
                     g: 255,
