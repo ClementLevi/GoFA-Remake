@@ -7,6 +7,10 @@ const path = require("node:path");
 const express = require("express");
 
 const Log = require(path.resolve(__dirname, "../../libs/shared/logger"));
+const { ENUM_ERROR_CODE, fail } = require(path.resolve(
+    __dirname,
+    "../../libs/shared/response"
+));
 
 const accountRoleRouter = require("./account_role");
 const fleetCombatRouter = require("./fleet_combat");
@@ -86,17 +90,21 @@ router.use((req, res) => {
     const allowed = collectMethods(router, req.path);
     if (allowed.length > 0) {
         res.set("Allow", allowed.join(", "));
-        return res.status(405).json({
-            code: 40500,
-            message: "方法不允许",
-            detail: `该路径支持方法：${allowed.join(", ")}`,
-        });
+        return fail(
+            res,
+            ENUM_ERROR_CODE.METHOD_NOT_ALLOWED,
+            "方法不允许",
+            `该路径支持方法：${allowed.join(", ")}`,
+            405
+        );
     }
-    return res.status(404).json({
-        code: 40400,
-        message: "接口不存在",
-        detail: `未找到 ${req.method} ${req.originalUrl}`,
-    });
+    return fail(
+        res,
+        ENUM_ERROR_CODE.NOT_FOUND,
+        "接口不存在",
+        `未找到 ${req.method} ${req.originalUrl}`,
+        404
+    );
 });
 
 module.exports = router;

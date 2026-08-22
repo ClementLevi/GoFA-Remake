@@ -11,6 +11,10 @@ const AppContext = require(path.resolve(
     __dirname,
     "../../libs/shared/AppContext"
 ));
+const { ENUM_ERROR_CODE, success, fail } = require(path.resolve(
+    __dirname,
+    "../../libs/shared/response"
+));
 
 const router = express.Router();
 
@@ -192,21 +196,25 @@ router.post("/admin/deploy", (req, res) => {
 router.post("/admin/halt", (req, res) => {
     // 鉴权  Authorization
     if (!isAdminAuthorized(req)) {
-        return res.status(403).json({
-            code: 40300,
-            message: "无管理员权限",
-            detail: "需要管理员 token 或正确的 power 口令",
-        });
+        return fail(
+            res,
+            ENUM_ERROR_CODE.FORBIDDEN,
+            "无管理员权限",
+            "需要管理员 token 或正确的 power 口令",
+            403
+        );
     }
     // 参数校验：tth 必须为数字（秒），不可缺省
     // Validate tth: number (seconds), required
     const tth = req.body?.data?.tth;
     if (typeof tth !== "number" || Number.isNaN(tth) || tth < 0) {
-        return res.status(400).json({
-            code: 40001,
-            message: "参数错误",
-            detail: "tth 必须为数字（单位：秒），不可缺省",
-        });
+        return fail(
+            res,
+            ENUM_ERROR_CODE.INVALID_PARAM,
+            "参数错误",
+            "tth 必须为数字（单位：秒），不可缺省",
+            400
+        );
     }
     // 设置定时任务：tth 秒后触发控制台指令 exit
     // Schedule timed task: trigger console command exit after tth seconds
@@ -221,9 +229,9 @@ router.post("/admin/halt", (req, res) => {
         },
         delay_ticks
     );
-    return res.json({
-        code: 0,
-        data: { message: "停机定时任务已设置", haltAfterSeconds: tth },
+    return success(res, {
+        message: "停机定时任务已设置",
+        haltAfterSeconds: tth,
     });
 });
 

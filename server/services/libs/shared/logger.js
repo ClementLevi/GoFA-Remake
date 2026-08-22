@@ -190,7 +190,6 @@ class Logger extends events {
      */
     error(...message) {
         this._log("error", ...message);
-        console.trace();
     }
 
     /**
