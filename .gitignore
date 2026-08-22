@@ -17,6 +17,8 @@ admin-server/node_modules/*
 
 # Local Toolchains (本机下载的 Node 运行时等，不入库)
 .tools/*
+.apifox-cli/
+.apifox/
 
 # Credentials and Configs
 server/.env
