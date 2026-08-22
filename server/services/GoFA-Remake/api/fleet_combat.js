@@ -4,9 +4,9 @@
  *  仅回显请求详情，不实现业务逻辑（placeholder only, echoes request details）。
  */
 
-const express = require("express");
+const { makeRouter } = require("./routeRegistry");
 
-const router = express.Router();
+const router = makeRouter();
 
 // 我的机群列表
 router.get("/fleets", (req, res) => {

@@ -11,6 +11,7 @@ const { ENUM_ERROR_CODE, fail } = require(path.resolve(
     __dirname,
     "../../libs/shared/response"
 ));
+const { getAllowedMethods } = require("./routeRegistry");
 
 const accountRoleRouter = require("./account_role");
 const fleetCombatRouter = require("./fleet_combat");
@@ -36,45 +37,6 @@ function apiAccessLog(req, res, next) {
     next();
 }
 
-/**
- * 简单路径匹配：支持 :param 段。  Simple path matching (supports :param segments).
- * @param {string} pattern - 路由模式（如 /roles/:roleId）  Route pattern
- * @param {string} actual - 实际请求路径  Actual request path
- * @returns {boolean} 是否匹配  Whether matches
- */
-function pathMatches(pattern, actual) {
-    const p = pattern.split("/").filter(Boolean);
-    const a = actual.split("/").filter(Boolean);
-    if (p.length !== a.length) return false;
-    return p.every((seg, i) => seg.startsWith(":") || seg === a[i]);
-}
-
-/**
- * 收集能匹配该路径的所有 HTTP 方法（递归遍历子路由）。
- * Collect HTTP methods that match the path (recursively walks sub-routers).
- * @param {import("express").Router} router - 路由  Router
- * @param {string} actual_path - 实际请求路径  Actual request path
- * @returns {string[]} 允许的方法列表  Allowed methods
- */
-function collectMethods(router, actual_path) {
-    const methods = new Set();
-    for (const layer of router.stack || []) {
-        if (layer.route) {
-            if (pathMatches(layer.route.path, actual_path)) {
-                for (const m of Object.keys(layer.route.methods)) {
-                    if (layer.route.methods[m]) methods.add(m.toUpperCase());
-                }
-            }
-        } else if (layer.handle && layer.handle.stack) {
-            // 子路由（挂载无前缀）  Sub-router (mounted without prefix)
-            for (const m of collectMethods(layer.handle, actual_path)) {
-                methods.add(m);
-            }
-        }
-    }
-    return [...methods];
-}
-
 const router = express.Router();
 
 // 访问日志  Access logging
@@ -87,7 +49,7 @@ router.use(adminRouter);
 
 // 404/405 兜底（放在所有子路由之后）  404/405 fallback (after all sub-routers)
 router.use((req, res) => {
-    const allowed = collectMethods(router, req.path);
+    const allowed = getAllowedMethods(req.path);
     if (allowed.length > 0) {
         res.set("Allow", allowed.join(", "));
         return fail(

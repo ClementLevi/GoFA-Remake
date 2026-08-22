@@ -4,7 +4,7 @@
  *  除占位回显外，含真实的管理员停机端点 POST /admin/halt（定时触发控制台指令 exit）。
  */
 const path = require("node:path");
-const express = require("express");
+const { makeRouter } = require("./routeRegistry");
 
 const Log = require(path.resolve(__dirname, "../../libs/shared/logger"));
 const AppContext = require(path.resolve(
@@ -16,7 +16,7 @@ const { ENUM_ERROR_CODE, success, fail } = require(path.resolve(
     "../../libs/shared/response"
 ));
 
-const router = express.Router();
+const router = makeRouter();
 
 /**
  * 校验管理员权限：管理员 token（Authorization: Bearer <ADMIN_TOKEN>）或口令 data.power。
