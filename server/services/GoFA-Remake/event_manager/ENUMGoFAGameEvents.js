@@ -66,10 +66,16 @@ const GameEvent = Object.freeze({
     ROLE_PURCHASE_ITEM_FAILED: "role_purchase_item_failed",
 
     // ## 星球
-    // 星球更改所有权，作战结束（TASKFORCE_COMBAT）或占据无主星球（TASKFORCE_MOVE或PLAYER_NEW_GATE）触发
+    // 星球更改所有权，作战结束（TASKFORCE_COMBAT）、玩家抛弃（PLANET_ABANDON）或占据无主星球（TASKFORCE_MOVE或PLAYER_NEW_GATE）触发
     PLANET_TRANSFER: "planet_transfer",
     // 星球成为某人的星门
     PLANET_BECOMES_GATE: "planet_becomes_gate",
+    // 更新星球资源数量。当玩家访问星球（PLANET_INSPECT）、刺探星球（SPY_PLANET_ESPIONAGE）或攻击结算（TASKFORCE_COMBAT）时触发
+    PLANET_RESOURCE_UPDATE:     "planet_resource_update",
+    // 星球遭到攻击。在战斗结算前都保持被攻击状态
+    PLANET_INCOMING_DETECTED: "planet_incoming_detected",
+    // 星球遭到的攻击解除，可能通过 `TASKFORCE_MOVE-TASKFORCE_DEPARTED`（玩家取消攻击移动）或 `TASKFORCE_DOCK_IN_VOID` 抛锚操作触发
+    PLANET_INCOMING_RELIEVED: "planet_incoming_relieved",
 
     // ## 地表建筑
     // 建筑开始建造
@@ -91,6 +97,20 @@ const GameEvent = Object.freeze({
     // 建筑已拒绝操作，服务器认为该操作不合法，如建造或升级时资源不足、生产队列已满等
     BUILDING_REJECTED: "building_rejected",
 
+    // ## 机群
+    // 机群重组完成，涉及航母及其编队和载荷的数量调整
+    FLEET_RECOMPOSED: "fleet_recomposed",
+    // 机群重组失败
+    FLEET_RECOMPOSE_FAILED: "fleet_recomposed_failed",
+    // 航母重命名
+    FLEET_RENAMED: "fleet_renamed",
+    // 航母已诞生
+    FLEET_CREATED: "fleet_created",
+    // 航母拆除
+    FLEET_DESTROYED: "fleet_destroyed",
+    // 航母重命名
+    FLEET_RENAME_FAILED: "fleet_rename_failed",
+
     // ## 舰队
     // 舰队开始移动
     TASKFORCE_DEPARTED: "taskforce_departed",
@@ -98,8 +118,16 @@ const GameEvent = Object.freeze({
     TASKFORCE_ARRIVE: "taskforce_arrive",
     // 舰队失踪，一定时间后造成随机损伤并返回（TASKFORCE_MOVE）
     TASKFORCE_MISSING: "taskforce_missing",
-    // 舰队战斗，发生地点任意
+    // 舰队战斗结束，发生地点任意，反馈结算。通过触发 `MAIL_BATTLE_REPORT` 事件发送结果
     TASKFORCE_COMBAT: "taskforce_combat",
+    // 舰队准备进入战斗，等待00/15/30/45分触发
+    TASKFORCE_COMBAT_PREP:  "taskforce_combat_prep",
+    // 舰队被拦截，进入战斗预备
+    TASKFORCE_INTERCEPT_TRIGGER: "taskforce_intercept_trigger",
+    // 舰队在深空抛锚
+    TASKFORCE_DOCKED: "taskforce_docked",
+    // 舰队抛锚期间补给消耗殆尽，会触发 `TASKFORCE_DEPARTED` 事件以继续前进
+    TASKFORCE_DOCKED_DEPLETED: "taskforce_docked_depleted",
 
     // ## 联盟
     // 联盟创建成功
@@ -108,6 +136,21 @@ const GameEvent = Object.freeze({
     ALLIANCE_CREATE_FAILED: "alliance_create_failed",
     // 联盟日志，包括基本信息、成员、小队、管理层级、外交关系、公告创建与删除等修改
     ALLIANCE_LOG: "alliance_log",
+    // 联盟解散
+    ALLIANCE_DISBANDED: "alliance_disbanded",
+    // 联盟外交关系变更
+    ALLIANCE_RELATION_CHANGED: "alliance_relation_changed",
+
+    // ## 邮件
+    // 消息已读
+    MAIL_ALREADY_READ: "mail_already_read",
+    // ### 战斗报告
+    MAIL_BATTLE_REPORT: "mail_battle_report",
+    // ### 侦察
+    // 侦察报告，由间谍卫星阵列发送探测器
+    MAIL_SPY_REPORT: "mail_spy_report",
+    // 被刺探报告，当玩家星球或攻击舰队被扫描时触发
+    MAIL_ESPIONAGE_ALERT: "mail_espionage_alert",
 
 
     // # 由客户端向服务端推送的事件
@@ -160,7 +203,7 @@ const GameEvent = Object.freeze({
     PLANET_ABANDON: "planet_abandon",
     // 星球检视，用于向星球数据字段惰性更新产出
     PLANET_INSPECT: "planet_inspect",
-    // 星球侦察，由间谍卫星阵列发送探测器
+    // 星球侦察，由间谍卫星阵列发送探测器。在客户端，该操作仅仅调起GUI页面，以便用户点选合适的间谍卫星阵列、组织合适数量的间谍卫星探测器，然后发起 `SPY_PLANET_ESPIONAGE` 请求
     PLANET_SPY: "planet_spy",
     // 标记收藏
     PLANET_PIN_SET: "planet_pin_set",
@@ -196,13 +239,15 @@ const GameEvent = Object.freeze({
     FLEET_RECOMPOSE: "fleet_recompose",
     // 机群升级，指增幅器，这也会触发ROLE_USE_ITEM事件
     FLEET_UPGRADE: "fleet_upgrade",
+    // 航母重命名
+    FLEET_RENAME: "fleet_rename",
 
     // ## 舰队
     // 舰队命名，组成固定编队
     TASKFORCE_ENTITLE: "taskforce_entitle",
     // 舰队解散，玩家手动解散或所有机群被摧毁
     TASKFORCE_DISBAND: "taskforce_disband",
-    // 舰队移动，由服务端根据到达时的目的地选择触发作战、重新安置或
+    // 舰队移动，由服务端根据到达时的目的地选择触发作战、重新安置或协助防御
     TASKFORCE_MOVE: "taskforce_move",
     // 舰队运输，无视目的地属性，将载荷运送至目的地并返回
     TASKFORCE_TRANSPORT: "taskforce_transport",
@@ -226,6 +271,14 @@ const GameEvent = Object.freeze({
     MAIL_REPLY: "mail_reply",
     // 领取邮件附件
     MAIL_CLAIM: "mail_claim",
+
+    // ## 侦察
+    // 来袭舰队探测
+    SPY_INCOMING_COUNTER: "spy_incoming_counter",
+    // 星球探测
+    SPY_PLANET_ESPIONAGE: "spy_planet_espionage",
+    // 本地任务扫描，会生成可以派遣舰队处理的任务副本。
+    SPY_BOUNTY_DISCOVER: "spy_bounty_discovery",
 
     // ## 联盟
     // ### 基本管理
