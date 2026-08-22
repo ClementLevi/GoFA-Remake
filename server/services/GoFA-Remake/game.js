@@ -67,14 +67,12 @@ class GoFA_Remake_Game extends EventEmitter{
          * @description 事件和待更新任务队列
          * @type {{onStart:InstanceType<Queue>,
          * events:Record<string,InstanceType<Queue>>,
-         * timedEvents:Record<number,InstanceType<Queue>>,
          * cleanups: InstanceType<Queue>,
          * updatable: InstanceType<Queue>}}
          */
         this.ev_queues = {
             onStart: new Queue(),
             events: {},
-            timedEvents: {},
             cleanups: new Queue(), // alias: onExit
             updatable: new Queue(),
         };
@@ -106,37 +104,6 @@ class GoFA_Remake_Game extends EventEmitter{
         if (typeof name !== "string") return this;
         if (typeof cb !== "function") return this;
         this.on(name, cb);
-        return this;
-    }
-    /**
-     * @description 注册定时事件，在delay个tick后执行
-     * @param {string} name
-     * @param {() => void} cb
-     * @param {number} delay
-     */
-    registerTimedEvent(name, cb, delay) {
-        if (typeof name !== "string") return this;
-        if (typeof cb !== "function") return this;
-        if (typeof delay !== "number") return this;
-        let timeout = this._gamelife + delay;
-        if (!this.ev_queues.timedEvents[timeout]) {
-            this.ev_queues.timedEvents[timeout] = new Queue();
-        }
-        this.ev_queues.timedEvents[timeout].push(cb);
-        console.log(`Registered Timed Event: ${name} after ${delay} ticks.`);
-        return this;
-    }
-    /**
-     * @description 消费定时事件
-     * @private
-     */
-    consumeTimedEvents() {
-        if (this.ev_queues.timedEvents[this._gamelife]) {
-            this.ev_queues.timedEvents[this._gamelife].forEach((task) =>
-                task()
-            );
-            delete this.ev_queues.timedEvents[this._gamelife];
-        }
         return this;
     }
     // 生命周期阶段 Life Cycle Stages
