@@ -202,6 +202,7 @@ class Main extends EventEmitter {
             MAP_SIZE_W: "number",
             MAP_SIZE_H: "number",
             MAP_MASK_SCRIPT: "string",
+            ADMIN_TOKEN: "string",
         };
         // 创建纯净的配置对象
         const cleanConfig = {};
@@ -361,6 +362,9 @@ class Main extends EventEmitter {
         // 挂载 HTTP API（占位）  Mount HTTP API (placeholder)
         this.http_app = express();
         this.http_app.use(express.json());
+        // 注入 Main 实例，供路由访问服务器能力（定时任务/控制台指令等）
+        // Inject Main instance so routes can access server capabilities
+        this.http_app.locals.main = this;
         this.http_app.use("/api/v1", apiRouter);
         const http_port = this.config?.SERVER_PORT ?? 8080;
         this.http_server = this.http_app.listen(http_port, () =>
