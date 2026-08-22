@@ -101,7 +101,8 @@ class GoFA_Remake_Game extends EventEmitter{
      */
     tick() {
         this._gamelife++;
-        Log.info("Game ticked.", this._gamelife);
+        // 每 tick 打印一行过吵，注释掉  Too noisy to log every tick, commented out
+        // Log.info("Game ticked.", this._gamelife);
     }
     /**
      * 注册事件
