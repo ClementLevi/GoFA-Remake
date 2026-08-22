@@ -241,7 +241,7 @@ class Main extends EventEmitter {
             MAP_SIZE_W: "number",
             MAP_SIZE_H: "number",
             MAP_MASK_SCRIPT: "string",
-            ADMIN_TOKEN: "string",
+            JWT_SECRET: "string",
         };
         // 创建纯净的配置对象
         const cleanConfig = {};

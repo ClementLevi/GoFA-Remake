@@ -15,6 +15,10 @@ const { ENUM_ERROR_CODE, success, fail } = require(path.resolve(
     __dirname,
     "../../libs/shared/response"
 ));
+const { verifyJwt } = require(path.resolve(
+    __dirname,
+    "../../libs/shared/authMiddleware"
+));
 const GoFAGameEvent = require(path.resolve(
     __dirname,
     "../event_manager/GoFAGameEvent"
@@ -37,13 +41,9 @@ function isAdminAuthorized(req) {
     if (req.body?.data?.power === "卧室牢大") {
         return true;
     }
-    // 管理员 token（现阶段无 JWT，用共享 ADMIN_TOKEN 占位，对应 P0-A2 差距）
-    // Admin token (no JWT yet, shared ADMIN_TOKEN placeholder, see gap P0-A2)
-    const admin_token = AppContext.getMain()?.config?.ADMIN_TOKEN;
-    if (admin_token && req.headers.authorization === `Bearer ${admin_token}`) {
-        return true;
-    }
-    return false;
+    // JWT 管理员校验（角色 claim = admin）  JWT admin check (role claim = admin)
+    const payload = verifyJwt(req);
+    return !!payload && payload.role === "admin";
 }
 
 // 心跳
