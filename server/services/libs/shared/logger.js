@@ -62,7 +62,7 @@ class Logger extends events {
         },
         api: {
             color: "cyan",
-            symbol: "success",
+            symbol: "⇄",
             output: ["console"],
         },
         warn: {
@@ -76,6 +76,8 @@ class Logger extends events {
             output: ["console"],
         },
     };
+    /** @description 默认时间模板  Default time template */
+    static DEFAULT_TIME_FORMAT = "YYYY-MM-DD HH:mm:ss:SSS";
     /**
      * Creates an instance of Logger.
      * @param {LoggerConfig} [customConfig={}] - Custom configuration object. 自定义配置对象。
@@ -86,6 +88,7 @@ class Logger extends events {
         this.logger = log4js.getLogger();
         this.spinner = null;
         this.rl = null;
+        this.timeFormat = Logger.DEFAULT_TIME_FORMAT;
 
         // Listen to log events
         this.on("debug", (...message) => {
@@ -192,40 +195,42 @@ class Logger extends events {
 
     /**
      * Log a message with the specified level.
-     * 显示带有指定文本的加载动画。
+     * 按指定等级记录消息；末参可为覆盖配置对象 { symbol?, timeFormat?, color? }。
      * @memberof Logger
      * @private
-     * @param {string} level - The log level (info, warn, error).
-     * @param {any[]} message - The message to log.
+     * @param {string} level - The log level (debug, info, api, warn, error).
+     * @param {any[]} message - The message(s) to log; optional trailing options object.
      */
     _log(level, ...message) {
-        var time = moment().format("YYYY-MM-DD HH:mm:ss:SSS");
-        const { color, symbol, output } = this.config[level];
+        // 提取可选的末参覆盖配置  Extract optional trailing override options
+        let override = {};
+        const last = message[message.length - 1];
+        if (
+            message.length > 0 &&
+            last &&
+            typeof last === "object" &&
+            !Array.isArray(last) &&
+            !(last instanceof Error) &&
+            (Object.prototype.hasOwnProperty.call(last, "symbol") ||
+                Object.prototype.hasOwnProperty.call(last, "timeFormat") ||
+                Object.prototype.hasOwnProperty.call(last, "color"))
+        ) {
+            override = message.pop();
+        }
+        const config = this.config[level] ?? {};
+        // 时间模板：末参覆盖 > 实例 > 默认  Time template: override > instance > default
+        const time = moment().format(
+            override.timeFormat || this.timeFormat || Logger.DEFAULT_TIME_FORMAT
+        );
+        // 符号占位符：末参覆盖 > 等级配置；支持 log-symbols 键或字面字符串
+        // Symbol placeholder: override > level config; log-symbols key or literal string
+        const symbol = this._resolveSymbol(override.symbol ?? config.symbol);
+        const color = override.color ?? config.color ?? "white";
+        const output = config.output ?? ["console"];
 
-        // 使用util.inspect来处理对象，展开属性和方法
         const logMessage = chalk[color](
-            `[${time} ${ls[symbol]} ]: ${message
-                .map((msg) => {
-                    if (typeof msg === "string") {
-                        return msg;
-                    } else if (typeof msg === "function") {
-                        return msg.toString();
-                    } else if (typeof msg === "symbol") {
-                        return msg.toString();
-                    } else if (msg instanceof Error) {
-                        return msg.stack;
-                    } else if (typeof msg === "object") {
-                        return inspect(msg, { depth: null });
-                    } else if (msg === undefined) {
-                        return "undefined";
-                    } else if (msg === null) {
-                        return null;
-                    } else if (Number.isNaN(msg)) {
-                        return NaN;
-                    } else {
-                        return msg;
-                    }
-                })
+            `[${time} ${symbol} ]: ${message
+                .map((msg) => this._stringify(msg))
                 .join(" ")}`
         );
         // ! 有点卡
@@ -241,6 +246,56 @@ class Logger extends events {
         if (output.includes("file")) {
             this.logger[level](message);
         }
+    }
+
+    /**
+     * 解析符号占位符：log-symbols 键返回对应字符，否则按字面字符串使用。
+     * Resolve the symbol placeholder: log-symbols key returns its glyph, otherwise use as literal.
+     * @param {string} symbol - 键或字面字符串  Key or literal string
+     * @returns {string} 符号字符  Symbol glyph
+     */
+    _resolveSymbol(symbol) {
+        if (symbol && Object.prototype.hasOwnProperty.call(ls, symbol)) {
+            return ls[symbol];
+        }
+        return symbol || "·";
+    }
+
+    /**
+     * 将消息转为可打印字符串  Stringify a message for printing
+     * @param {any} msg - 消息  Message
+     * @returns {any} 打印值  Printable value
+     */
+    _stringify(msg) {
+        if (typeof msg === "string") {
+            return msg;
+        } else if (typeof msg === "function") {
+            return msg.toString();
+        } else if (typeof msg === "symbol") {
+            return msg.toString();
+        } else if (msg instanceof Error) {
+            return msg.stack;
+        } else if (typeof msg === "object") {
+            return inspect(msg, { depth: null });
+        } else if (msg === undefined) {
+            return "undefined";
+        } else if (msg === null) {
+            return null;
+        } else if (Number.isNaN(msg)) {
+            return NaN;
+        } else {
+            return msg;
+        }
+    }
+
+    /**
+     * 设置时间模板  Set the time template
+     * @param {string} format - moment 格式串  moment format string
+     * @returns {this}
+     */
+    setTimeFormat(format) {
+        this.timeFormat = format;
+        return this;
     }
 
     /**
