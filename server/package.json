@@ -34,14 +34,14 @@
     "name": "gofa-remaster-server",
     "version": "1.0.0",
     "description": "Famous MMORPG(RTS) game Galaxy on Fire™ Alliances fan-remake edition",
-    "main": "services/GoFA-Remake/daemon/daemon.js",
+    "main": "main.js",
     "private": true,
     "scripts": {
         "test": "mocha --recursive",
-        "server-install": "node ./deployments/install.js",
-        "start": "cd /server && node ./main.js --env-file=.env",
+        "server-install": "node ./services/GoFA-Remake/deployments/ServerDeployer.js",
+        "start": "node --env-file=.env ./main.js",
         "doc": "jsdoc -r -c jsdoc.json -d ./docs/JsDoc/out/",
-        "debug": "cd /server && node --inspect-brk ./main.js --env-file=.env"
+        "debug": "node --env-file=.env --inspect-brk ./main.js"
     },
     "repository": {
         "type": "git",

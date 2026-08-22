@@ -7,7 +7,6 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive",
     "start": "node --env-file=.env index.js"
   },
   "dependencies": {

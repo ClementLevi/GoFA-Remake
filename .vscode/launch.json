@@ -14,7 +14,7 @@
             "name": "Run Script: start",
             "request": "launch",
             "command": "npm run start",
-            "cwd": "${workspaceFolder}\\server"
+            "cwd": "${workspaceFolder}/server"
         },
         {
             "type": "node",
@@ -22,7 +22,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/server/main.js",
             "sourceMaps": true,
-            "cwd": "${workspaceFolder}\\server"
+            "cwd": "${workspaceFolder}/server"
         }
     ]
 }
