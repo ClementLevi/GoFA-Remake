@@ -10,6 +10,7 @@ const child_process = require("node:child_process");
 ///** @deprecated */
 //const dotenv = require("dotenv"); // TODO: use --env .env instead
 //const jsm = require("javascript-state-machine");
+const express = require("express");
 
 // Engine modules
 /**
@@ -18,6 +19,12 @@ const child_process = require("node:child_process");
  */
 const Log = require(path.resolve(__dirname, "./services/libs/shared/logger"));
 // const { ENUM_DB_TYPE } = require(__dirname + "/services/libs/db/db.type");
+
+/**
+ * HTTP API 占位路由（placeholder routes）
+ * @type {import("express").Router}
+ */
+const apiRouter = require(path.resolve(__dirname, "./services/GoFA-Remake/api"));
 
 /**
  * @type {import('./services/libs/commands/Commands')}
@@ -351,6 +358,15 @@ class Main extends EventEmitter {
         this.game = GameConstructor(this);
         await this.game.init();
 
+        // 挂载 HTTP API（占位）  Mount HTTP API (placeholder)
+        this.http_app = express();
+        this.http_app.use(express.json());
+        this.http_app.use("/api/v1", apiRouter);
+        const http_port = this.config?.SERVER_PORT ?? 8080;
+        this.http_server = this.http_app.listen(http_port, () =>
+            Log.info(`HTTP API listening on port ${http_port}`)
+        );
+
         // END 进入事件循环
         this.run();
         return this;
@@ -411,6 +427,7 @@ class Main extends EventEmitter {
         this.stage = Main.ENUM_STAGE.EXITING;
         this.onExit();
         this.db?.close();
+        this.http_server?.close();
         return this.event_loop_handle
             ? clearTimeout(this.event_loop_handle)
             : -1;
