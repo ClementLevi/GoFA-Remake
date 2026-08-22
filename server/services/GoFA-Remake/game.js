@@ -12,13 +12,6 @@ const EventEmitter = require("node:events");
 const Log = require(path.resolve(__dirname, "../libs/shared/logger"));
 
 /**
- * @template {new (...args: any[]) => T} T
- * @typedef {typeof import("../libs/shared/Singleton")} Singleton<T>
- * @type {Singleton<T>}
- */
-const singleton = require(path.resolve(__dirname, "../libs/shared/Singleton"));
-
-/**
  * @typedef {typeof import('../libs/shared/DataStructure').Queue} Queue
  * @typedef {typeof import('../libs/shared/DataStructure').Stack} Stack
  * @type {{Queue: Queue,Stack: Stack}}
@@ -159,8 +152,4 @@ class GoFA_Remake_Game extends EventEmitter{
         return this.env;
     }
 }
-let GoFA_Constructor = (/** @type {any[]} */ ...args) =>
-    singleton(new GoFA_Remake_Game(...args));
-
-// module.exports = GoFA_Constructor;
 module.exports = (/** @type {any} */ ...args) => new GoFA_Remake_Game(...args);

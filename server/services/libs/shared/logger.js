@@ -6,7 +6,6 @@ const chalk = require("chalk");
 const ls = require("log-symbols");
 const ora = require("ora");
 const moment = require("moment");
-const singleton = require(__dirname + "/Singleton");
 
 /**
  * @description The logger configuration entry. 日志记录器配置项。
@@ -323,9 +322,9 @@ class Logger extends events {
     }
 }
 
-// Export singleton instance
-const LoggerInstance = singleton(new Logger());
-module.exports = LoggerInstance;
+// Export singleton instance（直接导出实例即可，无需 deprecated 的 singleton 代理）
+// Export the singleton instance directly (no need for the deprecated singleton proxy)
+module.exports = new Logger();
 
 // 使用示例
 if (require.main === module) {

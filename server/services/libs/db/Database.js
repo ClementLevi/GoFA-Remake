@@ -14,7 +14,7 @@ const Log = require(path.resolve(__dirname, "../shared/logger.js"));
  * @typedef {import("../shared/Singleton")} Singleton
  * @type {Singleton}
  */
-const singleton = require(path.resolve(__dirname, "../shared/Singleton.js"));
+
 // Implementations of IDBConnector
 /** @typedef {import("./IDBConnector")} IDBConnector*/
 // const IDBConnector = require(path.resolve(__dirname, "./IDBConnector"));
@@ -126,9 +126,10 @@ class Database {
  * @param {DB_Config} arg_DB_Config
  * @returns {Database}
  */
-let __exports = (arg_DB_Type, arg_DB_Config) => singleton(new Database(arg_DB_Type, arg_DB_Config));
-;
-module.exports = __exports; // 需要参数的单例到调用者处实例化传入
+// 需要参数的对象无法用模块级单例，直接在调用处实例化
+// Parameterized objects cannot use a module-level singleton; instantiate at the caller
+module.exports = (arg_DB_Type, arg_DB_Config) =>
+    new Database(arg_DB_Type, arg_DB_Config);
 
 if (require.main === module) {
     Log.info("Database class definition");
