@@ -105,6 +105,8 @@ class SqliteConnector extends IDBConnector {
         try {
             // 1. 异步检查数据库文件是否可用
             if (this._db_path !== ":memory:") {
+                // 确保数据库文件的父目录存在（相对路径基于 cwd 解析，如 .env 中的 ./db/server_1.db）
+                fs.mkdirSync(path.dirname(this._db_path), { recursive: true });
                 await this._checkDatabaseFile();
             }
             // 2. 异步建立数据库连接

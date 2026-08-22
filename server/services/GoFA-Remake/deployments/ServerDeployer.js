@@ -142,10 +142,12 @@ class ServerDeployer {
 module.exports = ServerDeployer;
 
 if (require.main === module) {
-    const DB_PATH = path.resolve("./server/db/test_server.db");
+    // 相对 server/ 目录定位，避免依赖 cwd（npm 下 cwd 为 server/，直接 node 运行也一样）
+    const DB_PATH = path.resolve(__dirname, "../../../db/test_server.db");
     const DB_CONFIG = { filePath: DB_PATH };
-    const DatabaseSingleton = require(path.normalize(
-        __dirname + "/../../../services/libs/db/Database"
+    const DatabaseSingleton = require(path.resolve(
+        __dirname,
+        "../../libs/db/Database"
     ));
     let db = DatabaseSingleton("sqlite3", DB_CONFIG);
     db.init().then(() => {
