@@ -1,0 +1,36 @@
+@startuml Planetary Combat Sequence
+
+' 星球防御战斗流程（舰队交战 → 地面战 → 占领/撤离）。
+' 依据 docs/gameplay/combat_algorithm_requirements.md 的 3.3 地面战与 3.4 舰队撤离。
+
+participant "进攻方" as ATK
+participant "防守方" as DEF
+participant "Combat Calculator" as CAL
+
+== 舰队交战（详见 fleet_combat.pu） ==
+ATK -> CAL: 到达敌方星球，触发战斗（防守方先手）
+CAL -> CAL: 舰载机交战 + 航母交战\n(叠加行星防御科技/行星研究/战场宽度)
+note over CAL: 行星防御科技提供 0%~100% 舰载机护盾加成
+
+== 地面战阶段 ==
+alt 进攻方有轰炸机 且 防守方有步兵
+    CAL -> CAL: 先结算轰炸机对步兵的伤害\n再按双方步兵情况计算
+end
+alt 一方仅轰炸机存活
+    CAL -> CAL: 另一方步兵对空攻击，击毁轰炸机
+end
+alt 双方均有步兵
+    CAL -> CAL: 双方步兵总输出 vs 对方总生命作差\n一回合内必有一方全军覆没
+end
+
+== 占领与撤离 ==
+alt 防守方步兵损失殆尽
+    CAL -> ATK: 地面战获胜，占领星球
+    CAL -> DEF: 落败方舰队撤离（至最近所属星球）
+else 进攻方舰载机战败
+    CAL -> DEF: 防守方守住星球
+    CAL -> ATK: 进攻方舰队撤回（战败撤回）
+end
+note over CAL: 撤离时若目标星球已被其他势力占领\n→ 自动进入对其的战斗，且无法再撤离
+
+@enduml

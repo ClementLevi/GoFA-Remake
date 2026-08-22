@@ -1,0 +1,37 @@
+@startuml Fleet Combat Calculation Sequence
+
+' 舰队战斗计算流程（舰载机交战 → 航母交战 → 撤离判定）。
+' 依据 docs/gameplay/combat_algorithm_requirements.md 的三、战斗流程规则。
+
+participant "Combat Calculator" as CAL
+participant "进攻方舰载机组" as ATK_AIR
+participant "防守方舰载机组" as DEF_AIR
+participant "进攻方航母组" as ATK_CAR
+participant "防守方航母组" as DEF_CAR
+
+== 舰载机交战阶段（防守方先手，按 F→B→I 顺序） ==
+loop 双方均有尚存舰载机
+    CAL -> ATK_AIR: 按 F→B→I 选取一个分组发起攻击
+    note right of CAL: 分组选中：全玩家舰载机按类型+等级混编\n高等级优先 + 目标选择偏好优先
+    ATK_AIR -> DEF_AIR: 总伤害 = 单机攻击×(100%+攻加成)\n×命中率×(100%+命中加成)×数量
+    DEF_AIR -> DEF_AIR: 总受伤 = 总伤害 - 总护盾\n击坠 = floor(总受伤/总生命)
+    note right of DEF_AIR: 击坠量按比例分摊到各玩家各航母\n每回合仅一个分组攻击，不遭反击
+end
+
+== 航母交战阶段 ==
+loop 双方均有尚存航母
+    CAL -> ATK_CAR: 分组选中 + 高等级优先\n(用途不分組，仅提供数值加成)
+    ATK_CAR -> DEF_CAR: 总伤害 = 单机攻击×(100%+攻加成)×数量
+    DEF_CAR -> DEF_CAR: 总受伤 = 总伤害×(100%+组织度加成)\n逐个击毁，溢出伤害顺延至下一艘
+    note right of DEF_CAR: 组织度加成取决于舰载机交战结果与撤离能力\n运输机随航母损失而损失
+end
+
+== 舰队撤离判定 ==
+CAL -> CAL: 判定是否存在合法备选撤离地
+alt 无合法备选撤离地
+    note over CAL: 组织度减益 -100%，\n航母战落败方所有航母全部击毁
+else 有合法备选撤离地
+    note over CAL: 按三种撤离机制撤离：\n星球未占领撤回 / 战败撤回 / 星球被占领撤回
+end
+
+@enduml
