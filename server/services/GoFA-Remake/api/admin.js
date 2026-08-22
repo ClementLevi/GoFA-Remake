@@ -7,6 +7,10 @@ const path = require("node:path");
 const express = require("express");
 
 const Log = require(path.resolve(__dirname, "../../libs/shared/logger"));
+const AppContext = require(path.resolve(
+    __dirname,
+    "../../libs/shared/AppContext"
+));
 
 const router = express.Router();
 
@@ -23,7 +27,7 @@ function isAdminAuthorized(req) {
     }
     // 管理员 token（现阶段无 JWT，用共享 ADMIN_TOKEN 占位，对应 P0-A2 差距）
     // Admin token (no JWT yet, shared ADMIN_TOKEN placeholder, see gap P0-A2)
-    const admin_token = req.app?.locals?.main?.config?.ADMIN_TOKEN;
+    const admin_token = AppContext.getMain()?.config?.ADMIN_TOKEN;
     if (admin_token && req.headers.authorization === `Bearer ${admin_token}`) {
         return true;
     }
@@ -206,14 +210,14 @@ router.post("/admin/halt", (req, res) => {
     }
     // 设置定时任务：tth 秒后触发控制台指令 exit
     // Schedule timed task: trigger console command exit after tth seconds
-    const main = req.app?.locals?.main;
+    const main = AppContext.getMain();
     const tick_rate = main?.time?.TICK_RATE ?? 5;
     const delay_ticks = Math.ceil(tth * tick_rate);
     main?.registerTimedEvent(
         "halt",
         () => {
             Log.info("停机定时任务到期，触发控制台指令 exit");
-            Log.onCommand("exit");
+            main.executeCommand("exit");
         },
         delay_ticks
     );

@@ -42,12 +42,10 @@ const singleton = require(__dirname + "/Singleton");
 /**
  * @class Logger
  * @description Logger class for logging messages and displaying spinners.
- * Now includes command system functionality for console interaction.
- * 用于记录消息和显示加载动画的Logger类，现在包含控制台交互的命令系统功能。
+ * 用于记录消息和显示加载动画的Logger类。命令系统已迁移至 CommandBus，本类只负责日志。
  * @property {LoggerConfig} config - The logger configuration. 日志记录器配置。
  * @property {any} logger - The log4js logger instance. 日志记录器实例。
- * @property {CommandRegistry} commands - The command system for the logger. 日志记录器的命令系统。
- * @property {typeof readline} [rl] - The readline interface for the logger. Required to be initialized in the initTerminal() method. 日志记录器的readline接口。需要在initTerminal()方法中初始化。
+ * @property {typeof readline} [rl] - The readline interface, set by CommandBus so the logger can refresh the terminal prompt. 由 CommandBus 注入的 readline 接口，用于刷新终端提示符。
  * @exports
  */
 class Logger extends events {
@@ -60,6 +58,11 @@ class Logger extends events {
         info: {
             color: "white",
             symbol: "info",
+            output: ["console"],
+        },
+        api: {
+            color: "cyan",
+            symbol: "success",
             output: ["console"],
         },
         warn: {
@@ -81,17 +84,10 @@ class Logger extends events {
         super();
         this.config = { ...Logger.DEFAULT_CONFIG, ...customConfig };
         this.logger = log4js.getLogger();
-        this.commands = {};
         this.spinner = null;
         this.rl = null;
-        // Register built-in commands
-        this.registerCommand("help", () => this._showHelp());
-        this.registerCommand("exit", () => process.exit());
 
         // Listen to log events
-        this.on("command", (cmd, ...args) => {
-            this.onCommand(cmd, ...args);
-        });
         this.on("debug", (...message) => {
             this._log("debug", ...message);
         });
@@ -106,27 +102,6 @@ class Logger extends events {
         });
     }
     /**
-     * Initialize the readline interface for command input.
-     * 初始化readline接口以进行命令输入。
-     * @memberof Logger
-     * @public
-     * @returns {this} The logger instance.
-     */
-    initTerminal() {
-        this.rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout,
-            prompt: "[ GoFA ] > ",
-        });
-
-        this.rl.on("line", (input) => {
-            const [cmd, ...args] = input.trim().split(" ");
-            this.onCommand(cmd, ...args);
-            this.rl?.prompt();
-        });
-        return this;
-    }
-    /**
      * @description Bind the logger to a parent object.
      * 将logger绑定到父对象。
      * @param {any} parent
@@ -135,65 +110,6 @@ class Logger extends events {
     bindParent(parent) {
         this.parent = parent;
         return this;
-    }
-
-    /**
-     * Register a new command to the logger's command system.
-     * 向logger的命令系统注册一个新命令。
-     * @param {string} name - The command name. 命令名称。
-     * @param {function} handler - The command handler function. 命令处理函数。
-     * @returns {Logger} The logger instance.
-     */
-    registerCommand(name, handler) {
-        // TODO: 增加说明文本入参
-        // ! 这将会改变方法签名，也会改变registerCommandBatch内部实现
-        this.commands[name]
-            ? this.commands[name].push(handler)
-            : (this.commands[name] = [handler]);
-        return this;
-    }
-
-    /**
-     * Register multiple commands to the logger's command system.
-     * 向logger的命令系统注册多个命令。
-     * @param {Object} commands - An object containing command names and their handlers.
-     * 包含命令名称和处理函数的对象。
-     * @returns {Logger} The logger instance.
-     */
-    registerCommandsBatch(commands) {
-        Object.entries(commands).forEach(([name, handler]) => {
-            this.registerCommand(name, handler);
-        });
-        return this;
-    }
-
-    /**
-     * Execute a command with the specified arguments.
-     * 执行带有指定参数的命令。
-     * @param {string} cmd - The command name. 命令名称。
-     * @param  {...any} args - The arguments to pass to the command handler. 传递给命令处理函数的参数。
-     */
-    onCommand(cmd, ...args) {
-        if (this.commands[cmd]) {
-            this.commands[cmd].forEach((cb) => {
-                cb(args);
-            });
-        } else {
-            this.error(`Unknown command: ${cmd}`);
-        }
-    }
-
-    /**
-     * Display help information for available commands.
-     * 显示可用命令的帮助信息。
-     * @private
-     */
-    _showHelp() {
-        // TODO: 增加说明文本展示
-        this.info("Available commands:");
-        Object.keys(this.commands).forEach((cmd) => {
-            this.info(`- ${cmd}`);
-        });
     }
 
     /**
@@ -240,6 +156,15 @@ class Logger extends events {
      */
     info(...message) {
         this._log("info", ...message);
+    }
+
+    /**
+     * Log an API access message with the dedicated "api" level (cyan, distinct color).
+     * 用专用的 "api" 等级记录 API 访问消息（青色，独立配色）。
+     * @param {any[]} message - The message to log. 要记录的消息。
+     */
+    api(...message) {
+        this._log("api", ...message);
     }
 
     /**
@@ -409,14 +334,5 @@ if (require.main === module) {
     logger2.emit("info", "logger2 info event");
     logger2.emit("warn", "logger2 warn event");
     logger2.emit("error", "logger2 error event");
-
-    logger2
-        .registerCommand("test", (args) => {
-            logger2.debug("Command test called with arguments:", args);
-        })
-        .registerCommand("test", (args) => {
-            logger2.debug("Command test called twice:", args);
-        })
-        .emit("command", "test", "arg1", "arg2");
-    logger2.emit("command", "help", 1, 2, 3);
+    logger2.api("[API] api level example log");
 }

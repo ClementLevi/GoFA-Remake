@@ -35,6 +35,22 @@ const CONSOLE_COMMANDS = require(path.resolve(
 ));
 
 /**
+ * 命令总线组件  Command bus component
+ */
+const CommandBus = require(path.resolve(
+    __dirname,
+    "./services/libs/commands/CommandBus"
+));
+
+/**
+ * 全局应用上下文（持有 Main 单例）  Global app context (holds the Main singleton)
+ */
+const AppContext = require(path.resolve(
+    __dirname,
+    "./services/libs/shared/AppContext"
+));
+
+/**
  * @typedef {typeof import('./services/libs/shared/DataStructure').Queue} Queue
  * @typedef {typeof import('./services/libs/shared/DataStructure').Stack} Stack
  * @type {{Queue: Queue,Stack: Stack}}
@@ -125,6 +141,13 @@ const ENUM_STAGE = Object.freeze({
 class Main extends EventEmitter {
     static ENUM_STAGE = ENUM_STAGE;
     /**
+     * 获取 Main 单例  Get the Main singleton
+     * @returns {Main|null} Main 实例，未创建时为 null  The Main instance, or null before construction
+     */
+    static getInstance() {
+        return AppContext.getMain();
+    }
+    /**
      * TODO: 补充Main类型定义，应当由.env配置项提供类型定义
      * @param {*} config
      */
@@ -142,6 +165,10 @@ class Main extends EventEmitter {
         /** @type {Log} */
         this.logger = Log.getInstance();
         this.logger.bindParent(this);
+        /** @type {InstanceType<CommandBus>} */
+        this.commands = new CommandBus(this.logger);
+        // 注册为全局单例，供 API/Commands 组件访问  Register as global singleton
+        AppContext.setMain(this);
         /** @type {EnumStage[keyof EnumStage]} */
         this.stage = Main.ENUM_STAGE.INIT;
         /** @type {InstanceType<ServerDeployer>?} */
@@ -246,11 +273,19 @@ class Main extends EventEmitter {
      * @private
      * @param {*} logger - 日志记录器实例
      */
-    regCommands(logger) {
-        if (!this.logger) this.logger = logger;
+    regCommands() {
         // Log.info("Loading command line system...");
-        this.logger.registerCommandsBatch(CONSOLE_COMMANDS);
+        this.commands.registerBatch(CONSOLE_COMMANDS);
         Log.info("Command line system loaded.");
+    }
+    /**
+     * 触发控制台命令（供 API 等调用方使用）  Execute a console command
+     * @param {string} name - 命令名  Command name
+     * @param {...any} args - 参数  Arguments
+     * @returns {boolean} 是否命中命令  Whether handled
+     */
+    executeCommand(name, ...args) {
+        return this.commands.execute(name, ...args);
     }
     /**
      * 注册事件
@@ -328,8 +363,8 @@ class Main extends EventEmitter {
         this.stage = Main.ENUM_STAGE.INIT;
         // 1. 加载配置  Load Config
         // 2. 加载命令行系统  Load Command Line System
-        this.logger.initTerminal();
-        this.regCommands(this.logger);
+        this.commands.initTerminal();
+        this.regCommands();
         // 3. 加载数据库系统  Load Database System
         /** @type {DatabaseConstructor} */
         let DBConstructor = require(path.resolve(
@@ -362,9 +397,6 @@ class Main extends EventEmitter {
         // 挂载 HTTP API（占位）  Mount HTTP API (placeholder)
         this.http_app = express();
         this.http_app.use(express.json());
-        // 注入 Main 实例，供路由访问服务器能力（定时任务/控制台指令等）
-        // Inject Main instance so routes can access server capabilities
-        this.http_app.locals.main = this;
         this.http_app.use("/api/v1", apiRouter);
         const http_port = this.config?.SERVER_PORT ?? 8080;
         this.http_server = this.http_app.listen(http_port, () =>

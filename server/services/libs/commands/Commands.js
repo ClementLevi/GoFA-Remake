@@ -1,41 +1,18 @@
-const Log = require(__dirname + "/../shared/logger");
-
 /**
  * @module commands
- * @description 存放控制台命令，使用迭代器模式注册到Logger的命令系统
- * Console commands storage, using iterator pattern to register with Logger's command system
+ * @description 存放控制台命令；由 Main 持有并注册到 CommandBus。
+ *  命令处理函数签名：handler(args)，args 为参数数组。
+ * Console command storage; registered into CommandBus by Main.
+ * Handler signature: handler(args), where args is the argument array.
  */
 const Commands = {
     /**
      * @function exit
-     * @description 退出程序
-     * Exit the program
+     * @description 退出程序（硬退出）  Exit the program (hard exit)
      */
-    exit: function() {
+    exit: function () {
         process.exit();
     },
-
-    /**
-     * @function help
-     * @description 显示可用命令
-     * Show available commands
-     */
-    help: function() {
-        Log.info("Available commands:");
-        Object.keys(Log.commands).forEach(cmd => {
-            Log.info(`- ${cmd}`);
-        });
-    }
 };
 
-// Register all commands using iterator pattern
-Object.entries(Commands).forEach(([name, handler]) => {
-    Log.registerCommand(name, handler);
-});
-
 module.exports = Commands;
-
-if (require.main === module) {
-    Log.info("Commands module initialized with iterator registration");
-    Log.rl.prompt();
-}
