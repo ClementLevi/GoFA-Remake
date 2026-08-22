@@ -1,18 +1,10 @@
 /**
  * @module commands
- * @description 存放控制台命令；由 Main 持有并注册到 CommandBus。
- *  命令处理函数签名：handler(args)，args 为参数数组。
- * Console command storage; registered into CommandBus by Main.
- * Handler signature: handler(args), where args is the argument array.
+ * @description 存放游戏业务控制台命令；由 Main 注册到 CommandBus。
+ *  核心命令（exit/help）由 CommandBus 内置或 Main 绑定，不在此处。
+ * Game domain console commands; registered into CommandBus by Main.
+ * Core commands (exit/help) are built into CommandBus or bound by Main, not here.
  */
-const Commands = {
-    /**
-     * @function exit
-     * @description 退出程序（硬退出）  Exit the program (hard exit)
-     */
-    exit: function () {
-        process.exit();
-    },
-};
+const Commands = {};
 
 module.exports = Commands;

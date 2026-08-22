@@ -274,7 +274,9 @@ class Main extends EventEmitter {
      * @param {*} logger - 日志记录器实例
      */
     regCommands() {
-        // Log.info("Loading command line system...");
+        // 核心命令（绑定 Main 上下文，优雅停机）  Core commands (bound to Main, graceful shutdown)
+        this.commands.register("exit", () => this.exit());
+        // 游戏业务命令  Game domain commands
         this.commands.registerBatch(CONSOLE_COMMANDS);
         Log.info("Command line system loaded.");
     }
@@ -464,6 +466,7 @@ class Main extends EventEmitter {
         this.onExit();
         this.db?.close();
         this.http_server?.close();
+        this.commands?.rl?.close();
         return this.event_loop_handle
             ? clearTimeout(this.event_loop_handle)
             : -1;
