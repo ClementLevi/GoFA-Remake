@@ -101,7 +101,7 @@ const GameEvent = Object.freeze({
     // 机群重组完成，涉及航母及其编队和载荷的数量调整
     FLEET_RECOMPOSED: "fleet_recomposed",
     // 机群重组失败
-    FLEET_RECOMPOSE_FAILED: "fleet_recomposed_failed",
+    FLEET_RECOMPOSE_FAILED: "fleet_recompose_failed",
     // 航母重命名
     FLEET_RENAMED: "fleet_renamed",
     // 航母已诞生
@@ -278,7 +278,7 @@ const GameEvent = Object.freeze({
     // 星球探测
     SPY_PLANET_ESPIONAGE: "spy_planet_espionage",
     // 本地任务扫描，会生成可以派遣舰队处理的任务副本。
-    SPY_BOUNTY_DISCOVER: "spy_bounty_discovery",
+    SPY_BOUNTY_DISCOVER: "spy_bounty_discover",
 
     // ## 联盟
     // ### 基本管理
@@ -353,4 +353,3 @@ const GameEvent = Object.freeze({
 });
 
 module.exports = GameEvent;
-console.log(GameEvent.version);

@@ -15,6 +15,14 @@ const { ENUM_ERROR_CODE, success, fail } = require(path.resolve(
     __dirname,
     "../../libs/shared/response"
 ));
+const GoFAGameEvent = require(path.resolve(
+    __dirname,
+    "../event_manager/GoFAGameEvent"
+));
+const GameEvent = require(path.resolve(
+    __dirname,
+    "../event_manager/ENUMGoFAGameEvents"
+));
 
 const router = makeRouter();
 
@@ -216,18 +224,16 @@ router.post("/admin/halt", (req, res) => {
             400
         );
     }
-    // 设置定时任务：tth 秒后触发控制台指令 exit
-    // Schedule timed task: trigger console command exit after tth seconds
+    // 设置定时任务：tth 秒后经事件总线触发 SERVER_SHUTDOWN → exit 命令
+    // Schedule: publish delayed SERVER_SHUTDOWN via event bus, consumed to trigger exit
     const main = AppContext.getMain();
     const tick_rate = main?.time?.TICK_RATE ?? 5;
     const delay_ticks = Math.ceil(tth * tick_rate);
-    main?.registerTimedEvent(
-        "halt",
-        () => {
-            Log.info("停机定时任务到期，触发控制台指令 exit");
-            main.executeCommand("exit");
-        },
-        delay_ticks
+    main?.event_bus?.publish(
+        new GoFAGameEvent({
+            type: GameEvent.SERVER_SHUTDOWN,
+            timeElapse: { startTick: null, length: delay_ticks },
+        })
     );
     return success(res, {
         message: "停机定时任务已设置",

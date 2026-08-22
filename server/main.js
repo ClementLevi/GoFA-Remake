@@ -51,6 +51,18 @@ const AppContext = require(path.resolve(
 ));
 
 /**
+ * 事件总线与事件类型  Event bus and event types
+ */
+const EventBus = require(path.resolve(
+    __dirname,
+    "./services/GoFA-Remake/event_manager/EventBus"
+));
+const GameEvent = require(path.resolve(
+    __dirname,
+    "./services/GoFA-Remake/event_manager/ENUMGoFAGameEvents"
+));
+
+/**
  * @typedef {typeof import('./services/libs/shared/DataStructure').Queue} Queue
  * @typedef {typeof import('./services/libs/shared/DataStructure').Stack} Stack
  * @type {{Queue: Queue,Stack: Stack}}
@@ -169,6 +181,8 @@ class Main extends EventEmitter {
         this.commands = new CommandBus(this.logger);
         // 注册为全局单例，供 API/Commands 组件访问  Register as global singleton
         AppContext.setMain(this);
+        /** @type {InstanceType<EventBus>} */
+        this.event_bus = new EventBus();
         /** @type {EnumStage[keyof EnumStage]} */
         this.stage = Main.ENUM_STAGE.INIT;
         /** @type {InstanceType<ServerDeployer>?} */
@@ -194,14 +208,12 @@ class Main extends EventEmitter {
          * @description 事件和待更新任务队列
          * @type {{onStart:InstanceType<Queue>,
          * events:Record<string,InstanceType<Queue>>,
-         * timedEvents:Record<number,InstanceType<Queue>>,
          * cleanups: InstanceType<Queue>,
          * updatable: InstanceType<Queue>}}
          */
         this.ev_queues = {
             onStart: new Queue(),
             events: {},
-            timedEvents: {},
             cleanups: new Queue(), // alias: onExit
             updatable: new Queue(),
         };
@@ -301,37 +313,6 @@ class Main extends EventEmitter {
         return this;
     }
     /**
-     * @description 注册定时事件，在delay个tick后执行
-     * @param {string} name
-     * @param {() => void} cb
-     * @param {number} delay
-     */
-    registerTimedEvent(name, cb, delay) {
-        if (typeof name !== "string") return this;
-        if (typeof cb !== "function") return this;
-        if (typeof delay !== "number") return this;
-        let timeout = this.time.TICK + delay;
-        if (!this.ev_queues.timedEvents[timeout]) {
-            this.ev_queues.timedEvents[timeout] = new Queue();
-        }
-        this.ev_queues.timedEvents[timeout].push(cb);
-        console.log(`Registered Timed Event: ${name} after ${delay} ticks.`);
-        return this;
-    }
-    /**
-     * @description 消费定时事件
-     * @private
-     */
-    consumeTimedEvents() {
-        if (this.ev_queues.timedEvents[this.time.TICK]) {
-            this.ev_queues.timedEvents[this.time.TICK].forEach((task) =>
-                task()  // TODO: 会有异步回调吗
-            );
-            delete this.ev_queues.timedEvents[this.time.TICK];
-        }
-        return this;
-    }
-    /**
      * @description 刷新最近几次tick耗时队列
      * @param {number} last_elapse
      */
@@ -367,6 +348,14 @@ class Main extends EventEmitter {
         // 2. 加载命令行系统  Load Command Line System
         this.commands.initTerminal();
         this.regCommands();
+        // 订阅 SERVER_SHUTDOWN 事件 → 触发 exit 命令（优雅停机）
+        // Subscribe SERVER_SHUTDOWN event -> trigger exit command (graceful shutdown)
+        this.event_bus.subscribe(GameEvent.SERVER_SHUTDOWN, {
+            onEvent: () => {
+                Log.info("停机定时事件到期，触发控制台指令 exit");
+                this.executeCommand("exit");
+            },
+        });
         // 3. 加载数据库系统  Load Database System
         /** @type {DatabaseConstructor} */
         let DBConstructor = require(path.resolve(
@@ -434,8 +423,8 @@ class Main extends EventEmitter {
             0
         );
 
-        // 0x02 consume timed events
-        this.consumeTimedEvents();
+        // 0x02 consume due delayed events via event bus
+        this.event_bus.tick(this.time.TICK);
 
         // 0x03 update engine logic
         if (this.ev_queues.updatable[this.time.TICK]) {
