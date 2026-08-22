@@ -19,6 +19,10 @@ const { verifyJwt } = require(path.resolve(
     __dirname,
     "../../libs/shared/authMiddleware"
 ));
+const adminService = require(path.resolve(
+    __dirname,
+    "../adminService"
+));
 const GoFAGameEvent = require(path.resolve(
     __dirname,
     "../event_manager/GoFAGameEvent"
@@ -31,19 +35,22 @@ const GameEvent = require(path.resolve(
 const router = makeRouter();
 
 /**
- * 校验管理员权限：管理员 token（Authorization: Bearer <ADMIN_TOKEN>）或口令 data.power。
- * Authorize admin: admin token (Authorization: Bearer <ADMIN_TOKEN>) or passphrase data.power.
+ * 校验管理员权限：口令兜底或 JWT 身份 + 数据库管理员资格。
+ * Authorize admin: passphrase fallback, or JWT identity + DB admin eligibility.
  * @param {import("express").Request} req - 请求  Request
- * @returns {boolean} 是否通过  Whether authorized
+ * @returns {Promise<boolean>} 是否通过  Whether authorized
  */
-function isAdminAuthorized(req) {
+async function isAdminAuthorized(req) {
     // 口令兜底（任务要求）  Passphrase fallback (required by task)
     if (req.body?.data?.power === "卧室牢大") {
         return true;
     }
-    // JWT 管理员校验（角色 claim = admin）  JWT admin check (role claim = admin)
+    // JWT 仅承载身份（sub），管理员资格查数据库  JWT carries only identity; admin eligibility from DB
     const payload = verifyJwt(req);
-    return !!payload && payload.role === "admin";
+    if (!payload?.sub) {
+        return false;
+    }
+    return adminService.isAdmin(payload.sub);
 }
 
 // 心跳
@@ -201,14 +208,14 @@ router.post("/admin/deploy", (req, res) => {
 });
 
 // 定时停机（真实业务逻辑示例）  Scheduled shutdown (real business logic example)
-router.post("/admin/halt", (req, res) => {
+router.post("/admin/halt", async (req, res) => {
     // 鉴权  Authorization
-    if (!isAdminAuthorized(req)) {
+    if (!(await isAdminAuthorized(req))) {
         return fail(
             res,
             ENUM_ERROR_CODE.FORBIDDEN,
             "无管理员权限",
-            "需要管理员 token 或正确的 power 口令",
+            "需要管理员身份（数据库管理员资格）或正确的 power 口令",
             403
         );
     }

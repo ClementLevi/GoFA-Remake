@@ -1,8 +1,8 @@
 /**
  * @module jwt
  * @description JWT 签发与校验（对齐设计决策A：JWT Bearer Token）。
- *  密钥从 Main 配置 JWT_SECRET 读取（经 AppContext）。
- * JWT sign/verify (design decision A); secret from Main config JWT_SECRET via AppContext.
+ *  密钥为运行时注入（Auth Server 加载后经 AppContext.setJwtSecret 提供），非静态配置。
+ * JWT sign/verify (design decision A); secret is injected at runtime by the Auth Server.
  */
 
 const jwt = require("jsonwebtoken");
@@ -10,11 +10,11 @@ const path = require("node:path");
 const AppContext = require(path.resolve(__dirname, "./AppContext"));
 
 /**
- * 获取 JWT 密钥  Get the JWT secret
- * @returns {string|null} 密钥；未配置返回 null  The secret, or null if not configured
+ * 获取 JWT 密钥（运行时由 Auth Server 注入，非静态配置）  Get the JWT secret (runtime, injected by Auth Server)
+ * @returns {string|null} 密钥；未注入返回 null  The secret, or null if not injected
  */
 function getSecret() {
-    return AppContext.getMain()?.config?.JWT_SECRET ?? null;
+    return AppContext.getJwtSecret();
 }
 
 /**
@@ -40,7 +40,7 @@ function sign(payload, options = {}) {
 function verify(token) {
     const secret = getSecret();
     if (!secret) {
-        throw new Error("JWT_SECRET not configured");
+        throw new Error("JWT secret not injected");
     }
     return jwt.verify(token, secret);
 }

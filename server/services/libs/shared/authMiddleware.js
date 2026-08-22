@@ -7,6 +7,10 @@
 const path = require("node:path");
 const { verify } = require(path.resolve(__dirname, "./jwt"));
 const { ENUM_ERROR_CODE, fail } = require(path.resolve(__dirname, "./response"));
+const adminService = require(path.resolve(
+    __dirname,
+    "../../GoFA-Remake/adminService"
+));
 
 /**
  * 提取 Bearer token  Extract the bearer token
@@ -39,12 +43,12 @@ function verifyJwt(req) {
 }
 
 /**
- * 管理员鉴权中间件  Admin authorization middleware
+ * 管理员鉴权中间件（数据库管理员资格判定）  Admin authorization middleware (DB eligibility)
  * @param {import("express").Request} req - 请求
  * @param {import("express").Response} res - 响应
  * @param {import("express").NextFunction} next - 下一个中间件
  */
-function requireAdmin(req, res, next) {
+async function requireAdmin(req, res, next) {
     const payload = verifyJwt(req);
     if (!payload) {
         return fail(
@@ -55,12 +59,13 @@ function requireAdmin(req, res, next) {
             401
         );
     }
-    if (payload.role !== "admin") {
+    const is_admin = await adminService.isAdmin(payload.sub);
+    if (!is_admin) {
         return fail(
             res,
             ENUM_ERROR_CODE.FORBIDDEN,
             "无管理员权限",
-            "需要管理员角色",
+            "需要数据库中的管理员资格",
             403
         );
     }
