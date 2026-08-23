@@ -268,6 +268,36 @@
 
 ---
 
+## G — 内置指令系统（服务器监控 + 日常管理）
+
+> 设计文档：`docs/service_structure/server/commands/index.md`（总览）、`command_reference.md`（指令参考）、`api_bridge.md`（API 映射）。
+
+### G-1 指令框架 `[x]` 已完成
+
+- [x] CommandBus 增强：meta 注册（description/usage/category）、`executeAsync` 输出收集、`ctx.reply` 双通道（终端→日志 / API→收集）
+- [x] 权限模型：终端物理访问 = 最高权限；API 走 `isAdminAuthorized`（JWT + 数据库管理员资格 / 口令兜底）
+- [x] 分支指令系统盘点：add_apis / events_extended / extend_db 均与当前 CommandBus 同源，无独立指令集需合并（结论写入 `index.md` §7）
+
+### G-2 已实现指令（P0，15 个） `[x]` 已完成
+
+- [x] 监控：status / metrics / uptime / health / eventqueue / dbinfo
+- [x] 管理：help / version / echo / halt / component
+- [x] 数据：players / player / dbquery（只读白名单 SELECT/PRAGMA/EXPLAIN）
+- [x] 事件：publish（即时/延时/payload）
+- [x] 配套 API 真实实现：GET /health、GET /admin/status、GET /admin/metrics、GET /admin/event-queue、GET /admin/components、GET /admin/players/online、POST /admin/command（远程控制台桥）
+- [x] 顺带修复：`main.js` tick 耗时写入 `this.time.last_tick_elapse`（此前写错对象导致 metrics/调度读到 -1）
+
+### G-3 规划指令（依赖前置，落地时实现）
+
+- [ ] P1 玩家管理：kick / ban / unban / grant / revoke / give / setresource（前置：在线连接层 + player_role 等业务表 + 聊天/广播事件）
+- [ ] P1 广播：broadcast（前置：在线连接层 + 聊天推送）
+- [ ] P2 运维：save / reloadconfig / restart / maintenance / whitelist（前置：存档/配置热加载）
+- [ ] P2 地图：mapinfo / regenmap（前置：map_* 表 + 地图再生成）
+- [ ] P2 日志：loglevel / tail（前置：Logger 动态级别 + 内存日志缓冲）
+- [ ] P2 管理：announce（前置：邮件/公告系统）
+
+---
+
 ## 检查项（定期回顾）
 
 - [ ] README 阶段树是否准确反映当前状态？每次设计推进后同步更新

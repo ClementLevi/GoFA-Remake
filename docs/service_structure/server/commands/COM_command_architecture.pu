@@ -1,0 +1,29 @@
+@startuml COM_command_architecture
+' 指令系统架构组件图（P0 落地，2026-08）
+' 关联设计：CLS_command_event_correlation.pu（命令-事件-结果关联）、COM_api_event_domain.pu（API 事件域）
+
+skinparam componentStyle rectangle
+
+actor "运营者（管理员）" as Operator
+
+component "控制台终端\nreadline" as Console
+component "管理 API\n（远程控制台）" as AdminApi
+component "CommandBus\n命令总线" as Bus
+component "Commands\n指令实现集" as Cmds
+component "Main\n（上下文持有者）" as Main
+component "ComponentRegistry\n组件在线注册表" as Reg
+component "EventBus\n事件总线" as EBus
+
+Operator --> Console : 终端输入
+Operator --> AdminApi : JWT / 口令
+Console --> Bus : initTerminal → execute()
+AdminApi --> Bus : POST /admin/command → executeAsync()
+Bus --> Cmds : handler(args, ctx)
+Cmds --> Main : time / stage / db / game
+Cmds --> EBus : SERVER_SHUTDOWN / SERVER_COMPONENT_*
+Cmds --> Reg : component 指令
+AdminApi --> Main : /admin/status | metrics | event-queue | players/online
+AdminApi --> Reg : /admin/components
+Main --> Reg : 持有 component_registry
+
+@enduml

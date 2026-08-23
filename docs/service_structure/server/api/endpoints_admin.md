@@ -22,3 +22,10 @@
 | POST | /api/v1/admin/deploy | 部署初始化 | 管理员 token | 触发服务器部署初始化 | SERVER_DEPLOYMENT_INITIATE / SERVER_DEPLOYED、ServerDeployer |
 
 已写入 Apifox AI 分支，共 14 个。
+
+## 实现状态（2026-08-23）
+
+> 指令系统落地后（见 `docs/service_structure/server/commands/`），以下端点已从占位升级为真实实现：
+> `GET /health`、`GET /admin/status`、`GET /admin/metrics`、`GET /admin/event-queue`、
+> `GET /admin/components`、`GET /admin/players/online`（连接数）、`POST /admin/command`（远程控制台桥 → `Main.executeCommandAsync`）。
+> 其余端点（logs / integrity-* / disconnect / reroute / deploy）维持占位，待对应系统落地。

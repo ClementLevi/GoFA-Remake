@@ -193,7 +193,7 @@ class Main extends EventEmitter {
         this.time = {
             TICK: 0,
             TICK_RATE: this.config?.TICK_RATE ?? 5,
-            startTime: 0,
+            startTime: Date.now(),
             recentTicksElapses: new Queue(),
             recentTicksSize: 5,
             last_tick_elapse: -1,
@@ -286,9 +286,15 @@ class Main extends EventEmitter {
      */
     regCommands() {
         // 核心命令（绑定 Main 上下文，优雅停机）  Core commands (bound to Main, graceful shutdown)
-        this.commands.register("exit", () => this.exit());
+        this.commands.register("exit", () => this.exit(), {
+            description: "退出服务器（优雅停机）",
+            usage: "exit",
+            category: "management",
+        });
+        // 组件在线状态注册表（指令与 admin API 共用）  Component registry shared by commands & admin API
+        this.component_registry = CONSOLE_COMMANDS.componentRegistry;
         // 游戏业务命令  Game domain commands
-        this.commands.registerBatch(CONSOLE_COMMANDS);
+        this.commands.registerBatch(CONSOLE_COMMANDS.commands);
         Log.info("Command line system loaded.");
     }
     /**
@@ -299,6 +305,16 @@ class Main extends EventEmitter {
      */
     executeCommand(name, ...args) {
         return this.commands.execute(name, ...args);
+    }
+    /**
+     * 异步触发控制台命令并收集输出（供 API 远程控制台使用）
+     * Execute a console command asynchronously and collect output (for the API console bridge)
+     * @param {string} name - 命令名  Command name
+     * @param {...string} args - 参数  Arguments
+     * @returns {Promise<{found: boolean, output: string[]}>}
+     */
+    executeCommandAsync(name, ...args) {
+        return this.commands.executeAsync(name, ...args);
     }
     /**
      * 注册事件
@@ -444,8 +460,8 @@ class Main extends EventEmitter {
         );
 
         // EOF end of measuring this tick duration
-        this.last_tick_elapse = new Date().getTime() - T;
-        this.refreshRecentTicksElapses(this.last_tick_elapse);
+        this.time.last_tick_elapse = new Date().getTime() - T;
+        this.refreshRecentTicksElapses(this.time.last_tick_elapse);
         // Detect lag
         if (this.detectLag()[0]) this.onLag();
     }
