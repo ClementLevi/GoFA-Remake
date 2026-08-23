@@ -8,6 +8,31 @@
  *  命令条目格式：{ handler: (args, ctx) => void|Promise<void>, meta: {description, usage, category} }
  *  ctx = { name, args, main, reply }，见 CommandBus。
  *  导出 { commands, componentRegistry }：commands 交给 Main.registerBatch，componentRegistry 供 API 共用。
+ *
+ *  类型约定（TS 级 JSDoc）：handler 类型复用 `CommandBus.CommandHandler`；commands 集合为
+ *  GoFACommandSet（Record<string, GoFACommandEntry>）；dbQuery 以 template T 泛化行类型，
+ *  调用处以行内 type 标注收窄（如 dbinfo 的表行、players 的账户行）。
+ */
+
+// ─────────────────── 类型体操：领域类型定义 ───────────────────
+
+/**
+ * 单条命令条目（handler + meta）  Single command entry (handler + meta)
+ * @typedef {object} GoFACommandEntry
+ * @property {import("./CommandBus").CommandHandler} handler - 处理函数  Handler
+ * @property {import("./CommandBus").CommandMeta} [meta] - 元信息  Metadata
+ */
+
+/**
+ * 指令集（指令名 → 条目）  Command set (name → entry)
+ * @typedef {Record<string, GoFACommandEntry>} GoFACommandSet
+ */
+
+/**
+ * Commands 模块导出形状  Module export shape
+ * @typedef {object} CommandsModule
+ * @property {GoFACommandSet} commands - 指令集（交给 Main.registerBatch）  Command set
+ * @property {InstanceType<typeof ComponentRegistry>} componentRegistry - 组件注册表单例  Component registry singleton
  */
 
 const path = require("node:path");
@@ -41,11 +66,15 @@ function getMain() {
 }
 
 /**
- * 执行只读数据库查询（Promise 封装）  Promise-wrapped read-only DB query
- * @param {object} main - Main 实例
+ * 执行只读数据库查询（类型体操：template T 泛化行类型，调用处以行内 type 标注收窄）。
+ *  T 由调用处推断：如 dbinfo 的表行、players 的账户行。
+ *  Promise-wrapped read-only DB query; the template T generalizes the row type,
+ *  narrowed at call sites with inline type annotations.
+ * @template T
+ * @param {import("./CommandBus").IMainLike|null|undefined} main - Main 实例
  * @param {string} sql - SQL 语句
  * @param {any[]} [params] - 参数
- * @returns {Promise<any[]>}
+ * @returns {Promise<T[]>} 行数组  Row array
  */
 function dbQuery(main, sql, params = []) {
     return new Promise((resolve, reject) => {
@@ -81,6 +110,7 @@ function fmtTime(v) {
  */
 async function countRows(main, table) {
     try {
+        /** @type {{n: number}[]} */
         const rows = await dbQuery(
             main,
             `SELECT COUNT(*) AS n FROM ${table}`,
@@ -215,6 +245,7 @@ async function cmdDbInfo(args, ctx) {
     const file = main?.config?.DB_URL ?? ":memory:";
     let tables = [];
     try {
+        /** @type {{name: string}[]} */
         const rows = await dbQuery(
             main,
             "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name",
@@ -314,6 +345,11 @@ async function cmdPlayers(args, ctx) {
     let limit = args[0] !== undefined ? parseInt(args[0], 10) : 20;
     if (Number.isNaN(limit) || limit < 1) limit = 20;
     if (limit > 200) limit = 200;
+    /**
+     * 账户列表行类型（类型体操：列级收窄，避免 any）  Account list row type
+     * @typedef {{player_ID: string, player_LoginAcct: string, player_RegisterTime: unknown, player_LastLogin: unknown}} PlayerAccountRow
+     */
+    /** @type {PlayerAccountRow[]} */
     let rows = [];
     try {
         rows = await dbQuery(
@@ -342,6 +378,11 @@ async function cmdPlayer(args, ctx) {
     const main = ctx.main ?? getMain();
     const id = args[0];
     if (!id) return ctx.reply("用法: player <账户ID>");
+    /**
+     * 账户全行类型（含密码列，展示时跳过）  Full account row type (password column skipped at display)
+     * @typedef {{player_ID: string, player_LoginMethod: string, player_LoginAcct: string, player_PwMD5: string, player_RegisterTime: unknown, player_LastLogin: unknown}} PlayerAccountFullRow
+     */
+    /** @type {PlayerAccountFullRow[]} */
     let rows = [];
     try {
         rows = await dbQuery(
@@ -549,4 +590,8 @@ const commands = {
     },
 };
 
+/**
+ * Commands 模块导出：{ commands, componentRegistry }
+ * @type {CommandsModule}
+ */
 module.exports = { commands, componentRegistry };

@@ -20,6 +20,7 @@ admin-server/node_modules/*
 .apifox-cli/
 .apifox/
 .apifox-scratch/
+.npm-cache/
 
 # Credentials and Configs
 server/.env

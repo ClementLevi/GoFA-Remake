@@ -10,6 +10,10 @@
  *   - executeAsync 异步执行并收集 ctx.reply 输出（供 API 远程控制台使用）；
  *   - 命令处理函数签名统一为 (args: string[], ctx: CommandContext) => void | Promise<void>，
  *     ctx.reply 将结果写入当前通道（终端→日志，API→输出收集器）。
+ *
+ *  类型约定（TS 级 JSDoc）：命令分类为联合类型 CommandCategory；命令处理函数用
+ *  callback CommandHandler 定义；注册表为 Record<string, CommandEntry>；execute/executeAsync
+ *  用 template 约束指令名为注册表键。Main 通过 IMainLike 投影类型引用（main.js 为入口文件不导出类）。
  */
 
 const path = require("node:path");
@@ -17,20 +21,98 @@ const readline = require("node:readline");
 
 const AppContext = require(path.resolve(__dirname, "../shared/AppContext"));
 
+// ─────────────────── 类型体操：领域类型定义 ───────────────────
+
 /**
- * @typedef {object} CommandMeta
- * @property {string} [description] - 一句话说明  One-line description
- * @property {string} [usage] - 用法示例（不含指令名）  Usage hint (without command name)
- * @property {string} [category] - 分类  Category (monitor/management/data/event/...)
- * @property {string} [permission] - 权限级别（预留）  Permission level (reserved)
+ * 命令分类（联合类型）  Command categories (union type)
+ * @typedef {"monitor"|"management"|"data"|"event"|"player"|"ops"|"map"|"log"|"other"} CommandCategory
  */
 
 /**
+ * 权限级别（联合类型，预留）  Permission levels (union type, reserved)
+ * @typedef {"admin"|"mod"|"player"} CommandPermission
+ */
+
+/**
+ * 命令元信息  Command metadata
+ * @typedef {object} CommandMeta
+ * @property {string} [description] - 一句话说明  One-line description
+ * @property {string} [usage] - 用法示例（不含指令名）  Usage hint (without command name)
+ * @property {CommandCategory} [category] - 分类  Category
+ * @property {CommandPermission} [permission] - 权限级别  Permission level
+ */
+
+/**
+ * 命令处理函数签名（callback 定义函数类型）  Command handler signature
+ * @callback CommandHandler
+ * @param {string[]} args - 参数数组  Arguments
+ * @param {CommandContext} ctx - 执行上下文  Execution context
+ * @returns {void|Promise<void>} 可同步返回或返回 Promise
+ */
+
+/**
+ * Main 实例的按需投影类型（类型体操：不依赖入口文件的导出，直接投影所需形状）
+ *  Main instance projection type (type gymnastics: project the needed shape without importing main.js)
+ * @typedef {object} IMainLike
+ * @property {string} stage - 运行阶段  Runtime stage
+ * @property {object} time - tick / 时间信息  Tick & time info
+ * @property {number} time.TICK - 累计 tick 数  Total ticks
+ * @property {number} time.TICK_RATE - tick 频率（次/秒）  Tick rate
+ * @property {number} time.startTime - 启动时间戳（ms）  Start timestamp
+ * @property {number} time.last_tick_elapse - 上次 tick 耗时（ms）  Last tick elapse
+ * @property {Array<number>} time.recentTicksElapses - 最近 N 次 tick 耗时  Recent tick elapses
+ * @property {object|null} db - 数据库实例（Database）  Database instance
+ * @property {object|null} game - 游戏实例（GoFA_Remake_Game）  Game instance
+ * @property {object|null} event_bus - 事件总线实例（EventBus）  Event bus
+ * @property {object|null} http_server - HTTP 服务器（http.Server）  HTTP server
+ * @property {object|null} component_registry - 组件在线注册表（ComponentRegistry）  Component registry
+ * @property {object} config - 配置对象  Config object
+ * @property {number} [GAME_LIFE] - 游戏生命周期（game._gamelife）  Game life
+ * @property {() => [boolean, number]} [detectLag] - 掉刻检测，返回 [是否掉刻, 平均耗时]  Lag detection
+ * @property {(name: string, ...args: any[]) => boolean} [executeCommand] - 同步执行指令  Sync command execution
+ * @property {(name: string, ...args: any[]) => Promise<CommandExecutionResult>} [executeCommandAsync] - 异步执行指令  Async command execution
+ */
+
+/**
+ * 命令执行上下文  Command execution context
  * @typedef {object} CommandContext
  * @property {string} name - 指令名  Command name
  * @property {string[]} args - 参数数组  Arguments
- * @property {object|null} main - Main 单例（经 AppContext 解析）  Main singleton
- * @property {(text: string) => void} reply - 输出通道  Output channel
+ * @property {IMainLike|null} main - Main 单例（经 AppContext 解析）  Main singleton
+ * @property {(text: string) => void} reply - 输出通道（终端→日志；API→收集器）  Output channel
+ */
+
+/**
+ * 命令注册表条目  Command registry entry
+ * @typedef {object} CommandEntry
+ * @property {CommandHandler[]} handlers - 处理函数列表（同名可多个，依次执行）  Handlers
+ * @property {CommandMeta} meta - 合并后的元信息（缺省已填默认值）  Merged metadata
+ */
+
+/**
+ * 命令注册表（指令名 → 条目）  Command registry
+ * @typedef {Record<string, CommandEntry>} CommandRegistry
+ */
+
+/**
+ * 命令列表项（listCommands 输出）  Command list item
+ * @typedef {object} CommandListItem
+ * @property {string} name - 指令名  Command name
+ * @property {string} usage - 用法  Usage
+ * @property {string} description - 说明  Description
+ * @property {CommandCategory} category - 分类  Category
+ */
+
+/**
+ * 异步执行结果  Async execution result
+ * @typedef {object} CommandExecutionResult
+ * @property {boolean} found - 是否命中命令  Whether any handler was invoked
+ * @property {string[]} output - 收集的输出行  Collected output lines
+ */
+
+/**
+ * 批量注册条目（registerBatch 入参元素联合）  Batch registration entry (union)
+ * @typedef {CommandHandler | {handler: CommandHandler, meta?: CommandMeta}} BatchCommandEntry
  */
 
 /**
@@ -39,16 +121,13 @@ const AppContext = require(path.resolve(__dirname, "../shared/AppContext"));
  */
 class CommandBus {
     /**
-     * @param {object} logger - 日志单例，用于打印命令信息与刷新终端提示符
+     * @param {InstanceType<import("../shared/logger").TypeLogger>} [logger] - 日志单例，用于打印命令信息与刷新终端提示符
      *   The logger singleton, used to print command info and refresh the terminal prompt
      */
     constructor(logger) {
-        /** @type {object} logger - 日志单例  Logger singleton */
+        /** @type {InstanceType<import("../shared/logger").TypeLogger>|undefined} */
         this.logger = logger;
-        /**
-         * @type {Record<string, {handlers: Function[], meta: CommandMeta}>}
-         * 命令注册表  Command registry
-         */
+        /** @type {CommandRegistry} commands - 命令注册表  Command registry */
         this.commands = {};
         /** @type {import("node:readline").Interface|null} rl - readline 接口  readline interface */
         this.rl = null;
@@ -67,9 +146,9 @@ class CommandBus {
     /**
      * 注册命令  Register a command
      * @param {string} name - 命令名  Command name
-     * @param {Function} handler - 处理函数 (args, ctx) => void | Promise<void>  Handler
+     * @param {CommandHandler} handler - 处理函数  Handler
      * @param {CommandMeta} [meta] - 命令元信息  Command metadata
-     * @returns {this}
+     * @returns {this} 支持链式调用  Chainable
      */
     register(name, handler, meta = {}) {
         if (typeof name !== "string" || typeof handler !== "function") {
@@ -92,10 +171,10 @@ class CommandBus {
     }
 
     /**
-     * 批量注册命令  Register commands in batch
-     * 支持两种条目：{ name: handler } 或 { name: { handler, meta } }。
-     * Supports entries as plain handlers or { handler, meta } objects.
-     * @param {Record<string, Function | {handler: Function, meta?: CommandMeta}>} commands
+     * 批量注册命令（类型体操：@template 保留入参结构，支持函数或 {handler, meta} 两种条目）
+     *  Register commands in batch; the template keeps the input shape
+     * @template {Record<string, BatchCommandEntry>} T
+     * @param {T} commands - 命令对象  Command map
      * @returns {this}
      */
     registerBatch(commands) {
@@ -111,7 +190,7 @@ class CommandBus {
 
     /**
      * 列出已注册命令（元信息），供 help / API 使用  List registered commands with meta
-     * @returns {Array<{name: string, usage: string, description: string, category: string}>}
+     * @returns {CommandListItem[]}
      */
     listCommands() {
         return Object.entries(this.commands).map(([name, entry]) => ({
@@ -123,8 +202,7 @@ class CommandBus {
     }
 
     /**
-     * 构建命令执行上下文  Build the command execution context
-     * @private
+     * 构建命令执行上下文（@private）  Build the command execution context
      * @param {string} name - 指令名  Command name
      * @param {string[]} args - 参数  Arguments
      * @param {string[]|null} output - 输出收集器（API 模式）；null 则走日志  Output collector or null
@@ -147,10 +225,11 @@ class CommandBus {
     }
 
     /**
-     * 触发命令（供终端等调用方使用，同步、fire-and-forget）  Execute a command (sync)
+     * 触发命令（同步、fire-and-forget，供终端等调用方使用）  Execute a command (sync)
      * 同步模式：ctx.reply 输出到日志；异步处理函数的结果不等待（异常捕获后记日志）。
      * Sync mode: reply writes to the logger; async handler results are not awaited (errors are logged).
-     * @param {string} name - 命令名  Command name
+     * @template {keyof CommandRegistry} N
+     * @param {N} name - 命令名  Command name
      * @param {...string} args - 参数  Arguments
      * @returns {boolean} 是否命中命令  Whether a handler was invoked
      */
@@ -180,9 +259,10 @@ class CommandBus {
 
     /**
      * 异步触发命令并收集输出（供 API 远程控制台使用）  Execute a command (async, output collected)
-     * @param {string} name - 命令名  Command name
+     * @template {keyof CommandRegistry} N
+     * @param {N} name - 命令名  Command name
      * @param {...string} args - 参数  Arguments
-     * @returns {Promise<{found: boolean, output: string[]}>}
+     * @returns {Promise<CommandExecutionResult>}
      */
     async executeAsync(name, ...args) {
         const output = [];
@@ -203,10 +283,10 @@ class CommandBus {
     }
 
     /**
-     * 显示帮助（按分类分组）  Show help grouped by category
-     * @private
-     * @param {string} [category] - 指定分类  Optional category filter
+     * 显示帮助（按分类分组，@private）  Show help grouped by category
+     * @param {CommandCategory|string} [category] - 指定分类  Optional category filter
      * @param {CommandContext} [ctx] - 执行上下文  Context
+     * @returns {void}
      */
     _showHelp(category, ctx) {
         const reply = ctx?.reply ?? ((text) => this.logger?.info?.(text));
@@ -241,7 +321,7 @@ class CommandBus {
 
     /**
      * 初始化终端输入  Initialize terminal input
-     * @returns {this}
+     * @returns {this} 支持链式调用  Chainable
      */
     initTerminal() {
         this.rl = readline.createInterface({

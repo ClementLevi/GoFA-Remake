@@ -6,6 +6,46 @@
  *   - GET /health、GET /admin/status、GET /admin/metrics、GET /admin/event-queue
  *   - GET /admin/components、GET /admin/players/online
  *   - POST /admin/command（远程控制台桥 → Main.executeCommandAsync）
+ *
+ *  类型约定（TS 级 JSDoc）：统一 Request/Response 简写；定义 AdminRequestBody 描述
+ *  统一壳 { data } 载荷形状；getMain 返回 CommandBus.IMainLike 投影类型。
+ */
+
+// ─────────────────── 类型体操：领域类型定义 ───────────────────
+
+/**
+ * Express 请求简写  Express request alias
+ * @typedef {import("express").Request} AdminRequest
+ */
+
+/**
+ * Express 响应简写  Express response alias
+ * @typedef {import("express").Response} AdminResponse
+ */
+
+/**
+ * 管理 API 统一请求体（决策A：{ data } 壳内按端点携带不同载荷）
+ *  Admin API unified request body (design decision A: per-endpoint payload inside { data })
+ * @typedef {object} AdminRequestBody
+ * @property {object} [data] - 数据壳  Data shell
+ * @property {string} [data.command] - POST /admin/command：指令名  Command name
+ * @property {string[]} [data.args] - POST /admin/command：参数数组  Arguments
+ * @property {string} [data.power] - 口令兜底（任务要求）  Passphrase fallback
+ * @property {number} [data.tth] - POST /admin/halt：停机秒数  Seconds until halt
+ */
+
+/**
+ * 远程控制台成功响应形状  Remote console success response shape
+ * @typedef {object} AdminCommandResponse
+ * @property {0} code - 业务码：成功  Success code
+ * @property {object} data - 数据  Data
+ * @property {string} data.command - 指令名  Command name
+ * @property {string[]} data.output - 收集的输出行  Collected output
+ */
+
+/**
+ * Main 实例（复用 CommandBus 投影类型）  Main instance (reuses CommandBus projection)
+ * @typedef {import("../../libs/commands/CommandBus").IMainLike} AdminMain
  */
 const path = require("node:path");
 const { makeRouter } = require("./routeRegistry");
@@ -41,7 +81,7 @@ const router = makeRouter();
 /**
  * 校验管理员权限：口令兜底或 JWT 身份 + 数据库管理员资格。
  * Authorize admin: passphrase fallback, or JWT identity + DB admin eligibility.
- * @param {import("express").Request} req - 请求  Request
+ * @param {AdminRequest} req - 请求  Request
  * @returns {Promise<boolean>} 是否通过  Whether authorized
  */
 async function isAdminAuthorized(req) {
@@ -59,8 +99,8 @@ async function isAdminAuthorized(req) {
 
 /**
  * 鉴权失败响应  Forbidden response helper
- * @param {import("express").Response} res
- * @returns {import("express").Response}
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {AdminResponse}
  */
 function deny(res) {
     return fail(
@@ -74,7 +114,7 @@ function deny(res) {
 
 /**
  * 获取 Main 实例  Get the Main singleton
- * @returns {object|null}
+ * @returns {AdminMain|null} Main 实例或 null  The Main instance, or null
  */
 function getMain() {
     return AppContext.getMain();
@@ -230,7 +270,9 @@ router.get("/admin/integrity-failures", (req, res) => {
 // 执行控制台指令（远程控制台桥，管理员）  Execute a console command (remote console bridge, admin)
 router.post("/admin/command", async (req, res) => {
     if (!(await isAdminAuthorized(req))) return deny(res);
-    const { command, args } = req.body?.data ?? {};
+    /** @type {AdminRequestBody} */
+    const body = req.body ?? {};
+    const { command, args } = body.data ?? {};
     if (typeof command !== "string" || command.length === 0) {
         return fail(
             res,

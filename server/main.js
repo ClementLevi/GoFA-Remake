@@ -292,6 +292,7 @@ class Main extends EventEmitter {
             category: "management",
         });
         // 组件在线状态注册表（指令与 admin API 共用）  Component registry shared by commands & admin API
+        /** @type {import("./services/libs/commands/ComponentRegistry")} */
         this.component_registry = CONSOLE_COMMANDS.componentRegistry;
         // 游戏业务命令  Game domain commands
         this.commands.registerBatch(CONSOLE_COMMANDS.commands);
@@ -311,7 +312,8 @@ class Main extends EventEmitter {
      * Execute a console command asynchronously and collect output (for the API console bridge)
      * @param {string} name - 命令名  Command name
      * @param {...string} args - 参数  Arguments
-     * @returns {Promise<{found: boolean, output: string[]}>}
+     * @returns {Promise<import("./services/libs/commands/CommandBus").CommandExecutionResult>}
+     *   执行结果：{ found, output }（output 为收集的输出行）
      */
     executeCommandAsync(name, ...args) {
         return this.commands.executeAsync(name, ...args);

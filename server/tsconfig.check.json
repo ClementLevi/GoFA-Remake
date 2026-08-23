@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": true,
+        "noEmit": true,
+        "target": "es2022",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "strict": false,
+        "noImplicitAny": false,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "types": ["node"]
+    },
+    "include": [
+        "services/libs/commands/CommandBus.js",
+        "services/libs/commands/ComponentRegistry.js",
+        "services/libs/commands/Commands.js"
+    ]
+}
