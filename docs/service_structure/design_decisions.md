@@ -188,7 +188,82 @@ MAIL_BATTLE_REPORT: "mail_battle_report"  // 战报以邮件形式发送给玩�
 2. 进入游戏服时带 JWT → 游戏服验证签名 + 检查过期
 3. JWT 过期 → 用 refresh token 刷新（大厅提供 `POST /auth/refresh`）
 
-**业务错误码设计** (待细化)。
+**业务错误码设计**（详见 2.1.1 分段方案，`server/services/libs/shared/response.js` 的 `ENUM_ERROR_CODE` 已同步实现）。
+
+#### 2.1.1 业务错误码分段设计
+
+**设计原则**:
+
+- `code` 按业务域分段，每段 10000 起、末三位 `001` 起递增，段内预留冗余
+- 0 = 成功；非 0 = 业务错误，响应体固定 `{ code, message, detail }`
+- HTTP 状态码只做粗粒度映射（400 参数 / 401 未认证 / 403 无权限 / 404 未找到 / 405 方法不允许 / 409 冲突 / 429 限流 / 500 内部），精细语义一律由 `code` 表达
+- 新增错误码须先补本表，再同步 `ENUM_ERROR_CODE`，保证文档与实现一致
+
+**分段总表**:
+
+| 分段     | 域                           | 典型错误                                     |
+| -------- | ---------------------------- | -------------------------------------------- |
+| 0        | 成功                         | —                                            |
+| 10xxx    | 通用 / 参数                   | 参数非法、JSON 解析失败、缺必填、越界、限流   |
+| 20xxx    | 认证 / 授权                   | 未登录、无权限、token 过期/无效、账号不存在   |
+| 30xxx    | 玩家 / 角色                   | 角色不存在、资源不足、背包已满                |
+| 40xxx    | 资源 / 路由                   | 资源不足、接口不存在、方法不允许              |
+| 50xxx    | 联盟 / 社交                   | 联盟不存在、联盟已满、非成员、权限不足        |
+| 60xxx    | 舰队 / 编队 / 战斗             | 舰队不存在、非法状态操作、编队重组不合法      |
+| 70xxx    | 邮件 / 通信                   | 邮件不存在、频道不存在                        |
+| 80xxx    | 星球 / 地图 / 建筑 / 科研       | 星球不存在、未占领、建筑队列满、科研未解锁    |
+| 90xxx    | 系统 / 内部                   | 内部错误、服务不可用、配置错误                |
+
+**码表（与 `response.js` 对齐，✓ 为已实现）**:
+
+```
+0       SUCCESS                    成功                          ✓
+10001   INVALID_PARAM              参数非法                      ✓
+10002   INVALID_JSON               JSON 解析失败
+10003   MISSING_REQUIRED_FIELD     缺少必填字段
+10004   VALUE_OUT_OF_RANGE         数值越界
+10005   RATE_LIMITED               请求过于频繁
+20001   UNAUTHORIZED               未认证 / 未登录                ✓
+20002   FORBIDDEN                  无权限                        ✓
+20003   TOKEN_EXPIRED              token 过期
+20004   TOKEN_INVALID              token 无效
+20005   ACCOUNT_NOT_FOUND          账号不存在
+20006   ACCOUNT_DISABLED           账号被封禁
+30001   ROLE_NOT_FOUND             角色不存在
+30002   ROLE_LOCKED                角色被锁定（如战斗中/离线中）
+40001   INSUFFICIENT_RESOURCE      资源不足（与 §2.1 示例一致）
+40002   STORAGE_FULL               仓储已满
+40401   NOT_FOUND                  资源/接口不存在                ✓
+40501   METHOD_NOT_ALLOWED         方法不允许                    ✓
+50001   ALLIANCE_NOT_FOUND         联盟不存在
+50002   ALLIANCE_FULL              联盟人数已满
+50003   NOT_ALLIANCE_MEMBER        非联盟成员
+50004   ALLIANCE_PERMISSION_DENIED 联盟操作权限不足
+60001   FLEET_NOT_FOUND            舰队不存在
+60002   FLEET_INVALID_STATE        舰队当前状态不允许该操作（如航行中解散）
+60003   CARRIER_NOT_FOUND          航母不存在
+60004   TASKFORCE_INVALID_OP       编队重组/成员变更不合法
+70001   MAIL_NOT_FOUND             邮件不存在
+70002   CHANNEL_NOT_FOUND          聊天频道不存在
+80001   PLANET_NOT_FOUND           星球不存在
+80002   PLANET_NOT_OWNED           未占领该星球（殖民失败）
+80003   BUILDING_QUEUE_FULL        建筑队列满
+80004   RESEARCH_LOCKED            科研项目未解锁
+90001   INTERNAL_ERROR             内部错误                      ✓
+90002   SERVICE_UNAVAILABLE        服务不可用
+90003   CONFIG_ERROR               配置错误
+```
+
+**映射示例**:
+
+```jsonc
+// 参数非法 → HTTP 400
+{ "code": 10001, "message": "参数非法", "detail": "fleetId 必须为整数" }
+// 资源不足 → HTTP 409
+{ "code": 40001, "message": "资源不足", "detail": "需要气体50，当前32" }
+// token 过期 → HTTP 401
+{ "code": 20003, "message": "token 已过期", "detail": "请使用 refresh token 刷新" }
+```
 
 ### 2.2 S2C 推送实现 (决策B)
 
@@ -203,6 +278,7 @@ MAIL_BATTLE_REPORT: "mail_battle_report"  // 战报以邮件形式发送给玩�
 | 邮件/战报通知 | `GET /api/v1/mail/unread`             | 60秒                     | 低频通知           |
 | 聊天消息      | `GET /api/v1/chat/{channelId}/recent` | 2~5秒                    | 频率最高           |
 | 联盟事件      | `GET /api/v1/alliance/events`         | 60秒                     | 外交变更、成员变动 |
+| 心跳/在线状态 | `GET /api/v1/ping`                   | 30秒                     | 维持在线，超阈值标记离线 |
 
 **后续升级路径**:
 

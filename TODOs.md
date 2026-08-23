@@ -1,32 +1,33 @@
 # GoFA Remake — 设计阶段待办清单
 
-> 最后更新: 2026-07-26
+> 最后更新: 2026-08-22
 > 维护人: Clement_Levi (CL)
-> **当前阶段: 需求设计**（参照 README 开发阶段树）
+> **当前阶段: 需求设计 → 后端开发过渡**（参照 README 开发阶段树）
 > 状态标记: `[ ]` 待设计 | `[o]` 设计中 | `[x]` 设计完成/已确认
 
 ---
 
 ## 阶段总览
 
-依据 README 定义的开发阶段树，当前处于 **[ o ] 需求设计** 阶段。
-以下待办项均围绕"想清楚、设计完备"——编码实现不在本清单范围。
+依据 README 定义的开发阶段树，当前处于 **[ o ] 需求设计 → [ o ] 后端开发** 过渡期。
+设计侧核心闭环已确认；后端 API 骨架已落地（add_apis 分支），业务逻辑待填充。
+以下待办项围绕"想清楚、设计完备"——实现类待办在分支 add_apis / extend_db 进行。
 
 ### 设计阶段树（现状标注）
 
 ```
 [ o ] 需求设计
 ├─ [ o ] 游戏环境需求设计
-├─ [ o ] 游戏内容设计 ← 重大推进！核心闭环设计决策已确认
-│     ├─ [ o ] 数据模型           ← 有骨架但多处空白
-│     ├─ [ o ] 交互模型           ← 用例图完成，事件覆盖审计完成
-│     └─ [ o ] 核心玩法规则       ← 编队到达/战斗/机群已确认
+├─ [ o ] 游戏内容设计 ← 核心闭环决策已确认；战斗算法/逃逸百分比已设计完成
+│     ├─ [ o ] 数据模型           ← 36 实体盘点完成，补表方案已定（extend_db），DDL 待落地
+│     ├─ [ o ] 交互模型           ← 用例图完成，事件覆盖审计完成，S2C 轮询清单已定义
+│     └─ [ o ] 核心玩法规则       ← 编队到达/战斗/机群已确认，数值框架待补
 ├─ [   ] 故事大纲                 ← 完全未开始
-└─ [ o ] 前后端通信API            ← 全局约定已确认(JWT+统一壳+HTTP轮询)
+└─ [ o ] 前后端通信API            ← 全局约定已确认(JWT+统一壳+HTTP轮询)，错误码分段已设计
 
 [ o ] 后端开发
-├─ [ o ] 数据库设计               ← SQLite确认，字典完成，表结构缺失
-├─ [   ] 模块编码                 ← 前置：需求设计必须先完成
+├─ [ o ] 数据库设计               ← SQLite确认+字典完成，补表方案已定（extend_db）
+├─ [ o ] 模块编码                 ← API 骨架+架构清理已完成（add_apis，104 占位端点），业务逻辑待填充
 └─ [   ] 测试单元开发             ← 前置：模块编码必须先完成
 ```
 
@@ -74,7 +75,7 @@
 - [x] 用例图完成 (`docs/service_structure/server/use_case/use_cases.pu`, 12板块+总览)
 - [x] 事件覆盖审计完成 (核心闭环6个🔴断裂点已标注)
 - [ ] 交互时序图：注册→登录→选角色→进入星图→殖民→建造→造舰→出征→到达结算→战斗→战报→回收
-- [ ] S2C推送轮询接口清单定义（战报/来敌预警/邮件/聊天/联盟事件各用什么接口、什么频率）
+- [x] S2C推送轮询接口清单定义 → 已写入 `docs/service_structure/design_decisions.md` §2.2（战报/雷达/邮件/聊天/联盟/心跳 6 项+间隔）
 - [ ] README 阶段树更新：交互模型推进到 `[x]`
 
 ### A-2 游戏内容设计 `[o]` 设计中
@@ -85,10 +86,11 @@
 - [x] 战斗触发条件与两阶段制规则
 - [x] 战报格式与胜负判定（逃逸百分比机制）
 - [x] 机群操作合法性规则（创建/重组/升级/摧毁）
-- [ ] 战斗算法设计（fleet_combat.pu 和 planetary_combat.pu 仍为空壳）
-  - [ ] 舰载机 vs 舰载机 / 航母 vs 航母 / 航母战阶段的流程
-  - [ ] 逃逸百分比的精确触发时机
-  - [ ] 伤害/防御/命中等公式骨架
+- [x] 战斗算法设计（需求文档 `docs/gameplay/combat_algorithm_requirements.md` 已归档）
+  - [x] 舰载机 vs 舰载机 / 航母 vs 航母 / 航母战阶段的流程（`fleet_combat.pu` 已填充）
+  - [x] 逃逸百分比的精确触发时机（`design_decisions.md` §1.2：已达阈值→下回合入航母战，触发即战败，防御方不可逃逸）
+  - [x] 伤害/防御/命中等公式骨架（需求文档 §3.1/3.2/3.3，含分组选中/高等级优先/击坠分摊）
+- [x] 地面战与占领/撤离流程（`planetary_combat.pu` 已填充）
 - [ ] 进度/数值框架初稿
   - [ ] 四色增幅器属性查表设计（每级属性增量 + 升级消耗公式）
   - [ ] 资源产出速率、建造时间、舰队移动速度
@@ -162,19 +164,19 @@
 - [x] 统一响应壳：`{ code, data }` + `{ code, message, detail }`
 - [x] 字段命名：camelCase
 - [x] 分页约定：邮件→cursor, 列表→offset+limit
-- [ ] 业务错误码分段设计（10xxx~90xxx）写入规范文档
+- [x] 业务错误码分段设计 → `design_decisions.md` §2.1.1（10xxx~90xxx 全段+码表），`server/services/libs/shared/response.js` 已同步
 - [ ] 上述约定写入 Apifox 全局定义
 
 ### C-2 事件补完 → API端点推导 `[o]` 设计中
 
 事件驱动设计方法：先补完 ENUMGoFAGameEvents → 再推导 API 端点请求/响应体。
 
-**P0 事件补完（阻断级，必须最先完成）**:
+**P0 事件补完（✅ 已完成，写入 `ENUMGoFAGameEvents.js`）**:
 
-- [ ] 编队到达结算分支事件 (7个新增) → 更新 ENUMGoFAGameEvents.js
-- [ ] 战斗预备+结算事件 (5个新增) → 更新 ENUMGoFAGameEvents.js
-- [ ] 机群操作响应事件 (5个新增) → 更新 ENUMGoFAGameEvents.js
-- [ ] 用例图注释同步更新 (已完成部分)
+- [x] 编队到达结算分支事件 → P7 编队 S2C 已写入（TASKFORCE_COMBAT_PREP/INTERCEPT_TRIGGER/DOCKED/DOCKED_DEPLETED）
+- [x] 战斗预备+结算事件 → P8 战斗已写入（MAIL_BATTLE_REPORT 等，COMBAT_RESULT 待补）
+- [x] 机群操作响应事件 → P6 机群 S2C 已写入（FLEET_RENAMED/RENAME_FAILED/RECOMPOSE_FAILED）
+- [x] 用例图注释同步更新 (已完成部分)
 
 **P1 事件补完（增强级）**:
 
@@ -189,25 +191,27 @@
 
 **事件补完完成后 → 推导API端点**:
 
-- [ ] 从补完的 C2S 事件 → 推导 31个REST端点的请求体
-- [ ] 从补完的 S2C 事件 → 推导 31个REST端点的响应体 + 轮询接口
+- [o] 从补完的 C2S 事件 → 推导 31个REST端点的请求体（add_apis 已落成 104 个占位端点，请求/响应体待填）
+- [o] 从补完的 S2C 事件 → 推导 31个REST端点的响应体 + 轮询接口（同上，轮询接口已在 §2.2 定义）
 
-### C-3 S2C 推送轮询接口 `[ ]` 待设计
+### C-3 S2C 推送轮询接口 `[x]` 已定义（design_decisions.md §2.2）
 
-- [ ] 战报轮询接口 `GET /api/v1/combat/report/{taskId}` (15分钟间隔)
-- [ ] 来敌预警接口 `GET /api/v1/radar/alerts` (30秒间隔)
-- [ ] 邮件未读接口 `GET /api/v1/mail/unread` (60秒间隔)
-- [ ] 聊天消息接口 `GET /api/v1/chat/{channelId}/recent` (2~5秒间隔)
-- [ ] 联盟事件接口 `GET /api/v1/alliance/events` (60秒间隔)
-- [ ] 心跳接口 `GET /api/v1/ping` (30秒间隔)
+- [x] 战报轮询接口 `GET /api/v1/combat/report/{taskId}` (15分钟间隔)
+- [x] 来敌预警接口 `GET /api/v1/radar/alerts` (30秒间隔)
+- [x] 邮件未读接口 `GET /api/v1/mail/unread` (60秒间隔)
+- [x] 聊天消息接口 `GET /api/v1/chat/{channelId}/recent` (2~5秒间隔)
+- [x] 联盟事件接口 `GET /api/v1/alliance/events` (60秒间隔)
+- [x] 心跳接口 `GET /api/v1/ping` (30秒间隔)
+- [ ] 接口实现（add_apis 占位端点已挂载，轮询语义待实现）
 
 ---
 
 ## D — 数据库设计
 
-### D-1 表结构 `[ ]` 缺 CREATE TABLE
+### D-1 表结构 `[o]` 补表方案已定，DDL 待落地（extend_db）
 
-- [ ] 从 PDMan 模型导出/编写完整 CREATE TABLE DDL
+- [o] 36 实体/221 字段盘点完成（PDMaas 模型 + 补表方案：4 缺失表 MAIL_BATTLE_REPORT/MAIL_SPY_REPORT/TASKFORCE_DOCKED/拦截状态 + 5 新表）
+- [ ] 补表方案落进 `docs/data_models/GoFA-Remake.pdma` 并重新生成全量 SQLite DDL
 - [ ] 主表设计：Account、Role、Planet、System、Atlas、Fleet、Carrier、Alliance、Building、Modifier
 - [ ] 关系表设计：Role-Planet、Role-Fleet、Alliance-Role、Fleet-Carrier 等
 - [ ] 日志表设计：PlayerActionLog
@@ -242,11 +246,11 @@
 - [ ] 邮件服务(mail-server)职责确认
 - [ ] 各服务是否独立部署还是共用进程？
 
-### E-4 Tick循环必要性 `[o]` 待讨论
+### E-4 Tick循环 `[x]` 已解决（EventBus 落地）
 
-- [ ] CL 考虑用定时器+事件队列替代传统游戏 tick 循环
-- [ ] 确认1秒tick的必要性（资源产出更新、星球状态刷新、到达先后判定）
-- [ ] 定时器方案能否满足"按tick判定到达先后"的需求
+- [x] EventBus 重写事件机制 + 接入 tick 循环（add_apis 0735b27），定时事件统一走 EventBus
+- [x] 固定 tick 频率与掉刻检测已在 main.js 实现（TICK_RATE 可配）
+- [x] 结论：保留 1 秒 tick 循环（到达先后判定/资源产出/状态刷新依赖），定时器方案仅作补充
 
 ---
 
