@@ -1,14 +1,18 @@
 /**
  * @module admin
- * @description 管理与监控域路由（Admin & Monitoring domain routes）
- *  除占位回显外，含真实的管理员停机端点 POST /admin/halt（定时触发控制台指令 exit）。
- *  本轮新增真实实现（对齐 docs/service_structure/server/commands/api_bridge.md）：
- *   - GET /health、GET /admin/status、GET /admin/metrics、GET /admin/event-queue
- *   - GET /admin/components、GET /admin/players/online
- *   - POST /admin/command（远程控制台桥 → Main.executeCommandAsync）
+ * @description 管理与监控域路由（Admin & Monitoring domain routes）。
+ *  混合占位与真实端点：
+ *   - 占位回显：GET /admin/logs、GET /admin/integrity-failures、POST /admin/integrity-challenge、
+ *     POST /admin/players/:playerId/disconnect、POST /admin/players/:playerId/reroute、POST /admin/deploy；
+ *   - 公开真实端点：GET /ping（心跳）、GET /health（健康检查）；
+ *   - 管理员真实端点：GET /admin/status、GET /admin/metrics、GET /admin/event-queue、
+ *     GET /admin/components、GET /admin/players/online、POST /admin/command（远程控制台桥 →
+ *     Main.executeCommandAsync）、POST /admin/halt（定时停机，经事件总线触发 SERVER_SHUTDOWN → exit）。
+ *  鉴权（isAdminAuthorized）：口令兜底（data.power === "卧室牢大"），或 JWT 身份 +
+ *  数据库管理员资格（adminService.isAdmin(payload.sub)）。
  *
- *  类型约定（TS 级 JSDoc）：统一 Request/Response 简写；定义 AdminRequestBody 描述
- *  统一壳 { data } 载荷形状；getMain 返回 CommandBus.IMainLike 投影类型。
+ *  类型约定（TS 级 JSDoc）：AdminRequest/AdminResponse 简写 Express 类型；AdminRequestBody
+ *  描述统一壳 { data } 载荷；AdminMain 复用 libs/types/main_types.js 的 IMainLike 投影类型。
  */
 
 // ─────────────────── 类型体操：领域类型定义 ───────────────────
@@ -44,8 +48,11 @@
  */
 
 /**
- * Main 实例（复用 CommandBus 投影类型）  Main instance (reuses CommandBus projection)
- * @typedef {import("../../libs/commands/CommandBus").IMainLike} AdminMain
+ * Main 实例投影类型（权威：libs/types/main_types.js 的 IMainLike；其 time 已是含
+ *  LAG_WARN_THRESHOLD 的 IMainTime，无需再交叉覆盖）
+ *  Main instance projection (authority: IMainLike in libs/types/main_types.js;
+ *  its time is already IMainTime including LAG_WARN_THRESHOLD)
+ * @typedef {import("../../libs/types/main_types").IMainLike} AdminMain
  */
 const path = require("node:path");
 const { makeRouter } = require("./routeRegistry");
@@ -120,7 +127,12 @@ function getMain() {
     return AppContext.getMain();
 }
 
-// 心跳（公开）  Heartbeat (public)
+/**
+ * 心跳（公开）  Heartbeat (public)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {AdminResponse} JSON 响应  JSON response
+ */
 router.get("/ping", (req, res) => {
     const main = getMain();
     return success(res, {
@@ -129,7 +141,12 @@ router.get("/ping", (req, res) => {
     });
 });
 
-// 健康检查（公开）  Health check (public)
+/**
+ * 健康检查（公开）  Health check (public)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {Promise<AdminResponse>} JSON 响应  JSON response
+ */
 router.get("/health", async (req, res) => {
     const main = getMain();
     let db = "missing";
@@ -148,7 +165,12 @@ router.get("/health", async (req, res) => {
     });
 });
 
-// 运行状态（管理员）  Runtime status (admin)
+/**
+ * 运行状态（管理员）  Runtime status (admin)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {Promise<AdminResponse>} JSON 响应  JSON response
+ */
 router.get("/admin/status", async (req, res) => {
     if (!(await isAdminAuthorized(req))) return deny(res);
     const main = getMain();
@@ -169,7 +191,12 @@ router.get("/admin/status", async (req, res) => {
     });
 });
 
-// 运行指标（管理员）  Runtime metrics (admin)
+/**
+ * 运行指标（管理员）  Runtime metrics (admin)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {Promise<AdminResponse>} JSON 响应  JSON response
+ */
 router.get("/admin/metrics", async (req, res) => {
     if (!(await isAdminAuthorized(req))) return deny(res);
     const main = getMain();
@@ -194,7 +221,12 @@ router.get("/admin/metrics", async (req, res) => {
     });
 });
 
-// 组件在线状态（管理员）  Component status (admin)
+/**
+ * 组件在线状态（管理员）  Component status (admin)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {Promise<AdminResponse>} JSON 响应  JSON response
+ */
 router.get("/admin/components", async (req, res) => {
     if (!(await isAdminAuthorized(req))) return deny(res);
     const main = getMain();
@@ -207,8 +239,13 @@ router.get("/admin/components", async (req, res) => {
     });
 });
 
-// 在线玩家（管理员）：当前返回 HTTP 连接数 + 在线列表（连接层未落地，列表留空）
-// Online players (admin): HTTP connection count + online list (connection layer pending, list empty)
+/**
+ * 在线玩家（管理员）：当前返回 HTTP 连接数 + 在线列表（连接层未落地，列表留空）
+ *  Online players (admin): HTTP connection count + online list (connection layer pending, list empty)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {Promise<AdminResponse>} JSON 响应  JSON response
+ */
 router.get("/admin/players/online", async (req, res) => {
     if (!(await isAdminAuthorized(req))) return deny(res);
     const main = getMain();
@@ -225,7 +262,12 @@ router.get("/admin/players/online", async (req, res) => {
     });
 });
 
-// 事件队列状态（管理员）  Event queue status (admin)
+/**
+ * 事件队列状态（管理员）  Event queue status (admin)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {Promise<AdminResponse>} JSON 响应  JSON response
+ */
 router.get("/admin/event-queue", async (req, res) => {
     if (!(await isAdminAuthorized(req))) return deny(res);
     const main = getMain();
@@ -245,7 +287,12 @@ router.get("/admin/event-queue", async (req, res) => {
     });
 });
 
-// 日志与审计（占位）  Logs & audit (placeholder)
+/**
+ * 日志与审计（占位回显）  Logs & audit (placeholder echo)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {void} 直接以 res.json 回显  Echoes via res.json
+ */
 router.get("/admin/logs", (req, res) => {
     res.json({
         path: req.baseUrl + req.path,
@@ -256,7 +303,12 @@ router.get("/admin/logs", (req, res) => {
     });
 });
 
-// 完整性校验失败记录（占位）  Integrity failure records (placeholder)
+/**
+ * 完整性校验失败记录（占位回显）  Integrity failure records (placeholder echo)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {void} 直接以 res.json 回显  Echoes via res.json
+ */
 router.get("/admin/integrity-failures", (req, res) => {
     res.json({
         path: req.baseUrl + req.path,
@@ -267,7 +319,12 @@ router.get("/admin/integrity-failures", (req, res) => {
     });
 });
 
-// 执行控制台指令（远程控制台桥，管理员）  Execute a console command (remote console bridge, admin)
+/**
+ * 执行控制台指令（远程控制台桥，管理员）  Execute a console command (remote console bridge, admin)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {Promise<AdminResponse>} JSON 响应  JSON response
+ */
 router.post("/admin/command", async (req, res) => {
     if (!(await isAdminAuthorized(req))) return deny(res);
     /** @type {AdminRequestBody} */
@@ -324,7 +381,12 @@ router.post("/admin/command", async (req, res) => {
     return success(res, { command, output });
 });
 
-// 发起客户端完整性校验（占位）  Client integrity challenge (placeholder)
+/**
+ * 发起客户端完整性校验（占位回显）  Client integrity challenge (placeholder echo)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {void} 直接以 res.json 回显  Echoes via res.json
+ */
 router.post("/admin/integrity-challenge", (req, res) => {
     res.json({
         path: req.baseUrl + req.path,
@@ -335,7 +397,12 @@ router.post("/admin/integrity-challenge", (req, res) => {
     });
 });
 
-// 断开玩家连接（占位，待连接层落地）  Disconnect player (placeholder)
+/**
+ * 断开玩家连接（占位回显，待连接层落地）  Disconnect player (placeholder echo)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {void} 直接以 res.json 回显  Echoes via res.json
+ */
 router.post("/admin/players/:playerId/disconnect", (req, res) => {
     res.json({
         path: req.baseUrl + req.path,
@@ -346,7 +413,12 @@ router.post("/admin/players/:playerId/disconnect", (req, res) => {
     });
 });
 
-// 重定向玩家（占位）  Reroute player (placeholder)
+/**
+ * 重定向玩家（占位回显）  Reroute player (placeholder echo)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {void} 直接以 res.json 回显  Echoes via res.json
+ */
 router.post("/admin/players/:playerId/reroute", (req, res) => {
     res.json({
         path: req.baseUrl + req.path,
@@ -357,7 +429,12 @@ router.post("/admin/players/:playerId/reroute", (req, res) => {
     });
 });
 
-// 部署初始化（占位）  Deployment initiate (placeholder)
+/**
+ * 部署初始化（占位回显）  Deployment initiate (placeholder echo)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {void} 直接以 res.json 回显  Echoes via res.json
+ */
 router.post("/admin/deploy", (req, res) => {
     res.json({
         path: req.baseUrl + req.path,
@@ -368,7 +445,12 @@ router.post("/admin/deploy", (req, res) => {
     });
 });
 
-// 定时停机（真实业务逻辑示例）  Scheduled shutdown (real business logic example)
+/**
+ * 定时停机（真实业务逻辑示例）  Scheduled shutdown (real business logic example)
+ * @param {AdminRequest} req - 请求  Request
+ * @param {AdminResponse} res - 响应  Response
+ * @returns {Promise<AdminResponse>} JSON 响应  JSON response
+ */
 router.post("/admin/halt", async (req, res) => {
     // 鉴权  Authorization
     if (!(await isAdminAuthorized(req))) {

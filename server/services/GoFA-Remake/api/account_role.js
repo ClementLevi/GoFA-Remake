@@ -1,10 +1,26 @@
 /**
  * @module account_role
- * @description 玩家与角色域占位路由（Player & Role domain placeholder routes）
- *  仅回显请求详情，不实现业务逻辑（placeholder only, echoes request details）。
+ * @description 玩家与角色域占位路由（Player & Role domain placeholder routes）。
+ *  覆盖三组资源：认证（/auth/register、/auth/login、/auth/refresh、/auth/logout）、
+ *  账号（/account/password、/account/email）、角色（/roles 列表/创建/详情/选择/
+ *  删除/改名/技能/道具/氪金/星门）。
+ *  Covers three resource groups: auth, account, and role.
+ *
+ *  类型约定（TS 级 JSDoc）：所有 handler 均为占位回显——原样回显
+ *  path、method、query、params、body 五个字段（经 res.json 输出），不实现业务逻辑；
+ *  统一由 PlaceholderHandler 回调类型描述（见下方 typedef），不再逐个标注。
  */
 
 const { makeRouter } = require("./routeRegistry");
+
+/**
+ * 占位 handler 回调类型：回显请求详情，不实现业务逻辑。
+ *  Placeholder handler callback: echoes request details, no business logic.
+ * @callback PlaceholderHandler
+ * @param {import("express").Request} req - 请求  Request
+ * @param {import("express").Response} res - 响应  Response
+ * @returns {void} 直接以 res.json 回显  Echoes via res.json
+ */
 
 const router = makeRouter();
 

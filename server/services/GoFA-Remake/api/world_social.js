@@ -1,10 +1,28 @@
 /**
  * @module world_social
- * @description 星球建筑联盟邮件聊天域占位路由（Planet, Building, Alliance, Mail & Chat domain placeholder routes）
- *  仅回显请求详情，不实现业务逻辑（placeholder only, echoes request details）。
+ * @description 星球建筑联盟邮件聊天域占位路由（Planet, Building, Alliance, Mail & Chat domain placeholder routes）。
+ *  覆盖七组资源：地图（/map/chunk、/map/system）、星球（/planets/:planetId 检视/
+ *  放弃/间谍/置顶/奖励）、建筑（/planets/:planetId/buildings、/buildings/:structureId
+ *  升级/生产/装备/加速/取消）、联盟（/alliances 及成员/职位/帖子/小组/事件轮询）、
+ *  邮件（/mail 列表/未读/发送/已读/回复/领取/删除）、聊天（/chat 发送/最近消息轮询）、
+ *  侦察（/spy 星球/来袭/悬赏）。
+ *  Covers seven resource groups: map, planet, building, alliance, mail, chat, and spy.
+ *
+ *  类型约定（TS 级 JSDoc）：所有 handler 均为占位回显——原样回显
+ *  path、method、query、params、body 五个字段（经 res.json 输出），不实现业务逻辑；
+ *  统一由 PlaceholderHandler 回调类型描述（见下方 typedef），不再逐个标注。
  */
 
 const { makeRouter } = require("./routeRegistry");
+
+/**
+ * 占位 handler 回调类型：回显请求详情，不实现业务逻辑。
+ *  Placeholder handler callback: echoes request details, no business logic.
+ * @callback PlaceholderHandler
+ * @param {import("express").Request} req - 请求  Request
+ * @param {import("express").Response} res - 响应  Response
+ * @returns {void} 直接以 res.json 回显  Echoes via res.json
+ */
 
 const router = makeRouter();
 

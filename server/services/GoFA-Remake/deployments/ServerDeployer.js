@@ -37,7 +37,7 @@ const INSTALLATION_DDL = path.resolve(
 /**
  * @typedef {import ("../../libs/db/DB_Config.d")} DB_Config
  * @typedef {import ("../../libs/db/Database")} DatabaseConstructor
- * @typedef {import ("../../../main").IMain} IMain
+ * @typedef {import("../../libs/types/main_types").IMainForDeployer} IMain
  */
 
 /**

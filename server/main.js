@@ -98,53 +98,21 @@ const ServerDeployer = require(path.resolve(
  */
 
 /**
- * @typedef {object} Config
- * TODO 补充Config类型定义
- */
-
-/**
- * @typedef Time
- * @property {number} TICK - 自启动以来的tick数，即全局时间
- * @property {number} TICK_RATE - 服务器tick频率, 单位为次/秒
- * @property {number} TICK_INTERVAL - 服务器tick间隔时间，单位为ms
- * @property {number} startTime - 服务器启动时间戳
- * @property {number} last_tick_elapse - 上一次tick耗时
- * @property {number[]} recentTicksElapses - 最近几次tick耗时
- * @property {number} recentTicksSize - 最近几次tick队列长度，用以求平均值
- * @property {number} [LAG_WARN_THRESHOLD=1000/TICK_RATE * 5] - 掉刻警告阈值, 单位为ms
- */
-
-/**
- * @exports
- * @description 主程序接口定义
- * @typedef IMain
- * @property {Config?} config - 配置模块实例
- * @property {Database?} db - 数据库实例
- * @property {Game?} game - 游戏实例
- * @property {Log?} logger - 日志模块实例
- * @property {ENUM_STAGE[keyof ENUM_STAGE]} stage - 主程序运行阶段枚举
- * @property {ServerDeployer?} server_deployer - 服务器部署器实例
- * @property {Time} time - 时间信息
- * @property {EnumStage[keyof EnumStage]} ENUM_STAGE - 主程序运行阶段枚举
- * @property {() => Promise<this>} init - 初始化游戏
- * @property {() => void} run - 运行游戏
- * @property {() => void} loadConfig - 加载配置
- * @property {(logger: Log) => void} regCommands - 注册命令行系统
- * @property {() => Promise<void>} exit - 退出游戏
- * @property {() => IMain} getMain - 获取主程序实例
- */
-
-/**
  * @typedef {{INIT: "initializing",RUNNING: "running",EXITING: "exiting"}} EnumStage
  * @readonly
  * @enum {string}
- * TODO: 拆到main.d.js中
  */
 const ENUM_STAGE = Object.freeze({
     INIT: "initializing",
     RUNNING: "running",
     EXITING: "exiting",
 });
+
+/**
+ * 主程序完整形状别名（权威：libs/types/main_types.js 的 IMain）
+ *  Alias of the full Main shape (authority: IMain in libs/types/main_types.js)
+ * @typedef {import("./services/libs/types/main_types").IMain} IMain
+ */
 
 /**
  * @class Main
@@ -165,7 +133,7 @@ class Main extends EventEmitter {
      */
     constructor(config) {
         super();
-        /** @type {Config} */
+        /** @type {import("./services/libs/types/main_types").IMainConfig} */
         // 1. 加载配置读取系统  Load Config Loader
         this.config = this.loadConfig();
         /** @type {Database?} */
@@ -183,12 +151,12 @@ class Main extends EventEmitter {
         AppContext.setMain(this);
         /** @type {InstanceType<EventBus>} */
         this.event_bus = new EventBus();
-        /** @type {EnumStage[keyof EnumStage]} */
+        /** @type {import("./services/libs/types/main_types").IMainStage} */
         this.stage = Main.ENUM_STAGE.INIT;
         /** @type {InstanceType<ServerDeployer>?} */
         this.server_deployer = null;
         /**
-         * @type {Time}
+         * @type {import("./services/libs/types/main_types").IMainTime}
          */
         this.time = {
             TICK: 0,
@@ -221,7 +189,7 @@ class Main extends EventEmitter {
     /**
      * @description 加载配置，会过滤掉不需要的env变量
      * @package
-     * @returns {Config}
+     * @returns {import("./services/libs/types/main_types").IMainConfig}
      */
     loadConfig() {
         // TODO: 使用zod库校验配置项，注明哪些项是必填项
@@ -280,9 +248,9 @@ class Main extends EventEmitter {
         return this.config ?? {};
     }
     /**
-     * 注册命令行系统
+     * 注册命令行系统（内部装配，不进 IMain 契约）
+     * Register the command line system (internal assembly, not part of IMain)
      * @private
-     * @param {*} logger - 日志记录器实例
      */
     regCommands() {
         // 核心命令（绑定 Main 上下文，优雅停机）  Core commands (bound to Main, graceful shutdown)

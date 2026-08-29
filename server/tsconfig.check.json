@@ -10,11 +10,32 @@
         "noImplicitAny": false,
         "skipLibCheck": true,
         "esModuleInterop": true,
-        "types": ["node"]
+        "types": [
+            "node"
+        ]
     },
     "include": [
+        "services/libs/types/main_types.js",
+        "services/libs/shared/AppContext.js",
+        "services/libs/shared/jwt.js",
+        "services/libs/shared/authMiddleware.js",
+        "services/libs/shared/response.js",
+        "services/libs/shared/logger.js",
         "services/libs/commands/CommandBus.js",
         "services/libs/commands/ComponentRegistry.js",
-        "services/libs/commands/Commands.js"
+        "services/libs/commands/Commands.js",
+        "services/GoFA-Remake/adminService.js",
+        "services/GoFA-Remake/game.js",
+        "services/GoFA-Remake/api/index.js",
+        "services/GoFA-Remake/api/admin.js",
+        "services/GoFA-Remake/api/routeRegistry.js",
+        "services/GoFA-Remake/api/account_role.js",
+        "services/GoFA-Remake/api/fleet_combat.js",
+        "services/GoFA-Remake/api/world_social.js",
+        "services/GoFA-Remake/event_manager/EventBus.js",
+        "services/GoFA-Remake/event_manager/PriorityQueue.js",
+        "services/GoFA-Remake/event_manager/IGoFAEvent.js",
+        "services/GoFA-Remake/event_manager/GoFAGameEvent.js",
+        "services/GoFA-Remake/event_manager/ENUMGoFAGameEvents.js"
     ]
 }

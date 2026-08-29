@@ -51,26 +51,9 @@ const AppContext = require(path.resolve(__dirname, "../shared/AppContext"));
  */
 
 /**
- * Main 实例的按需投影类型（类型体操：不依赖入口文件的导出，直接投影所需形状）
- *  Main instance projection type (type gymnastics: project the needed shape without importing main.js)
- * @typedef {object} IMainLike
- * @property {string} stage - 运行阶段  Runtime stage
- * @property {object} time - tick / 时间信息  Tick & time info
- * @property {number} time.TICK - 累计 tick 数  Total ticks
- * @property {number} time.TICK_RATE - tick 频率（次/秒）  Tick rate
- * @property {number} time.startTime - 启动时间戳（ms）  Start timestamp
- * @property {number} time.last_tick_elapse - 上次 tick 耗时（ms）  Last tick elapse
- * @property {Array<number>} time.recentTicksElapses - 最近 N 次 tick 耗时  Recent tick elapses
- * @property {object|null} db - 数据库实例（Database）  Database instance
- * @property {object|null} game - 游戏实例（GoFA_Remake_Game）  Game instance
- * @property {object|null} event_bus - 事件总线实例（EventBus）  Event bus
- * @property {object|null} http_server - HTTP 服务器（http.Server）  HTTP server
- * @property {object|null} component_registry - 组件在线注册表（ComponentRegistry）  Component registry
- * @property {object} config - 配置对象  Config object
- * @property {number} [GAME_LIFE] - 游戏生命周期（game._gamelife）  Game life
- * @property {() => [boolean, number]} [detectLag] - 掉刻检测，返回 [是否掉刻, 平均耗时]  Lag detection
- * @property {(name: string, ...args: any[]) => boolean} [executeCommand] - 同步执行指令  Sync command execution
- * @property {(name: string, ...args: any[]) => Promise<CommandExecutionResult>} [executeCommandAsync] - 异步执行指令  Async command execution
+ * Main 实例投影类型（权威：libs/types/main_types.js 的 IMainLike，禁止本处手写重复形状）
+ *  Main instance projection (authority: IMainLike in libs/types/main_types.js)
+ * @typedef {import("../types/main_types").IMainLike} IMainLike
  */
 
 /**

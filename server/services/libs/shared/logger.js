@@ -35,7 +35,7 @@ const moment = require("moment");
 
 /**
  * @typedef {typeof Logger} TypeLogger
- * @typedef {InstanceType<Logger>} LoggerInstance
+ * @typedef {InstanceType<TypeLogger>} LoggerInstance
  */
 
 /**

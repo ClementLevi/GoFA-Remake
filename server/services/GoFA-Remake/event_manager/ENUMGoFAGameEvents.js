@@ -1,15 +1,34 @@
+/**
+ * @module ENUMGoFAGameEvents
+ * @description 服务端事件枚举表：所有事件均为字符串常量，经 Object.freeze 冻结只读。
+ *  - 服务端内部处理的事件（生命周期 / 角色 / 星球 / 建筑 / 机群 / 舰队 / 联盟 / 邮件）；
+ *  - 由客户端向服务端推送的事件（账号 / 角色 / 星球 / 建筑 / 机群 / 舰队 / 聊天 / 邮件 / 侦察 / 联盟）。
+ *  GameEvent.version 从 package.json 读取，用于标识事件协议版本。
+ *  Read-only server event enum table: every event is a string constant, frozen via
+ *  Object.freeze. Covers server-internal events (lifecycle, role, planet, building,
+ *  fleet, taskforce, alliance, mail) and client-pushed events (account, role, planet,
+ *  building, fleet, taskforce, chat, mail, spy, alliance). GameEvent.version is read
+ *  from package.json to identify the event protocol version.
+ */
+
 const path = require("node:path");
 const { version } = require(path.resolve(__dirname, "../../../package.json"));
 
 // 以下所有事件均为服务端内部处理的事件
+/**
+ * 服务端事件枚举（@enum 为每个成员标注字符串类型；@readonly + Object.freeze 双重只读）
+ *  Server event enum (@enum types every member as string; @readonly + Object.freeze double-freeze)
+ * @readonly
+ * @enum {string}
+ */
 const GameEvent = Object.freeze({
     /**
-     * @description 从项目package.json中获取
-     * @constant
+     * 事件协议版本（从项目 package.json 获取）  Event protocol version from package.json
      * @type {string}
      */
     __version: version,
     /**
+     * 事件协议版本 getter  Event protocol version getter
      * @borrows GameEvent~__version as GameEvent.version
      * @returns {string}
      */

@@ -22,22 +22,21 @@ const { Queue, Stack } = require(path.resolve(
 ));
 
 /**
- * @typedef {import ("../../main").IMain} IMain
- * @typedef {import ("../../main").EnumStage} ENUM_STAGE
- * @typedef {import ("../libs/game_entities/IGameEntity.d")} IGameEntity
- *
+ * 游戏环境投影类型（权威：libs/types/main_types.js 的 IMainForGame）
+ *  Game environment projection (authority: IMainForGame in libs/types/main_types.js)
+ * @typedef {import("../libs/types/main_types").IMainForGame} IMain
  */
 
 /**
  * @typedef IGame
  * @property {IMain} env - the environment of the game.
- * @property {ENUM_STAGE} stage - the current state of the game.
+ * @property {"init"|"running"|"exiting"} stage - the current state of the game.
  * @property {number} tickInterval - the interval of the game's tick.
- * @property {()=>InstanceType<IGame>} getInstance - get the instance of the game.
- * @property {()=>void} init - initialize the game.
+ * @property {()=>IGame} getInstance - get the instance of the game.
+ * @property {()=>Promise<void>} init - initialize the game.
  * @property {()=>void} exit - called when the game is exited.
  * @property {()=>void} beforeTick - called before each tick.
- * @property {()=>void} tick - called every tick.
+ * @property {(deltaTime?: number) => void} tick - called every tick.
  */
 
 /**
@@ -85,7 +84,12 @@ class GoFA_Remake_Game extends EventEmitter{
         this.stage = GoFA_Remake_Game.stages.INIT;
         Log.info("Initializing game...");
         Log.info("Game initialized.");
-        this.stage = this.env?.stage.RUNNING;
+        // 环境运行中则标记游戏为 running（原 env.stage.RUNNING 属性访问有误，属类型错误修复）
+        // Mark the game as running when the environment is running (fixed invalid property access)
+        this.stage =
+            this.env?.stage === "running"
+                ? GoFA_Remake_Game.stages.RUNNING
+                : this.stage;
     }
     /**
      * @public
@@ -119,4 +123,9 @@ class GoFA_Remake_Game extends EventEmitter{
         return this.env;
     }
 }
-module.exports = (/** @type {any} */ ...args) => new GoFA_Remake_Game(...args);
+/**
+ * 创建游戏实例的工厂  Game instance factory
+ * @param {IMain} env - 主程序环境  Main environment
+ * @returns {InstanceType<GoFA_Remake_Game>} 游戏实例  Game instance
+ */
+module.exports = (env) => new GoFA_Remake_Game(env);
