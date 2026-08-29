@@ -10,10 +10,6 @@ const { ConfigError } = require(path.resolve(__dirname, "../error/Error"));
  * @type {Log}
  */
 const Log = require(path.resolve(__dirname, "../shared/logger.js"));
-/**
- * @typedef {import("../shared/Singleton")} Singleton
- * @type {Singleton}
- */
 
 // Implementations of IDBConnector
 /** @typedef {import("./IDBConnector")} IDBConnector*/
@@ -51,9 +47,9 @@ class Database {
     constructor(DB_Type, DB_Config) {
         /** @type {boolean} */
         this.isInitialized = false;
-        /** @type {IDBConnector?} */
+        /** @type {typeof import("./IDBConnector") | null} */
         let DB_Impl = null;
-        /** @type {InstanceType<IDBConnector>} */
+        /** @type {InstanceType<typeof import("./IDBConnector")> | null} */
         this.db = null;
         switch (DB_Type) {
             case ENUM_DB_TYPE.SQLITE3: {
@@ -102,12 +98,12 @@ class Database {
      *
      * @param {string} sql
      * @param {any[]} params
-     * @param {Function} cb
+     * @param {Function} [cb]
      * @returns {Promise<any>}
      * TODO 不要返回any，需要搞明白这玩意儿
      */
     execute(sql, params, cb) {
-        return this.db.execute(sql, params, cb);
+        return /** @type {any} */ (this.db).execute(sql, params, cb);
     }
     /**
      * @description 绑定父级引用

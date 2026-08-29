@@ -2,7 +2,7 @@ const fs = require("fs");
 
 function readJSONFile(path) {
     let f = fs.readFileSync(path);
-    return JSON.parse(f);
+    return JSON.parse(/** @type {any} */ (f));
 }
 
 function writeJSONFile(obj, path) {

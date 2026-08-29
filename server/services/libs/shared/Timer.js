@@ -8,10 +8,6 @@
 const events = require("events");
 const chalk = require("chalk");
 
-/**
- * @typedef {Object} Timer
- */
-
 class Timer {
     /**
      * @type {String}
@@ -42,8 +38,9 @@ class Timer {
          */
         this.EventEmitter = EventEmitter
             ? EventEmitter
-            : console.warn(this.WARN_EVENTEMITTER_FAIL) ||
-              new events.EventEmitter();
+            : /** @type {events.EventEmitter | void} */ (console.warn(
+                  this.WARN_EVENTEMITTER_FAIL
+              )) || new events.EventEmitter();
         /**
          * @property {Array<String>} eventsQueue
          */

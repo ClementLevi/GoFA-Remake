@@ -27,7 +27,7 @@ class Trace {
     });
     constructor() {
         this.trace_state = false;
-        /**@type {Record<string,import("node:trace_events").Tracing>} */
+        /**@type {Record<string | symbol, import("node:trace_events").Tracing>} */
         this.traces = {};
 
         // Default trace categories
@@ -62,6 +62,6 @@ module.exports = new Trace();
 if (require.main === module) {
     let T = new Trace();
     T.add_tracer("test_tracer", "node.async_hooks");
-    T.add_tracer("not_working", "not_exist_category");
+    T.add_tracer("not_working", /** @type {any} */ ("not_exist_category"));
     T.toggle_trace();
 }

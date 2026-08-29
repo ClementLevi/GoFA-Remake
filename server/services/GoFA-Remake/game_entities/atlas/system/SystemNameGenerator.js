@@ -91,7 +91,7 @@ class NameGenerator {
      * 使用的命名模板，必须是满足{@link NameRule}结构的JSON文件
      * @param {string | NameRule} template 要使用的JSON文件相对路径
      * @see NameRule
-     * @returns {Promise<this>}
+     * @returns {Promise<NameGenerator>}
      */
     async use_name_template(template) {
         return new Promise((resolve, reject) => {
@@ -100,7 +100,7 @@ class NameGenerator {
                     if (err) {
                         reject(err);
                     }
-                    const nameRule = JSON.parse(data);
+                    const nameRule = JSON.parse(/** @type {any} */ (data));
                     const ruleKeys = Object.keys(nameRule);
                     // 去重
                     _.forIn(nameRule, (v, k) => {

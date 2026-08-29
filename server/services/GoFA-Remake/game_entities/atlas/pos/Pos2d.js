@@ -5,7 +5,6 @@ const path = require("node:path");
  */
 const Pos = require(path.resolve(__dirname, "./Pos"));
 /**
- * @implements {Pos}
  * @class Pos2d A 2D position object. 二维位置对象。
  * @property {number} x The x value of the position. 位置的 x 值。
  * @property {number} y The y value of the position. 位置的 y 值。
@@ -18,8 +17,8 @@ class Pos2d extends Pos {
     /**
      * Accept x and y values and create a new 2D position object. 接受 x 和 y 值并创建一个新的二维位置对象。
      * @constructor
-     * @param {number?} x The x value of the position. May be null to generate a random value. 位置的 x 值。可以为 null 以生成随机值。
-     * @param {number?} y The y value of the position. May be null to generate a random value. 位置的 y 值。可以为 null 以生成随机值。
+     * @param {number?} [x] The x value of the position. May be null to generate a random value. 位置的 x 值。可以为 null 以生成随机值。
+     * @param {number?} [y] The y value of the position. May be null to generate a random value. 位置的 y 值。可以为 null 以生成随机值。
      */
     constructor(x, y) {
         super(x??0, y??0);

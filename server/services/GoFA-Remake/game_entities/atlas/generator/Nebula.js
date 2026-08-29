@@ -46,13 +46,18 @@ const {
  */
 class Nebula {
     /**
+     * 星系名称（Python 版遗留字段，仅类型声明，无初始化）
+     * @type {string?}
+     */
+    name;
+    /**
      *
-     * @param {SystemOptions & {seed: number & {toString: ()=>string}}} options
+     * @param {Omit<Partial<SystemOptions>, "seed"> & {Pos: SystemOptions["Pos"], seed?: (string & {toString: ()=>string}) | number}} options
      * @param {InstanceType<RNG>?} [rng] 随机数生成器实例，用于生成星系名称
      */
     constructor(options, rng) {
         /** @type {SystemOptions["seed"] } */
-        this.seed = options.seed ?? uuid();
+        this.seed = /** @type {SystemOptions["seed"]} */ (options.seed ?? uuid());
         /** @type {InstanceType<RNG>} */
         this._rng = rng ?? new RNG(this.seed);
         /** @type {SystemOptions["appearance"]} */

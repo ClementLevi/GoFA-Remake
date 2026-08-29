@@ -102,7 +102,7 @@ class IMask {
     /**
      * @constructor
      * @param {Image?} image
-     * @param {MaskDefaultConfig} [config=MASK_CONFIG_DEFAULT]
+     * @param {MaskDefaultConfig | number} [config=MASK_CONFIG_DEFAULT]
      * @param {InstanceType<RNG>?} rng
      */
     constructor(image = null, config = MASK_CONFIG_DEFAULT, rng = null) {
@@ -110,12 +110,15 @@ class IMask {
             throw new TypeError("Cannot instantiate interface");
         }
         // Config for constructing
+        // note: 调用方可能把遮罩类型编号（MaskType 数值）作为 config 传入，这里按 MaskDefaultConfig 断言后使用
         /** @type {MaskOperation[keyof MaskOperation]} */
-        this.operation = config.operation;
+        this.operation = /** @type {MaskDefaultConfig} */ (config).operation;
         /**@type {string} */
-        this.target = config.target ?? "";
+        this.target = /** @type {MaskDefaultConfig} */ (config).target ?? "";
         /** @type {MaskValueConfig} */
-        this.value_config = config.mask_value_config ?? { value: null };
+        this.value_config =
+            /** @type {MaskDefaultConfig} */ (config).mask_value_config ??
+            { value: null };
         /**@type {InstanceType<RNG>} */
         this.rng = rng ?? new RNG();
 
@@ -163,7 +166,7 @@ class IMask {
      * 加载图片
      * Load image
      * @param {string} image_path
-     * @returns {Promise<this>}
+     * @returns {Promise<void>}
      * @abstract
      */
     async load_image(image_path) {
@@ -242,7 +245,7 @@ class IMask {
             this.operation,
             this.rng
         );
-        return cb(obj, prop, value);
+        return /** @type {any} */ (cb)(obj, prop, value);
     }
 }
 

@@ -70,7 +70,7 @@ class NodeSqliteConnector extends IDBConnector {
     /**
      * 测试数据库连接
      * @abstract
-     * @returns {Promise<boolean>}
+     * @returns {Promise<any>} 空实现的抽象桩，子类覆盖为 Promise<boolean>
      */
     async test() {}
     /**

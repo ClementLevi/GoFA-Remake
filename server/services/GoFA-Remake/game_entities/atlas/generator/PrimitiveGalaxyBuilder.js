@@ -147,7 +147,7 @@ class PrimitiveGalaxyBuilder {
 
     /**
      * Step Optional 1: 添加遮罩
-     * @param {IMask} mask
+     * @param {IMask} [mask] 遮罩实例
      * @returns {this}
      */
     add_mask(mask) {
@@ -177,7 +177,9 @@ class PrimitiveGalaxyBuilder {
         let mask_to_apply = this.masks[mask_index];
         this.nebulae.forEach((row) => {
             row.forEach((system) => {
-                mask_to_apply ? mask_to_apply.apply_mask(system) : system;
+                mask_to_apply
+                    ? mask_to_apply.apply_mask(/** @type {any} */ (system))
+                    : system;
             });
         });
         return this;

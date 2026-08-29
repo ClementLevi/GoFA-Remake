@@ -22,7 +22,7 @@ const IDBConnector = require(path.resolve(
     "../../../services/libs/db/IDBConnector"
 ));
 /**
- * @typedef {import("../game_entities/atlas/generator/PrimitiveGalaxyBuilder")} PrimitiveGalaxyBuilder
+ * @typedef {typeof import("../game_entities/atlas/generator/PrimitiveGalaxyBuilder")} PrimitiveGalaxyBuilder
  * @type {PrimitiveGalaxyBuilder}
  */
 const PrimitiveGalaxyBuilder = require(path.resolve(
@@ -55,7 +55,7 @@ class ServerDeployer {
         if (!ctx.db) throw new ConfigError("Database not initialized.");
         this.ctx = ctx;
         /** @type {ReturnType<DatabaseConstructor>} */
-        this.DB = this.ctx.db;
+        this.DB = /** @type {ReturnType<DatabaseConstructor>} */ (this.ctx.db);
         /** @type {boolean} */
         this.isInitialized = false;
     }
@@ -79,16 +79,20 @@ class ServerDeployer {
     }
 
     /**
-     * @param {new (...args: any[]) => IDBConnector | IDBConnector} db 指定将要使用的数据库，
+     * @param {typeof import("../../libs/db/IDBConnector") | import("../../libs/db/IDBConnector")} db 指定将要使用的数据库，
      * 如果传入构造器则自行使用config创建新实例；如果传入实例则直接使用。
      * @param {DB_Config} [config]
      * @returns {this}
      */
     useDB(db, config) {
         if (db instanceof Function) {
-            this.DB = new db(config);
+            this.DB = /** @type {ReturnType<DatabaseConstructor>} */ (
+                /** @type {unknown} */ (new db(config))
+            );
         } else {
-            this.DB = db;
+            this.DB = /** @type {ReturnType<DatabaseConstructor>} */ (
+                /** @type {unknown} */ (db)
+            );
         }
         return this;
     }
@@ -123,7 +127,7 @@ class ServerDeployer {
          * @type {import("../game_entities/atlas/generator/PrimitiveGalaxyBuilder")}
          */
         let map_builder = new PrimitiveGalaxyBuilder(120, 120);
-        map_builder.generate_base_galaxy();
+        map_builder.generate_base_galaxy(/** @type {any} */ (undefined));
         // 2. 创建数据库
         let DDL_SCHEMA = fs.readFileSync(INSTALLATION_DDL, "utf8");
         Log.info(DDL_SCHEMA);

@@ -10,7 +10,7 @@ const { Jimp } = require("jimp");
 const Pixel = require("./Pixel");
 
 /**
- * @typedef {{bitmap:BitMap} | {filePath:string}} ImageConfig
+ * @typedef {{bitmap?: BitMap, filePath?: string}} ImageConfig
  */
 
 /**
@@ -85,7 +85,7 @@ class Image {
      */
     constructor(config) {
         // TODO: 在构造函数中验证传入的 bitmap 是否有效，避免使用空对象。
-        this.bitmap = config.bitmap ?? {};
+        this.bitmap = /** @type {BitMap|undefined} */ (config.bitmap ?? {});
         this.filePath = config.filePath ?? "";
         this.width = config.bitmap?.width || 0;
         this.height = config.bitmap?.height || 0;

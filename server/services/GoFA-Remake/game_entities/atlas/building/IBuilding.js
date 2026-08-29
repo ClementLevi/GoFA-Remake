@@ -10,10 +10,23 @@ if (!validate(ENUM_BUILDING_DATA)) {
     console.warn(validate.errors);
     throw new Error("Invalid BuildingData.json");
 }
+/**
+ * 建筑信息全局表（Python 版 Buildings_info 模块的 JS 对照，仅作类型标注，不改变运行逻辑）
+ * @type {{ upgrade_cost: Record<string, number[][]> }}
+ */
+var Buildings_info;
+/**
+ * @class IBuilding
+ */
 class IBuilding {
     static BUILDING_INTERNAL_KEYS = Object.keys(ENUM_BUILDING_DATA.buildings);
     static DATA_VERSION = ENUM_BUILDING_DATA.version;
     static BUILDING_DATA = ENUM_BUILDING_DATA.buildings;
+    /**
+     * 建筑类型编号 → 建筑名（Python 版遗留字段，仅类型声明，无初始化）
+     * @type {Record<number, string>}
+     */
+    buildings_list_reverse;
 
     /**
      *

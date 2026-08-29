@@ -142,7 +142,10 @@ module.exports = Planet;
 
 if (require.main === module) {
     const planet = new Planet(
-        { name: "i am a system lol jk ;>", display_name: "Shamaren" },
+        /** @type {System} */ ({
+            name: "i am a system lol jk ;>",
+            display_name: "Shamaren",
+        }),
         "seed"
     );
     console.log(planet);

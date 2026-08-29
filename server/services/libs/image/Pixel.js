@@ -71,23 +71,19 @@ class Pixel {
                 }
                 if (value.constructor.name === "BigInt") {
                     // r, g, b, a 都必然是 0-255 的整数（0xRRGGBBAA 布局）
-                    // @ts-ignore
-                    this.r = Number((value & 0xff000000n) >> 24n);
-                    // @ts-ignore
-                    this.g = Number((value & 0xff0000n) >> 16n);
-                    // @ts-ignore
-                    this.b = Number((value & 0xff00n) >> 8n);
-                    // @ts-ignore
-                    this.a = Number(value & 0xffn);
+                    this.r = /** @type {ColorValue<0,255>} */ (Number((value & 0xff000000n) >> 24n));
+                    this.g = /** @type {ColorValue<0,255>} */ (Number((value & 0xff0000n) >> 16n));
+                    this.b = /** @type {ColorValue<0,255>} */ (Number((value & 0xff00n) >> 8n));
+                    this.a = /** @type {ColorValue<0,255>} */ (Number(value & 0xffn));
                     break;
                 }
                 if (Number.isInteger(value)) {
                     // 0xRRGGBBAA 布局，与 BigInt 分支、valueOf、toString 保持一致。
                     // 使用无符号右移，兼容 >= 2^31 的颜色值（如 0xff0000ff）。
-                    this.r = (value >>> 24) & 0xff;
-                    this.g = (value >>> 16) & 0xff;
-                    this.b = (value >>> 8) & 0xff;
-                    this.a = value & 0xff;
+                    this.r = /** @type {ColorValue<0,255>} */ ((value >>> 24) & 0xff);
+                    this.g = /** @type {ColorValue<0,255>} */ ((value >>> 16) & 0xff);
+                    this.b = /** @type {ColorValue<0,255>} */ ((value >>> 8) & 0xff);
+                    this.a = /** @type {ColorValue<0,255>} */ (value & 0xff);
                     break;
                 }
                 throw new ValueError("Invalid arguments: ", arguments);
@@ -135,26 +131,25 @@ class Pixel {
     }
     /**
      * @description 从平凡的三元或四元数组转换为像素
-     * @template {number[]} T
-     * @param {T extends {length: 3|4} ? T : never} arr
+     * @param {number[]} arr
      * @returns {this}
      */
     fromSimpleArray(arr) {
         // 如果数组有 3 个元素，假设为 RGB
         switch (arr.length) {
             case 3: {
-                this.r = arr[0];
-                this.g = arr[1];
-                this.b = arr[2];
+                this.r = /** @type {ColorValue<0,255>} */ (arr[0]);
+                this.g = /** @type {ColorValue<0,255>} */ (arr[1]);
+                this.b = /** @type {ColorValue<0,255>} */ (arr[2]);
                 this.a = 255;
                 break;
             }
             // 如果数组有 4 个元素，假设为 RGBA
             case 4: {
-                this.r = arr[0];
-                this.g = arr[1];
-                this.b = arr[2];
-                this.a = arr[3];
+                this.r = /** @type {ColorValue<0,255>} */ (arr[0]);
+                this.g = /** @type {ColorValue<0,255>} */ (arr[1]);
+                this.b = /** @type {ColorValue<0,255>} */ (arr[2]);
+                this.a = /** @type {ColorValue<0,255>} */ (arr[3]);
                 break;
             }
             default: {
@@ -173,15 +168,15 @@ class Pixel {
     }
     /**
      * flip the color of the pixel
-     * @param {("R"|"G"|"B"|"A")?} [bit='RGB']
+     * @param {("R"|"G"|"B"|"A"|"RGB")?} [bit='RGB']
      * @returns {this}
      */
     flip(bit = null) {
         if (!bit) return this.flip("RGB");
-        if (/R/i.test(bit.toUpperCase())) this.r = 255 - this.r;
-        if (/G/i.test(bit.toUpperCase())) this.g = 255 - this.g;
-        if (/B/i.test(bit.toUpperCase())) this.b = 255 - this.b;
-        if (/A/i.test(bit.toUpperCase())) this.a = 255 - this.a;
+        if (/R/i.test(bit.toUpperCase())) this.r = /** @type {ColorValue<0,255>} */ (255 - this.r);
+        if (/G/i.test(bit.toUpperCase())) this.g = /** @type {ColorValue<0,255>} */ (255 - this.g);
+        if (/B/i.test(bit.toUpperCase())) this.b = /** @type {ColorValue<0,255>} */ (255 - this.b);
+        if (/A/i.test(bit.toUpperCase())) this.a = /** @type {ColorValue<0,255>} */ (255 - this.a);
         return this;
     }
     /**
@@ -189,7 +184,7 @@ class Pixel {
      * @returns {this}
      */
     flipAlpha() {
-        this.a = 255 - this.a;
+        this.a = /** @type {ColorValue<0,255>} */ (255 - this.a);
         return this;
     }
     /**
@@ -197,10 +192,10 @@ class Pixel {
      * @returns {this}
      */
     flipAll() {
-        this.r = 255 - this.r;
-        this.g = 255 - this.g;
-        this.b = 255 - this.b;
-        this.a = 255 - this.a;
+        this.r = /** @type {ColorValue<0,255>} */ (255 - this.r);
+        this.g = /** @type {ColorValue<0,255>} */ (255 - this.g);
+        this.b = /** @type {ColorValue<0,255>} */ (255 - this.b);
+        this.a = /** @type {ColorValue<0,255>} */ (255 - this.a);
         return this;
     }
     /**

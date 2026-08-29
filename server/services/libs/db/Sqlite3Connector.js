@@ -46,7 +46,7 @@ class SqliteConnector extends IDBConnector {
             );
 
         // 初始化实例属性
-        /** @type {typeof sqlite3.Database | null} */
+        /** @type {InstanceType<typeof sqlite3.Database> | null} */
         this._db = null;
         /** @type {string?} */
         this._db_path = DB_Config.filePath;
@@ -98,7 +98,7 @@ class SqliteConnector extends IDBConnector {
         if (this.isInitialized) {
             Log.warn("Database already initialized");
             return new Promise((resolve, reject) => {
-                resolve(this);
+                resolve(/** @type {any} */ (this));
             });
         }
 
@@ -119,7 +119,7 @@ class SqliteConnector extends IDBConnector {
                     }
                     Log.info(`Connected to the database '${this._db_path}'`);
                     this.isInitialized = true;
-                    resolve(this);
+                    resolve(/** @type {any} */ (this));
                 });
             });
         } catch (error) {
