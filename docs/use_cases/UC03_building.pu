@@ -1,0 +1,84 @@
+@startuml UC03_building
+title UC-3x 地表建筑域
+' [APPROVED] 状态：审定
+' 地表建筑域用例
+' 事件来源：ENUMGoFAGameEvents.js BUILDING_* 分组
+' 跨域引用：UC-2x 星球域（建筑载体）/ UC-1x 角色域（道具消耗）
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "玩家\n(Player)" as PL
+
+usecase "管理建筑" as U3a
+    U3a --|> (建造) : include
+    U3a --|> (摧毁) : include
+        (摧毁) -|> (摧毁总部) : include
+            note bottom
+                将导致放弃星球，参见UC02
+            endnote
+    U3a --|> (升级) : include
+    U3a ---|> (取消建造) : include
+    U3a ---|> (完成建筑管理) : include
+        note bottom
+            所有操作完成后都需手动确认状态
+            这是懒加载特性所要求的
+        endnote
+        (建造) --> (完成建筑管理) 
+        (摧毁) --> (完成建筑管理) 
+        (升级) --> (完成建筑管理) 
+
+usecase "使用建筑队列" as U3b
+    U3b --|> (排入生产队列) : include
+    U3b --|> (装备项目) : include
+        (装备项目) -> (排入生产队列) : 导致
+            note right
+                如蓝图等，常需耗资源研发后才可装备发挥作用
+            endnote
+    U3b --|> (取消队列) : include
+        note bottom
+            服务端事件：BUILDING_CANCELLED
+            取消队列时按当前进度计算不可退款的资源并转为成品
+        endnote
+    usecase "完成队列" as U3e
+        U3b --|> U3e : include
+
+usecase "加速完成建筑" as U3c
+    U3c --|> (加速建筑管理) : include
+    U3c --|> (加速队列任务) : include
+
+usecase "被动生产资源" as U3d
+
+
+PL --> U3a
+PL --> U3b
+PL --> U3c
+PL --> U3d
+
+note bottom of U3a
+    服务端事件：BUILDING_BUILT / BUILDING_DESTROYED / BUILDING_UPGRADED
+    边界：BUILDING_REJECTED（资源不足、非法操作）
+end note
+
+note bottom of U3b
+    服务端事件：BUILDING_PRODUCTION_ENQUEUED / BUILDING_EQUIPPED
+    生产对象：探测器、飞船、地面部队、升级可装备项目
+end note
+
+note bottom of U3c
+    服务端事件：BUILDING_SPEEDED_UP_PRODUCTION
+    加速消耗：跨域引用 UC-1x 角色域（ROLE_USE_ITEM）
+end note
+
+note bottom of U3d
+    被动生产资源：建筑按时间产出，懒更新结算
+    （关联 PLANET_RESOURCE_UPDATE，见 UC-2x）
+end note
+
+note bottom of U3e
+    服务端事件：BUILDING_FINISHED
+    升级、生产序列完成
+end note
+
+@enduml

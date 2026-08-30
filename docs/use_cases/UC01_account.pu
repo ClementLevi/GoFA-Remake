@@ -17,6 +17,7 @@ usecase "账号基本操作" as U1
     U1 --|> (登出/掉线) : include
 
 usecase "账号资料维护" as U2 
+    U2 --|> (检视公开信息) : include
     U2 --|> (修改密码) : include
     U2 --|> (修改邮箱) : include
     U2 --|> (注销账号) : include

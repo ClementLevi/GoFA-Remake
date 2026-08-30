@@ -1,0 +1,111 @@
+@startuml UC02_planet
+title UC-2x 星图与星球域
+' [APPROVED] 状态：审定
+' 星球域用例
+' 跨域引用：UC-3x 地表建筑域 / UC-5x 舰队域 / UC-8x 侦察域
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "玩家\n(Player)" as PL
+:管理员\n(Admin): as AD
+
+usecase "星球领地管理" as U2a
+    usecase "放弃星球" as U2a1
+    U2a --|> U2a1: include
+        note top
+            参见UC03：拆除星球HQ 
+        endnote
+    U2a1 -> (随机创建星门) : 导致
+
+usecase "星球资源与产出" as U2b
+    usecase "检视星球属性" as U2b1
+        U2b --|> U2b1 : include
+        usecase "检视静态属性" as U2b10
+            U2b1 --|> U2b10 : include
+        usecase "检视资源和队列生产进度" as U2b11
+            U2b1 --|>  U2b11 : include
+        U2b1 --|> (检视星球所有者) : include
+                    note bottom
+                        参见UC01：检视公开信息
+                    endnote
+    usecase "被动产出资源" as U2b2
+        U2b --|> U2b2 : include
+            note top
+                由采集器和星球自然资源属性，随时间产出
+            endnote
+        U2b2 <.. U2b11 : 主动检视将更新上次检视以来的资源增量
+
+usecase "收藏与悬赏" as U2c
+    U2c --|> (标记收藏) : include
+    U2c --|> (取消收藏) : include
+    U2c --|> (标记悬赏) : include
+        note bottom
+            标记悬赏需玩家位于联盟中，按时长付费（ROLE_USE_ITEM）
+        endnote
+
+usecase (星球侦察)/ as U2d
+
+usecase (作为舰队（TaskForce）目的地)/ as U2e
+    usecase "获得星球" as U2e1
+    U2e --> U2e1 : 导致
+        note bottom
+            由地面战斗胜利获得，参看UC05 (TASKFORCE_COMBAT)
+        endnote
+
+usecase (管理地表建筑)/ as U2f
+
+usecase "获取坐标链接" as U2g
+
+usecase "大地图检视" as U2h
+    usecase (加载静态地图基底) as U2h0
+        U2h --|> U2h0 : include
+        U2h0 <..> U2b10 : SQL查询等价
+    U2h --|> (计算星系所有者) : include
+    usecase "切换渲染视图" as U2h1
+        U2h --|> U2h1 : include
+        U2h1 --|> (联盟视图) : include
+        U2h1 --|> (外交视图) : include
+        U2h1 --|> (个人视图) : include
+        U2h1 --|> (热点视图) : include
+        U2h1 --|> (价值视图) : include
+
+usecase "星系星球属性管理" as UA1
+    UA1 --|> (星球静态属性修改)
+    UA1 --|> (星球动态资源修改)
+    UA1 --|> (星系更名)
+
+AD -> PL : 是
+PL --> U2a
+PL --> U2b
+PL --> U2c
+PL --> U2d
+PL --> U2e
+PL --> U2f
+PL --> U2g
+PL --> U2h
+U2a --|> U2e1: include
+AD --> UA1
+
+
+note bottom of U2b11
+    服务端事件：PLANET_RESOURCE_UPDATE
+    （访问/刺探/攻击结算时懒更新产出）
+end note
+
+note bottom of U2d
+    跨域引用：UC-8x 侦察域（SPY_PLANET_ESPIONAGE）
+    仅调起客户端 GUI，实际探测走侦察域
+end note
+
+note bottom of U2e
+    跨域引用：UC-5x 舰队域（TASKFORCE_*）
+end note
+
+note bottom of U2f
+    跨域引用：UC-3x 地表建筑域（BUILDING_* 事件）
+    星球是建筑的载体
+end note
+
+@enduml
