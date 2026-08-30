@@ -1,0 +1,50 @@
+@startuml UC01_account
+title UC-1x 账号与角色域
+' [APPROVED] 状态：审定
+' 账号与角色域用例
+' 事件来源：ENUMGoFAGameEvents.js PLAYER_* / ROLE_* 分组
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "玩家\n(Player)" as PL
+actor "管理员\n(Admin)" as AD
+
+usecase "账号基本操作" as U1 
+    U1 --|> (注册) : include
+    U1 --|> (登录) : include
+    U1 --|> (登出/掉线) : include
+
+usecase "账号资料维护" as U2 
+    U2 --|> (修改密码) : include
+    U2 --|> (修改邮箱) : include
+    U2 --|> (注销账号) : include
+
+
+usecase "角色管理" as U3 
+    U3 --|> (创建特定子服务器角色) : include
+    U3 --|> (使用角色并连接到子服务器) : include
+    U3 --|> (修改角色名称) : include
+    U3 --|> (删除角色) : include
+    U3 --|> (升级技能) : include
+    U3 --|> (使用道具) : include
+
+usecase  "充值与应用内购买" as U4
+    U4 --|> (充值) : include
+    U4 --|> (购买道具) :include
+
+usecase "账户管理" as UA1 
+    UA1 --|> (封禁账号) : include
+    UA1 --|> (修改账号资源) : include
+    UA1 --|> (审查操作日志) : include
+
+
+PL --> U1
+PL --> U2
+PL --> U3
+PL --> U4
+AD --> UA1
+AD -down-|> PL : 是
+
+@enduml

@@ -1,0 +1,61 @@
+@startuml UC00_overview
+' [REVIEWED] 状态：已按审定意见精简——总览层仅保留域级用例，细节下沉各域文件
+' L0 系统宏观用例图：参与者 + 用例域
+' 分页：page1 = 参与者；page2 = 域总览
+' 参考：server/services/GoFA-Remake/event_manager/ENUMGoFAGameEvents.js
+' 参考：docs/service_structure/server/use_case/overall_participants.pu（[REF] 旧稿）
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+' ===== 参与者 =====
+actor "玩家\n(Player)" as PL
+actor "管理员\n(Admin)" as AD
+actor "服务器控制台\n(Server Console)" as SC
+actor "NPC\n(服务器控制玩家)" as NPC
+
+AD --|> PL : 继承
+AD -> SC : 使用后台权限操作控制台
+NPC --|> PL : 受服务器控制
+
+newpage
+left to right direction
+
+' ===== 参与者 =====
+actor "玩家\n(Player)" as PL
+actor "服务器控制台\n(Server Console)" as SC
+actor "管理员\n(Admin)" as AD
+
+' ===== 域级用例（细节见各域文件）=====
+usecase "UC-1x 账号与角色管理" as U1
+usecase "UC-2x 星球" as U2
+usecase "UC-3x 地表建筑" as U3
+usecase "UC-4x 机群(航母)" as U4
+usecase "UC-5x 舰队(TaskForce)" as U5
+usecase "UC-6x 联盟" as U6
+usecase "UC-7x 邮件" as U7
+usecase "UC-8x 侦察" as U8
+usecase "UC-9x 聊天" as U9
+usecase "UC-0x 服务器管理" as U0
+
+' ===== 关联：玩家与域 =====
+PL -up-> U1
+PL -up-> U2
+PL -up-> U3
+PL -right-> U4
+PL -right-> U5
+PL -right-> U6
+PL -right-> U7
+PL -right-> U8
+PL -right-> U9
+
+' ===== 关联：管理员 =====
+AD --> U1 : 账户管理
+AD --> U7 : 群发公告邮件
+
+' ===== 关联：控制台 / NPC =====
+SC -up-> U0
+SC --> U1 : 账户管理
+
+@enduml
