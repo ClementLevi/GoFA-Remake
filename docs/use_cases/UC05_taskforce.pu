@@ -1,0 +1,137 @@
+@startuml UC05_taskforce
+title UC-5x 舰队(TaskForce)域
+' [APPROVE] 状态：审定
+' 舰队域用例
+' 分页：page1： 舰队行政与移动；page2： 战斗结算
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "玩家\n(Player)" as PL
+:管理员\n(Admin): as AD
+
+usecase "管理行政舰队编制" as U5a
+    U5a --|> (编辑航母成员) : include
+    U5a --|> (解散编制) : include
+        note right
+            所有机群被摧毁只会清空航母成员
+            行政编制将仍然存在
+        endnote
+    U5a --|> (重命名) : include
+
+usecase "移动状态变更" as U5b
+        note bottom
+            服务端事件：TASKFORCE_DEPARTED（出发）/ TASKFORCE_ARRIVE（到达）
+            到达时按目的地选择：作战 / 重新安置 / 协助防御
+        endnote
+
+    usecase "重新部署" as U5b1
+        U5b --|> U5b1 : include
+
+    usecase "计划攻击" as U5b2
+        U5b --|> U5b2 : include
+        U5b2 ..> (移动到目标) : 常需要
+        U5b2 --|> (进入战斗预备) : include
+            note bottom
+                服务端事件：TASKFORCE_COMBAT_PREP（等待00/15/30/45分触发）
+                        TASKFORCE_INTERCEPT_TRIGGER（被拦截进入预备）
+            endnote
+
+    usecase "运输" as U5b3
+        U5b --|> U5b3 : include
+        U5b3 ..> (重组机群@UC04) : 参看
+            note bottom
+                服务端事件：TASKFORCE_TRANSPORT
+                无视目的地属性，将载荷运送至目的地并返回
+                是的，你可以给**敌人**运东西
+            endnote
+
+    usecase "撤离与撤回" as U5b4
+        U5b --|> U5b4 : include
+
+    usecase "深空抛锚" as U5b5
+        note bottom
+            仅在执行重新部署任务时可抛锚
+            详见状态机图 ./STATE_taskforce.pu
+        endnote
+        U5b --|> U5b5 : include
+        U5b5 --|> (抛锚) : include
+            note bottom
+                服务端事件：TASKFORCE_DOCKED（抛锚完成）
+                仅适用于装备了重力井的舰队
+            endnote
+        U5b5 --|> (继续前进) : include
+        U5b5 ..> (补给耗尽继续前进) : 导致
+            note bottom
+                服务端事件：TASKFORCE_DOCKED_DEPLETED → 触发 TASKFORCE_DEPARTED 继续前进
+            endnote
+
+
+usecase "参与远征副本" as U5c
+    U5c --|> (远征移动) : include
+        note right
+            创建一个目的地为原地的移动，但时间由任务来设置
+        endnote
+    U5c --|> (远征作战) : include
+        note right
+            服务端事件：TASKFORCE_EXPEDITION
+            根据远征任务种类，在到达时触发作战
+            远征作战即时结算，不受四刻钟集中结算限制
+        endnote
+
+PL --> U5a
+PL --> U5b
+PL --> U5c
+AD -> PL : 是
+
+newpage
+' ===== page2：战斗结算 =====
+title 战斗结算器是战斗结算流程中的主要行为者
+
+' skinparam Linetype ortho
+
+actor "玩家\n(Player)" as PL
+actor "战斗结算器\n(Combat Calculator)" as CAL
+
+usecase "1. 舰队战斗结算" as U5g
+        note top
+            服务端事件：TASKFORCE_COMBAT（战斗结束，地点任意）
+            参考：[REF] combat/fleet_combat.pu（舰载机→航母→撤离）
+        endnote
+    U5g <|--|> (舰载机交战) : is
+
+usecase "2. 地面战斗结算" as U5h
+        note bottom
+            参考：[REF] combat/planetary_combat.pu（地面战→占领/撤离）
+        endnote
+
+usecase "3. 航母战斗结算" as U5i
+    note right
+        无战斗类舰载机的航母参与此结算
+        仅交火1回合，毁者死，败者逃
+    endnote
+    U5i --|> (撤离判定) : include
+    note right
+        无合法备选撤离地 → 航母全毁；
+        有合法撤离地 → 撤离
+    end note
+
+usecase "4. 发送战斗报告" as U5j
+    note top
+        服务端事件：MAIL_BATTLE_REPORT
+        跨域引用：UC-7x 邮件域（战斗报告）
+    endnote
+
+
+CAL -right-> U5g
+U5g -right-> U5h : 阶段过渡
+U5h -right-> U5i : 阶段过渡
+U5i -right-> U5j : 阶段过渡
+U5h -[dotted]-> U5j : 导致（所有交战航母均配有战斗型舰载机时）
+U5j --|> U5g : include 模拟回放
+U5j --|> U5h : include 模拟回放
+U5j --|> U5i : include 模拟回放
+PL -left-> U5j : 阅看报告
+
+@enduml

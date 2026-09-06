@@ -1,0 +1,76 @@
+@startuml UC04_fleet
+title UC-4x 机群(航母)域
+' [APPROVED] 状态：审定
+' 机群域用例
+' 事件来源：ENUMGoFAGameEvents.js FLEET_* 分组
+' 跨域引用：UC-3x 地表建筑域（造船厂生产）/ UC-5x 舰队域（编成）/ UC-1x 角色域（道具消耗）
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "玩家\n(Player)" as PL
+
+usecase "创建航母" as U4a1
+    note right
+        在造船厂生产航母以创建新机群
+        新航母默认包含数量为0的舰载机机群
+        服务端事件：FLEET_CREATED（航母诞生）
+        跨域引用：UC-3x 生产队列（造船厂）
+    endnote
+
+usecase "拆除航母" as U4a2
+    note right
+        会连同其搭载的舰载机、货物及所用的增幅器一并摧毁
+        服务端事件：FLEET_DESTROYED
+        触发场景：玩家手动删除 或 交战中摧毁（UC-5x TASKFORCE_COMBAT）
+    endnote
+
+usecase "重组机群" as U4b
+    note bottom
+        服务端事件：FLEET_RECOMPOSED / FLEET_RECOMPOSE_FAILED
+        涉及航母及其编队和载荷的数量调整
+        应在客户端请求体中包含编队旧态和新态
+    endnote
+    U4b --|> (调整编队) : include
+    U4b --|> (调整载荷) : include
+    (调整编队) . (调整载荷) :机群中的运输机数量影响载荷上限
+
+usecase "升级航母" as U4c
+    note right
+        使用增幅器道具以升级
+        服务端事件：FLEET_UPGRADE（增幅器）
+        跨域引用：UC-1x 角色域（ROLE_USE_ITEM）
+    endnote
+
+usecase "重命名航母" as U4d
+    note right
+        服务端事件：FLEET_RENAMED / FLEET_RENAME_FAILED
+    endnote
+
+usecase "管理舰载机" as U4e
+    note bottom
+        舰载机是一种特殊的星球资源
+        舰载机可以存放在星球上，或由航母搭载
+        与基础资源和步兵、无人机等资源类似，不能简单地手动销毁
+        舰载机可以通过战斗事件消耗，或连同航母机群一起摧毁
+        舰载机一般由造船厂生产，有时需要蓝图科技解锁建造权限
+    endnote
+    U4e --|> (建造舰载机) : include
+    U4e --|> (调整编队) : include
+
+usecase "切换避免作战" as U4f
+    note right
+        启用了避免作战的航母，在遭遇战斗结算事件时，会自动离开特混舰队
+        按照战斗失败且全员幸存的姿态决定去向（重新部署到最近的玩家所持星球或摧毁（无任何所持星球时））
+    endnote
+
+PL --> U4a1
+PL --> U4a2
+PL --> U4b
+PL --> U4c
+PL --> U4d
+PL --> U4e
+PL --> U4f
+
+@enduml

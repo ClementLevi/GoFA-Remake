@@ -1,0 +1,94 @@
+@startuml 特混舰队状态转移图
+' [APPROVE] 状态：审定
+
+title 特混舰队状态转移图
+
+left to right direction
+
+hide empty description
+skinparam state {
+  BackgroundColor<<stable>>    #E8F5E9
+  BorderColor<<stable>>        #388E3C
+  FontColor<<stable>>          #1B5E20
+
+  BackgroundColor<<unstable>>  #FFF3E0
+  BorderColor<<unstable>>      #E65100
+  FontColor<<unstable>>        #BF360C
+
+  BackgroundColor<<move>>      #E3F2FD
+  BorderColor<<move>>          #1565C0
+  FontColor<<move>>            #0D47A1
+
+  BackgroundColor<<return>>    #F3E5F5
+  BorderColor<<return>>        #7B1FA2
+  FontColor<<return>>          #4A148C
+}
+skinparam {
+  ArrowColor      #37474F
+  ArrowThickness  1.5
+  FontSize        13
+  FontStyle       plain
+  Padding         4
+  Margin          10
+  Shadowing       false
+  Linetype        polyline
+}
+
+' ── 状态定义 ──
+' 移动中
+state "移动中" as moving <<move>> {
+  state "运输资源"   as deliver  <<move>>
+  state "计划攻击"   as atk      <<move>>
+  state "重新部署"   as relocate <<move>>
+}
+state "返回出发地" as rtn <<return>>
+  rtn: “撤回出发地”行为不能再撤回
+
+' 不稳定停泊
+state "等待攻击结算" as atkwait <<unstable>>
+  atkwait: 定时器驱动，结算后自动转出。
+  atkwait: 一般会回到“移动中”状态，具体去向及条件
+  atkwait: 详见 ./ACT_taskforce_after_combat.pu
+
+state "深空抛锚" as intercept <<unstable>>
+  intercept: 封锁他人经过的舰队；
+  intercept: 3 min 结算，不参与四刻钟倒计时。
+  intercept: 终止任务将使得舰队继续行进（可以撤回出发地）
+  intercept: 玩家可以手动终止任务，或因所载
+  intercept: 特定种类资源耗尽（定时器）而自动终止
+
+' 稳定停泊
+state "停泊" as d <<stable>> {
+  state "停泊在己方星球" as dock <<stable>>
+    dock: 建造完成即设定位置在星球表面
+  state "协防他人星球" as assist <<stable>>
+}
+
+
+[*]       -down-> dock        : 建造完成
+d         -> moving           : 运输资源、计划攻击、重新部署
+d         -> [*]              : 销毁
+d         -[norank]-> atkwait : 被打了
+
+moving    -> rtn              : 撤销移动
+moving    -> atkwait          : 到达进攻地点或移动中遭拦截
+atkwait   -left[dashed]-> moving : 去向由战斗结果确定
+relocate  -> intercept[H]     : 启用拦截器或继续行进
+relocate  -[dashed]-> d       : 到达
+rtn       -[dashed]-> atkwait : 遭拦截
+
+intercept -[dashed]-> atkwait : 捕获非友方
+
+atkwait   -[dashed]-> rtn     : 返回
+atkwait   -[dashed]-> intercept : 继续拦截
+atkwait   -[dashed]-> [*]     : 击毁
+
+rtn       -[dashed]-> d       : 抵达出发地
+
+legend bottom
+| 线型 | 语义 |
+| 实线 → | 玩家主动 |
+| 虚线 ⇢ | 条件触发 |
+endlegend
+
+@enduml

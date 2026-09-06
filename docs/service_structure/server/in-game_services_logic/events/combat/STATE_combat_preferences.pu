@@ -1,0 +1,53 @@
+@startuml 舰队战中各型战斗舰载机攻击偏好
+' [APPROVE] 状态：审定
+'  参见：combat_algorithm_requirements.md §3.1 舰载机攻击阶段
+'    · 目标选择偏好优先：F 优先攻击次序 I→F→B；B 为 F→B→I；I 为 B→I→F
+'    · 高等级优先：优先攻击对方等级高的偏好机型，伤害溢出到较低等级
+
+title 舰队战中各型战斗舰载机攻击偏好
+
+skinparam state {
+  BackgroundColor<<F>> #FFEBEE
+  BorderColor<<F>>     #C62828
+  FontColor<<F>>       #B71C1C
+
+  BackgroundColor<<B>> #E8F5E9
+  BorderColor<<B>>     #2E7D32
+  FontColor<<B>>       #1B5E20
+
+  BackgroundColor<<I>> #E3F2FD
+  BorderColor<<I>>     #1565C0
+  FontColor<<I>>       #0D47A1
+}
+skinparam {
+  ArrowColor      #37474F
+  ArrowThickness  1.5
+  FontSize        13
+  FontStyle       plain
+  Shadowing       false
+}
+
+' ── 克制环：① 首要目标 = 被本机克制的机型 ──
+state "Fighter (F)" as F <<F>>
+state "Bomber (B)" as B <<B>>
+state "Interceptor (I)" as I <<I>>
+
+F -down-> I : ① 克制
+I -right-> B : ① 克制
+B -up-> F : ① 克制
+
+
+legend bottom
+  <b>完整目标偏好次序</b>
+  | 攻击方 | ① | ② | ③ |
+  | F | I | F | B |
+  | B | F | B | I |
+  | I | B | I | F |
+  <i>① 克制对象 · ② 同型 · ③ 被克制方</i>
+
+  | 规则 | 说明 |
+  | 等级优先 | 同一机型内，等级高者优先 |
+  | 伤害溢出 | 先溢出到该机型较低等级，再转向下一偏好机型 |
+endlegend
+
+@enduml

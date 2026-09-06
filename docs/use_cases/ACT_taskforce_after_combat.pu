@@ -1,0 +1,77 @@
+@startuml 战斗结束后，舰队往哪去？
+title 战斗结束后，舰队往哪去？
+
+start
+:战斗结束;
+if (战斗种类？) then (星球作战)
+    if (是进攻方？) then (进攻作战)
+        if (星球易手？) then (进攻方攻占星球)
+            if (是主要进攻方？) then (Y)
+                note: 主要进攻方：幸存步兵数量最多
+                :驻守;
+                stop
+            else (N)
+                :协防;
+                stop
+            endif
+        else (星球未易手，尝试返回)
+            if (战斗发生位置已经是舰队出发地) then (Y)
+                :摧毁;
+                note: 爆航母了
+                end
+            else (N)
+                :返回出发地;
+                stop
+            endif
+        endif
+    else (防御作战)
+        if (获胜？) then (Y)
+            if (处于协防姿态？) then (协防他人)
+                :协防;
+                stop
+            else (是自己的星球)
+                :驻守;
+                stop
+            endif
+        else (N)
+            (E)
+            detach
+        endif
+    endif
+else (区域拦截战)
+    if (获胜？) then (Y)
+        if (是被拦截方？) then (Y)
+            note: 拦截发起方被视为防守方
+            :继续移动任务;
+            stop
+        else (是拦截发起方)
+            :继续拦截任务;
+            stop
+        endif
+    else (N)
+        (E)
+    endif
+endif
+
+(E)
+:逃离姿态;
+note
+    避免作战的航母在遭遇战斗结算时，
+    会自行组成新的特混舰队，不参与战斗结算，
+    判定为已幸存，然后决定去向
+endnote
+if (舰队幸存？) then (Y)
+    if (玩家没有任何系外星球？) then (Y)
+        :摧毁;
+        end
+    else (N)
+        :**重新部署**
+        前往玩家持有的最近星球;
+        stop
+    endif
+else (N)
+    :摧毁;
+    end
+endif
+
+@enduml
