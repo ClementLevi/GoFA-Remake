@@ -1,0 +1,40 @@
+@startuml 联盟弹劾流程
+' [APPROVE] 状态：审定
+
+title UC06 联盟首领不活跃，可重新推选
+
+actor "其余成员" as PL
+actor "领袖" as LDR
+collections "联盟" as ALZ
+
+activate LDR
+
+ALZ -> LDR : 超3个月不活跃
+deactivate LDR
+... 首领缺位期 ...
+
+PL --> ALZ ++ : 某人选择发起弹劾
+PL --> ALZ : 竞选
+... 选举时间到，投票日...
+loop 每日投票：需4/5多数活跃玩家数
+    PL -> PL : 投票
+    note across
+        无人得票达标
+        次日继续新一轮
+    endnote
+end
+    ALZ -> PL : 4/5得票
+    ALZ -> LDR !! : 换人
+    PL -> LDR : 当选新领袖
+deactivate ALZ
+
+group 投票结束前首领可恢复活跃
+    ... 投票期结束前 ...
+    ALZ -> ALZ ++ : 等待投票日
+    LDR -> ALZ : 上线
+    activate LDR
+    LDR --> ALZ : 首领可以镇压弹劾\n或放手等待投票结果
+    deactivate ALZ
+end
+
+@enduml

@@ -55,8 +55,9 @@ docs/framework/         框架性业务逻辑流程图 + 时序图（按用例�
 | `UC01_account.pu` | L1 账号与角色域用例图 | `[APPROVED]` | 2026-08-30 |
 | `UC02_planet.pu` | L1 星图与星球域用例图 | `[APPROVED]` | 2026-08-30 |
 | `UC03_building.pu` | L1 地表建筑域用例图 | `[APPROVED]` | 2026-08-30 |
-| `UC04_fleet.pu` | L1 机群(航母)域用例图 | `[WIP]` | — |
-| `UC05_taskforce.pu` | L1 舰队(TaskForce)域用例图（含战斗结算） | `[WIP]` | — |
+| `UC04_fleet.pu` | L1 机群(航母)域用例图 | `[APPROVED]` | 2026-09-06 |
+| `UC05_taskforce.pu` | L1 舰队(TaskForce)域用例图（含战斗结算） | `[APPROVED]` | 2026-09-06 |
+| `UC06_alliance.pu` | L1 联盟域用例图（成员/政务/外交/管理层重构） | `[WIP]` | — |
 | （待创建） | ... | `[ ]` | — |
 
 ## 审定流程约定

@@ -1,0 +1,239 @@
+@startuml UC06_alliance
+' [APPROVE] 状态：审定
+' 联盟域用例
+' 权限体系：O-1 成员 < O-2 高级成员 < O-3 管理员 < O-4 高级管理员 < O-5 盟主(所有者)
+' 分页：page1 = 成员与组织；page2 = 外交；page3 = 情报信息共享; page4 = 管理层重构与事件链
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "玩家\n(Player)" as PL
+actor "有联盟玩家" as PLA
+actor "无联盟玩家" as PLN
+actor "一般成员" as MEMBER
+actor "O-2/O-3成员" as SGNT
+actor "O-4/O-5官员" as CMD
+actor "O-5 盟主" as LDR
+
+' ===== page1：成员与组织 =====
+
+title UC06-1 成员角色与组织管理
+
+usecase "创建联盟" as U6a
+        note right
+            创建后不能改名和缩写
+            服务端事件：ALLIANCE_CREATE_CONFIRM / ALLIANCE_CREATE_FAILED
+            跨域引用：UC-1x ROLE_USE_ITEM（创建消耗道具）
+        endnote
+usecase "申请加入联盟" as U6b
+        note right
+            ALLIANCE_APPLY：仅非联盟成员
+            申请后等待联盟侧审批（见 U6c）
+        endnote
+usecase "离开联盟" as U6c
+usecase "解散联盟" as U6d
+    note right
+        ALLIANCE_DISBAND：仅盟主（O-5）
+        服务端事件：ALLIANCE_DISBANDED
+    endnote
+
+usecase "审批玩家加入" as U6e
+    U6e --|> (同意) : include
+    U6e --|> (拒绝) : include
+
+usecase "邀请玩家加入" as U6f
+usecase "管理成员权限" as U6g
+        note bottom
+            除O-5可以提拔O-4为O-5以外，
+            其余等级最多操作本级以下的玩家
+            如O-4只能提降O-3，O-3只能提降O-2
+            O-2显然没有提拔和降级权
+        endnote
+    U6g --|> (提拔) : include
+    U6g --|> (降级) : include
+
+usecase "管理小队" as U6h
+    U6h --|> (创建小队) : include
+        note right
+            ALLIANCE_CREATE_TEAM：高级成员（O-2+）可发起
+        endnote
+    U6h --|> (删除小队) : include
+
+usecase "扮演小队成员" as U6i
+    U6i --|> (加入小队) : include
+    U6i --|> (退出小队) : include
+
+usecase "处理联盟邀请" as U6j
+    U6j --|> (同意加入) : include
+    U6j --|> (拒绝加入) : include
+
+
+PL <|-- PLA
+PL <|-- PLN
+PLA <|-- MEMBER
+PLA <|-- SGNT
+PLA <|-- CMD
+CMD <|-- LDR
+
+PLN --> U6a
+PLN --> U6b
+PLA --> U6c
+LDR --> U6d
+CMD --> U6e
+CMD --> U6f
+CMD --> U6g
+SGNT --> U6h
+CMD --> U6h
+PLA --> U6i
+PLN --> U6j
+
+
+
+newpage
+' ===== page2：外交 =====
+title UC06-2 公共外交关系
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+legend
+服务端事件：ALLIANCE_RELATION_CHANGED / ALLIANCE_LOG
+end legend
+
+actor "O-4 / O-5官员" as PL
+
+usecase "管理联盟基本信息" as U6a
+    U6a --|> (修改简介) : include
+    U6a --|> (修改头像) : include
+
+usecase "管理外交关系" as U6b
+
+    package NAP {
+        U6b --|> (请求不侵犯条约\nALLIANCE_REQUEST_NAP) : include
+        U6b --|> (接受不侵犯条约\nALLIANCE_ACCEPT_NAP) : include
+        U6b --|> (拒绝不侵犯条约\nALLIANCE_REJECT_NAP) : include
+        U6b --|> (撕毁不侵犯条约\nALLIANCE_ABOLISH_NAP) : include
+    }
+    package WAR {
+        U6b --|> (宣战\nALLIANCE_DECLARE_WAR) : include
+        U6b --|> (请求休战\nALLIANCE_REQUEST_NEUTRAL) : include
+        U6b --|> (同意休战\nALLIANCE_ACCEPT_NEUTRAL) : include
+        U6b --|> (拒绝休战\nALLIANCE_REJECT_NEUTRAL) : include
+    }
+
+
+PL --> U6a
+PL --> U6b
+
+
+
+newpage
+' ===== page3：情报信息共享 =====
+title UC06-3 情报信息共享
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+
+actor "O-1 一般成员" as MEMBER
+actor "O-2/O-3 高级成员和官员" as SGNT
+actor "O-4/O-5 高级官员" as CMD
+
+
+usecase "查看盟友名下星球" as U63a
+usecase "设置成员星球可见性" as U63b
+    note bottom
+            O-5盟主始终可见所有成员名下星球，
+            即使设置为“不可见”模式
+    endnote
+    U63b --|> (不可见) : include
+    U63b --|> (仅小队内可见) : include
+        note right
+            小队以外的O-3、O-4官员
+            也不可见，组别分割良好
+        endnote
+    U63b --|> (仅O-3及以上官员可见) : include
+    U63b --|> (小队可见) : include
+        note right
+            小组外的官员也可见
+            小组外非官员不可见
+        endnote
+    U63b --|> (联盟成员可见) : include
+
+usecase "发布和答复公告" as U63c
+usecase "管理公告" as U63d
+    U63d --|> (置顶公告) : include
+    U63d --|> (取消置顶公告) : include
+    usecase "删除公告" as U63dd
+    U63d --|> U63dd : include
+
+usecase "管理悬赏" as U63e
+    note bottom
+        标记悬赏需按时长付费（ROLE_USE_ITEM）
+        每现实日扣除1CR，欠费自动移除
+    endnote
+    U63e --|> (添加悬赏) : include
+    usecase "删除悬赏" as U63e1
+    U63e --|> U63e1 : include
+
+SGNT <|-- MEMBER
+CMD <|-- SGNT
+
+MEMBER --> U63a
+CMD --> U63b
+MEMBER --> U63c
+CMD --> U63d
+MEMBER --> U63e
+MEMBER --> U63e1 : 仅自己的悬赏
+SGNT --> U63e1
+CMD --> U63e1
+
+
+newpage
+' ===== page4：管理层根本重构 =====
+title UC06-4 管理层根本重构
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "联盟任意成员" as MEMBER
+actor "O-5 联盟首领" as LDR
+
+usecase "发起弹劾联盟首领" as U64a
+    note bottom
+        前提：盟主（O-5）处于不活跃状态满 3 个月
+    endnote
+usecase "罢免联盟首领" as U64b
+        note right
+            ALLIANCE_EXILE_LEADER
+            旧盟主按 O-4 职位限额调整为 O-4 或 O-3
+        endnote
+usecase "投票给候选人" as U64c
+        note right
+            ALLIANCE_LEADER_VOTE
+            需 4/5 总数活跃玩家支持方可通过
+            提名最多的人选成为新盟主
+        endnote
+usecase "镇压罢免" as U64d
+usecase "参选联盟首领" as U64e
+    note right
+        会发布参选日志和竞选公告帖子
+        显然，高级官员可以删成员的帖子
+        舆论霸权这一块，不得不品尝
+    endnote
+
+MEMBER --> U64a
+U64a ..> U64b: 导致
+MEMBER --> U64c
+LDR --> U64d
+MEMBER --> U64e
+
+legend
+    流程详见 docs/gameplay/SEQ_alliance_impeachment.pu
+endlegend
+
+@enduml
