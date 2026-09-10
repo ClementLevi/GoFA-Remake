@@ -1,0 +1,78 @@
+@startuml UC07_mail
+' [APPROVE] 状态：审定
+' 事件来源：ENUMGoFAGameEvents.js MAIL_* 分组
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+' ===== page1：邮件收发 =====
+title UC07-1 邮件收发与附件
+
+actor "玩家\n(Player)" as PL
+actor "管理员\n(Admin)" as AD
+
+usecase "收发邮件" as U7a
+    U7a --|> (撰写并发送\nMAIL_TO) : include
+        (撰写并发送\nMAIL_TO) --|> (封送附件) : include
+        note top
+            UC01: 使用道具
+            封送附件时即消耗
+        endnote
+    U7a --|> (阅读\nMAIL_READ) : include
+        (阅读\nMAIL_READ) --|> (领取附件\nMAIL_CLAIM) : include
+    U7a --|> (回复\nMAIL_REPLY) : include
+        note right
+            回复将把上一封邮件的
+            文本内容拼接在其后
+        endnote
+
+usecase "删除邮件" as U7c
+
+usecase "群发公告邮件" as U7d
+
+PL --> U7a
+PL --> U7c
+AD --> U7d
+AD -|> PL : is
+
+newpage
+' ===== page2：系统邮件与通知 =====
+title UC07-2 系统邮件与通知
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "玩家\n(Player)" as PL
+
+usecase "接收战斗报告" as U7e
+    note right
+        MAIL_BATTLE_REPORT
+        由战斗结算触发（详见 UC05）
+    endnote
+    U7e --|> (查看战斗回放模拟) : include
+
+usecase "接收侦察报告" as U7f
+    U7f --|> (星球刺探) : include
+    note right
+        MAIL_SPY_REPORT
+        由间谍卫星阵列发送探测器触发（详见 UC08）
+    endnote
+    U7f --|> (来袭侦查) : include
+        note right
+            MAIL_ESPIONAGE_ALERT
+            当玩家星球或攻击舰队被扫描时触发
+        endnote
+    U7f --|> (任务副本结果) : include
+        note right
+            MAIL_EXPEDITION_REPORT
+            任务中包含战斗环节时
+            还会发来战斗报告
+        endnote
+
+
+PL --> U7e
+PL --> U7f
+
+@enduml

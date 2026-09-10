@@ -146,6 +146,8 @@ const GameEvent = Object.freeze({
     MAIL_ALREADY_READ: "mail_already_read",
     // ### 战斗报告
     MAIL_BATTLE_REPORT: "mail_battle_report",
+    // 副本任务
+    MAIL_EXPEDITION_REPORT: "mail_expedition_report",
     // ### 侦察
     // 侦察报告，由间谍卫星阵列发送探测器
     MAIL_SPY_REPORT: "mail_spy_report",

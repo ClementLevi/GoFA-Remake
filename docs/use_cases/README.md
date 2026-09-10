@@ -57,8 +57,16 @@ docs/framework/         框架性业务逻辑流程图 + 时序图（按用例�
 | `UC03_building.pu` | L1 地表建筑域用例图 | `[APPROVED]` | 2026-08-30 |
 | `UC04_fleet.pu` | L1 机群(航母)域用例图 | `[APPROVED]` | 2026-09-06 |
 | `UC05_taskforce.pu` | L1 舰队(TaskForce)域用例图（含战斗结算） | `[APPROVED]` | 2026-09-06 |
-| `UC06_alliance.pu` | L1 联盟域用例图（成员/政务/外交/管理层重构） | `[WIP]` | — |
+| `UC06_alliance.pu` | L1 联盟域用例图（成员/政务/外交/情报共享/管理层重构） | `[APPROVED]` | 2026-09-10 |
+| `UC07_mail.pu` | L1 邮件域用例图（收发/附件/系统邮件） | `[WIP]` | — |
+| `UC09_chat.pu` | L1 聊天域用例图（三频道） | `[WIP]` | — |
 | （待创建） | ... | `[ ]` | — |
+
+### docs/gameplay/ 板块
+
+| 文件 | 内容 | 状态 | 审定日期 |
+|---|---|---|---|
+| `SEQ_alliance_impeachment.pu` | 联盟首领不活跃重选流程时序图 | `[APPROVED]` | 2026-09-10 |
 
 ## 审定流程约定
 

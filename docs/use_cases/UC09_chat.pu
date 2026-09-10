@@ -1,0 +1,42 @@
+@startuml UC09_chat
+' [APPROVE] 状态：审定
+
+title UC-9x 聊天域
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+
+actor "玩家\n(Player)" as PL
+actor "有联盟玩家" as PLA
+actor "小队成员" as TMM
+
+PL <|-- PLA
+PLA <|-- TMM
+
+usecase "频道聊天" as U9a
+    U9a --|> (公聊\nCHAT_MSG:PUBLIC) : include
+    U9a --|> (联盟聊天\nCHAT_MSG:ALLIANCE) : include
+        note right
+            仅同联盟成员可见
+        endnote
+    U9a --|> (小队聊天\nCHAT_MSG:TEAM) : include
+        note right
+            仅同小队成员可见
+        endnote
+
+usecase "拉取频道消息" as U9b
+
+PL --> U9a
+PLA --> U9a
+TMM --> U9a
+PL --> U9b
+
+note bottom of U9a
+    客户端→服务端事件：CHAT_MSG
+    频道：PUBLIC / ALLIANCE / TEAM
+    所有参数需服务端内部校验（频道权限、内容校验）
+end note
+
+@enduml
